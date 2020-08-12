@@ -120,7 +120,7 @@
             </ul>
             <div id = "tabs-1" >
                 <div class = "row justify-content-center">    
-                    <video width="90%" height="auto" controls>
+                    <video width="100%" height="auto" controls>
                         <source src="video/Produce_Chart.mp4" type="video/mp4">
                     </video>
                 </div>                             
