@@ -165,13 +165,14 @@
             }
         }
         var table = "dg" + _todoP ;
+        var jqgridWidth = parseInt($(window).width()) * 0.7;
         // 準備資料           
         $("#" + table).jqGrid({
             //url:"ProductSPEC/show/"+_todoP,
             url:"ProductSPEC/show/"+_todoP,
             datatype: "json",        
             altrows:false,
-            width: 1200,
+            width: jqgridWidth,
             height:'100%',
             colNames:colNames,
             colModel:colModel,

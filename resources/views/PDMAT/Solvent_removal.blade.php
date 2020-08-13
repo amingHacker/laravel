@@ -200,13 +200,14 @@
                 }
             }
         }
+        var jqgridWidth = parseInt($(window).width()) * 0.7;
 
         // 準備資料           
         $("#dg").jqGrid({
             url:'SolventRemoval/show',
             datatype: "json",
             altrows:false,
-            width: 1200,
+            width: jqgridWidth,
             height:'100%',
             colNames:colNames,
             colModel:colModel,
