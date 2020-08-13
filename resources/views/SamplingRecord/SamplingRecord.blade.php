@@ -256,6 +256,13 @@
                 fixPositionsOfFrozenDivs.call(this);
                 this.p.lastSelected = lastSelected;
             }, // Fix column's height are different after enable frozen column feature
+            gridComplete: function(){
+                //根據瀏覽器寬度動態改變
+                $(window).resize(function(){ 
+                    var winwidth= parseInt($(window).width()) * 0.7;     
+                    $("#dg").jqGrid('setGridWidth', winwidth);
+                });
+            },
             rowattr: function (rd){if (rd.determination === 'Fail'){ return {"class": "failRow"};}}                                                            
         }).jqGrid('setFrozenColumns'); 
         
@@ -754,6 +761,8 @@
     {
         $( "#Chartmenu" ).menu();
     });
+
+   
 </script>
 {{-- Data資料呈現 End --}}
  
@@ -828,13 +837,17 @@
 {{-- Chart End --}}
 
 
-{{-- 選單 Start --}}
+{{-- Chart選單 Start --}}
 <ul id="Chartmenu" style="display:none;" >
     <li><a href="#" onclick="saveoutlierChartData();return false;"><span class="ui-icon ui-icon-disk"></span>Save</a></li>
     <li><a href="#" onclick="removeChartData();return false;"><span class="ui-icon ui-icon-trash"></span>Delete</a></li>
 </ul>
-{{-- 選單 End --}}
+{{-- Chart選單 End --}}
 
+
+{{-- jqgrid 右鍵選單 Start --}}
+
+{{-- jqgrid 右鍵選單 End --}}
 
 {{-- 表單送出方法 inline Start --}}
 <script type="text/javascript">

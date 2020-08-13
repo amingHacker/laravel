@@ -237,7 +237,14 @@
             loadComplete: function (){ 
                 fixPositionsOfFrozenDivs.call(this);
                 this.p.lastSelected = lastSelected; 
-            }, // Fix column's height are different after enable frozen column feature                                                  
+            }, // Fix column's height are different after enable frozen column feature 
+            gridComplete: function(){
+                //根據瀏覽器寬度動態改變
+                $(window).resize(function(){ 
+                    var winwidth= parseInt($(window).width()) * 0.7;     
+                    $("#dg").jqGrid('setGridWidth', winwidth);
+                });
+            },                                                 
             
         }).jqGrid('setFrozenColumns'); 
         

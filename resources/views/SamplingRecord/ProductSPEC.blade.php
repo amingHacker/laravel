@@ -203,6 +203,13 @@
                 fixPositionsOfFrozenDivs.call(this);
                 
             }, // Fix column's height are different after enable frozen column feature
+            gridComplete: function(){
+                //根據瀏覽器寬度動態改變
+                $(window).resize(function(){ 
+                    var winwidth= parseInt($(window).width()) * 0.7;     
+                    $("#" + table).jqGrid('setGridWidth', winwidth);
+                });
+            },
             rowattr: function (rd){if (rd.determination === 'Fail'){ return {"class": "failRow"};}}                                                            
         }).jqGrid('setFrozenColumns'); 
 
