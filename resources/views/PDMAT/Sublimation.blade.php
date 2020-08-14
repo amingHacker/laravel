@@ -267,7 +267,8 @@
                     var winwidth= parseInt($(window).width()) * 0.7;     
                     $("#dg").jqGrid('setGridWidth', winwidth);
                 });
-            },                                              
+            },
+                                              
         }).jqGrid('setFrozenColumns');
         
         //增加Tool bar        

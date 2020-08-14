@@ -77,10 +77,6 @@
 <script type="text/javascript" src="{{asset('js/ToolBarProduce/ToolBar.js')}}"></script>
 {{-- ToolBar End--}}
 
-{{-- RightClick Action Start--}}
-<script type="text/javascript" src="{{asset('js/RightClick/RightClick.js')}}"></script>
-{{-- RightClick Action End--}}
-
 
 {{-- CSS設定 Start--}}
 {{-- <style type="text/css">
@@ -222,6 +218,7 @@
         }
         var jqgridWidth = parseInt($(window).width()) * 0.7;
         
+
         // 準備資料           
         $("#dg").jqGrid({
             url:"SamplingRecord/show",
@@ -269,9 +266,6 @@
             onRightClickRow:function(rowid, irow, icol, e){
                     
                 showRightClick(rowid, e);
-            },
-            onSelectRow:function(rowid,status,e){
-                handleClickMouseDown(e);
             },
             rowattr: function (rd){if (rd.determination === 'Fail'){ return {"class": "failRow"};}}                                                            
         }).jqGrid('setFrozenColumns'); 
@@ -326,6 +320,50 @@
         };
 
     });
+
+    /*Show Right Click Information*/
+    function showRightClick(rowid, e){
+        var _rightClickID = [];
+        _rightClickID.push(rowid);
+   
+        $.ajax({
+                async:false,
+                url: "SamplingRecord/GetDataFromID" ,//路徑
+                type: "POST",           
+                data:{
+                    "postData": _rightClickID,
+                },
+                success: function (DownLoadValue){
+                    var data = DownLoadValue.success;
+                    //產生要寫入excel的data
+                    var jqgridWidth = parseInt($(window).width()) * 0.7;
+                    
+                    var pcontent = '<span style="font-weight:bold; color:#2e6e9e;">《 客戶規格表 Customer SPEC  》</span><br /><br />' + '<div id="pdfDisplay"></div>'+
+                    '<object id="pdfObject" type="application/pdf" data="pdf/TMAL.pdf" width="100%" height="100%" />';
+                    
+                    //建立動態表格
+                    $("#confirmDialog").html(pcontent);
+                   
+                    
+
+                    $("#confirmDialog").dialog({
+                        width:'auto', height:'auto', autoResize:true, modal:false, closeText:"關閉", 
+                        resizable:true, closeOnEscape:true, dialogClass:'top-dialog',position:['center',168],
+                        show:{effect: "fade", duration: 140},
+                        hide:{effect: "clip", duration: 140},
+                        focus: function() { $(".ui-dialog").focus(); }, // Unfocus the default focus elem
+                        buttons : {
+                            "關閉" : function() {
+                                $(this).dialog("close");
+                                                                                   
+                            },
+                        }
+                    });                                 
+                    
+                    
+                }                               
+            });  
+    }
 
     /*輸入Database ColumnName 輸出中文 ColumnName*/
     function getColumnNameFromDatabaseToChinese(ColumnName)
@@ -767,11 +805,9 @@
         });
     }
 
-    /*初始化選單*/
     $(function() 
     {
         $( "#Chartmenu" ).menu();
-        $( "#RightClickmenu" ).menu();
     });
 
    
@@ -856,11 +892,10 @@
 </ul>
 {{-- Chart選單 End --}}
 
-{{-- RightClick選單 Start --}}
-<ul id="RightClickmenu" style="display:none;" >
-    <li><a href="#" onclick="showSelectSPEC();return false;"><span class="ui-icon ui-icon-document"></span>View SPEC</a></li>
-</ul>
-{{-- RightClick選單 End --}}
+
+{{-- jqgrid 右鍵選單 Start --}}
+
+{{-- jqgrid 右鍵選單 End --}}
 
 {{-- 表單送出方法 inline Start --}}
 <script type="text/javascript">
@@ -1357,6 +1392,63 @@
                         var tmp = [];
                         for (var p in dataExport[key])
                         {
+
+                            if (p == 'remarks')
+                            {
+                                var componentA = '', componentB = '', componentC = '', componentD = '';
+                                if (dataExport[key][p].indexOf("Component A") != -1)
+                                {
+                                    var ind = dataExport[key][p].indexOf("Component A");
+                                    var s = dataExport[key][p].slice(ind);
+                                    componentA = s.match(/\d+.\d+/);
+                                }
+                                if (dataExport[key][p].indexOf("component A") != -1)
+                                {
+                                    var ind = dataExport[key][p].indexOf("component A");
+                                    var s = dataExport[key][p].slice(ind);
+                                    componentA = s.match(/\d+.\d+/);
+                                }
+                                if (dataExport[key][p].indexOf("Component B") != -1)
+                                {
+                                    var ind = dataExport[key][p].indexOf("Component B");
+                                    var s = dataExport[key][p].slice(ind);
+                                    componentB = s.match(/\d+.\d+/);
+                                }
+                                if (dataExport[key][p].indexOf("component B") != -1)
+                                {
+                                    var ind = dataExport[key][p].indexOf("component B");
+                                    var s = dataExport[key][p].slice(ind);
+                                    componentB = s.match(/\d+.\d+/);
+                                }
+                                if (dataExport[key][p].indexOf("Component C") != -1)
+                                {
+                                    var ind = dataExport[key][p].indexOf("Component C");
+                                    var s = dataExport[key][p].slice(ind);
+                                    componentC = s.match(/\d+.\d+/);
+                                }
+                                if (dataExport[key][p].indexOf("component C") != -1)
+                                {
+                                    var ind =  dataExport[key][p].indexOf("component C");
+                                    var s = dataExport[key][p].slice(ind);
+                                    componentC = s.match(/\d+.\d+/);
+                                }
+                                if (dataExport[key][p].indexOf("Component D") != -1)
+                                {
+                                    var ind = dataExport[key][p].indexOf("Component D");
+                                    var s = dataExport[key][p].slice(ind);
+                                    componentD = s.match(/\d+.\d+/);
+                                }
+                                if (dataExport[key][p].indexOf("component D") != -1)
+                                {
+                                    var ind = dataExport[key][p].indexOf("component D");
+                                    var s = dataExport[key][p].slice(ind);
+                                    componentD = s.match(/\d+.\d+/);
+                                }
+                                dataExport[key]["Parameter_A"] = componentA[0];
+                                dataExport[key]["Parameter_B"] = componentB[0];
+                                dataExport[key]["Parameter_C"] = componentC[0];
+                                dataExport[key]["Parameter_D"] = componentD[0];
+                            }
                             tmp.push(dataExport[key][p]);
                         }
                         dataToExcel.push(tmp);

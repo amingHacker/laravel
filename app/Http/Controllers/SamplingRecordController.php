@@ -630,9 +630,15 @@ class SamplingRecordController extends Controller
 
     public function test()
     {
-        return view('todo.test',[
-            
-        ]);  
+        // $todos = DB::table('sampling_records')->whereDate('sampling_date', '>=', '2020-01-01')->orderBy('id','desc')->get(); 
+        // $user = $_SERVER['REMOTE_USER'];
+        // var_dump($user);  // e.g. root or www-data 
+
+        $todos = DB::table('sampling_records')->orderBy('id','desc')->first();  
+
+        return view('SamplingRecord.SamplingRecordTest',[
+            'todos' => $todos
+        ]);
     }
     public function ComboboxItem(Request $request)
     {    

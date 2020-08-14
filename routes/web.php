@@ -50,6 +50,8 @@ Route::get('/SamplingRecord/GetproductSPEC', 'SamplingRecordController@Getproduc
 Route::get('SamplingRecord/GetAuthority', 'SamplingRecordController@GetAuthority');
 Route::get('SamplingRecord/GetUserName', 'SamplingRecordController@GetUserName');
 
+//TEST
+Route::get('/SamplingRecordTest', 'SamplingRecordController@test');
 
 //File 大量新增和修改
 Route::post('/SamplingRecord/FileUpload/{todo}', 'SamplingRecordController@FileUpload')->name('SamplingRecord.FileUpload');

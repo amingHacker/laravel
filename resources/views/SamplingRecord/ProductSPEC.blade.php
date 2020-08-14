@@ -103,7 +103,8 @@
             i++;
         }
         setTimeout(Showtab,1000);
-        getAuthority();       
+        getAuthority();
+        CreatejqxCombobox();       
     });
     
     /*****修改GridView欄位字體顏色*****/
@@ -274,7 +275,152 @@
             }
         });
     }
+
+    function CreatejqxCombobox()
+    {
+        var source = [
+                    "TMALEG",
+                    "TMALTW",
+                    "TMALUM",
+                    "TMALTW-BULK",
+                    "Standard",
+		        ];
+                // Create a jqxComboBox
+                $("#jqxcombobox").jqxComboBox({ source: source, selectedIndex: 0, width: '200px', height: '25' });
+                // disable the sixth item.
+                //$("#jqxcombobox").jqxComboBox('disableAt', 3);
+                // bind to 'select' event.
+                $('#jqxcombobox').bind('select', function (event) {
+                    var args = event.args;
+                    var item = $('#jqxcombobox').jqxComboBox('getItem', args.index);
+                    //alert('Selected: ' + item.label);
+                    ShowTableDynamic("TMAL", 0);
+                    
+                });
+    }
+
+    function ShowTableDynamic(_todoP, i){
+        setTimeout(function(){
+
+        $('#dgTMAL').jqGrid("clearGridData");
+        $('#dgTMAL').jqGrid('GridDestroy');
+        // $('#dgTMAL').remove();
+        var tableaaa = document.createElement('dgTMAL');
+        // $('#tabs-1').append(tableaaa);
+    
+
+        var colNames = [];
+        var colModel = [];
+        for ( var colName in _todoList[_todoP])
+        {
+            colNames.push(colName);
+        }
+    
+        for ( var colName in _todoList[_todoP])
+        {           
+            if (colName === 'id')
+            {           
+                colModel.push(
+                        {name:colName, index:colName, width:80, align:"center",sortable:true, sorttype:"int", frozen: true, editable:false, cellattr: addCellAttrID}
+                    );
+            }
+            else if (colName === 'ELEMENT')
+            {
+                colModel.push({name:colName, index:colName, width:120, align:"center", editable:true, cellattr: addCellAttr, frozen: true});
+            }
+        
+            else if (colName === 'created_at' || colName === 'updated_at')
+            {
+                colModel.push({name:colName, index:colName, width:150, align:"center", editable:false, cellattr: addCellAttr});
+            }
+            else
+            {
+                colModel.push({name:colName, index:colName, align:"center", width:120, editable:true, cellattr: addCellAttr});
+            }
+        }
+        var table = "dg" + "TMAL" ;
+        var jqgridWidth = parseInt($(window).width()) * 0.7;
+        // 準備資料           
+        $("#" + table).jqGrid({
+            //url:"ProductSPEC/show/"+_todoP,
+            url:"ProductSPEC/show/"+_todoP,
+            datatype: "json",        
+            altrows:false,
+            width: jqgridWidth,
+            height:'100%',
+            colNames:colNames,
+            colModel:colModel,
+            multiselect:false,
+            rowNum:10,
+            rowList:[10,20,50],
+            pager: '#' + table + "pager",
+            sortname: 'id',
+            viewrecords: true,
+            gridview: false,
+            sortorder: "asc",
+            caption: _todoP,
+            shrinkToFit :false,
+            loadonce: false,          
+            jsonReader : {
+                            root: "dataList",
+                            page: "currPage",
+                            total: "totalPages",
+                            records: "totalCount"                     
+                        },
+            prmNames : {
+                            page:"pageNum", 
+                            rows:"limit", 
+                            order: "order",
+                        },
+
+            loadComplete: function (){ 
+                fixPositionsOfFrozenDivs.call(this);
+                
+            }, // Fix column's height are different after enable frozen column feature
+            gridComplete: function(){
+                //根據瀏覽器寬度動態改變
+                $(window).resize(function(){ 
+                    var winwidth= parseInt($(window).width()) * 0.7;     
+                    $("#" + table).jqGrid('setGridWidth', winwidth);
+                });
+            },
+            rowattr: function (rd){if (rd.determination === 'Fail'){ return {"class": "failRow"};}}                                                            
+        }).jqGrid('setFrozenColumns'); 
+
+
+        //增加Tool bar        
+        $("#" + table).jqGrid('navGrid','#' + table + "pager", { search:true, edit:false, add:false, del:false, refresh:true } );
+                
+        //增加更多的搜尋條件
+        $.extend($.jgrid.search, {
+                    multipleSearch: true,
+                    recreateFilter: true,
+                    closeOnEscape: true,
+                    searchOnEnter: true,
+                    overlay: 1,
+                    closeAfterSearch:true
+                });
+        //表格排序或隱藏       
+        $("#" + table).jqGrid('navButtonAdd','#' + table + "pager",{
+                caption: "",
+                title: "表格排序",
+                onClickButton : function (){
+                $("#" + table).jqGrid('columnChooser');
+                }
+            });     
+        //重新整理功能
+        $('.ui-icon-refresh').click(function(){
+            lastSearchData = null;
+            $("#load_" + table).show();
+        });
+        },i * 20);  
+    }
+    function showSelectTable(table) 
+    {
+
+    }
 </script>
+
 {{-- Data資料呈現 End --}}
  
 <meta name="csrf-token" content="{{ csrf_token() }}"> 
@@ -293,7 +439,8 @@
               <li><a href="#tabs-5">ALEXA</a></li>
             </ul>
             <div id = "tabs-1" >
-                <div class = "row justify-content-center">    
+                <div id='jqxcombobox'></div>
+                <div class = "row justify-content-center">
                 <table id="dgTMAL" ></table> 
                 <div id="dgTMALpager"></div>
                 </div>                             
