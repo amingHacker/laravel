@@ -89,12 +89,24 @@
     var PDMAT = @json($todosPDMAT);
     var CCTBA = @json($todosCCTBA);
     var ALEXA = @json($todosALEXA);
+    
+    var TMAL_EG = @json($todosTMAL_EG);
+    var TMAL_TW = @json($todosTMAL_TW);
+    var TMAL_UM = @json($todosTMAL_UM);
+
+    var CCTBA_447FN_200G = @json($todosCCTBA_447fn_200g);
+    var ALEXA_447FN = @json($todosALEXA_447fn);
     var _todoList = {
             TMAL: TMAL,
             MO: MO, 
             PDMAT: PDMAT, 
             CCTBA: CCTBA, 
-            ALEXA: ALEXA
+            ALEXA: ALEXA,
+            TMAL_EG: TMAL_EG,
+            TMAL_TW: TMAL_TW,
+            TMAL_UM: TMAL_UM,
+            CCTBA_447FN_200G: CCTBA_447FN_200G,
+            ALEXA_447FN: ALEXA_447FN,
         };
     $(document).ready(function () {      
         var i = 0;
@@ -278,37 +290,65 @@
 
     function CreatejqxCombobox()
     {
-        var source = [
-                    "TMALEG",
-                    "TMALTW",
-                    "TMALUM",
-                    "TMALTW-BULK",
-                    "Standard",
-		        ];
-                // Create a jqxComboBox
-                $("#jqxcombobox").jqxComboBox({ source: source, selectedIndex: 0, width: '200px', height: '25' });
-                // disable the sixth item.
-                //$("#jqxcombobox").jqxComboBox('disableAt', 3);
-                // bind to 'select' event.
-                $('#jqxcombobox').bind('select', function (event) {
-                    var args = event.args;
-                    var item = $('#jqxcombobox').jqxComboBox('getItem', args.index);
-                    //alert('Selected: ' + item.label);
-                    ShowTableDynamic("TMAL", 0);
-                    
-                });
+        var source_TMAL = [
+            "TMAL",
+            "TMALEG",
+            "TMALTW",
+            "TMALUM",
+                ];
+        var source_CCTBA = [
+            "CCTBA",
+            "CCTBA-447FN-200G",
+        ];
+        var source_ALEXA = [
+            "ALEXA",
+            "ALEXA-447FN",
+        ];
+        var dictionary ={
+            "TMALEG": "TMAL_EG",
+            "TMALTW": "TMAL_TW",
+            "TMALUM": "TMAL_UM",
+            "TMAL": "TMAL",
+            "CCTBA":"CCTBA",
+            "CCTBA-447FN-200G":"CCTBA_447FN_200G",
+            "ALEXA":"ALEXA",
+            "ALEXA-447FN": "ALEXA_447FN"
+        };
+        // Create a jqxComboBox
+        $("#jqxcombobox_TMAL").jqxComboBox({ source: source_TMAL, selectedIndex: 0, width: '200px', height: '25' });
+       
+        $("#jqxcombobox_CCTBA").jqxComboBox({ source: source_CCTBA, selectedIndex: 0, width: '200px', height: '25' });
+
+        $("#jqxcombobox_ALEXA").jqxComboBox({ source: source_ALEXA, selectedIndex: 0, width: '200px', height: '25' });
+
+        // bind to 'select' event.
+        $('#jqxcombobox_TMAL').bind('select', function (event) {
+            var args = event.args;
+            var item = $('#jqxcombobox_TMAL').jqxComboBox('getItem', args.index);
+            //alert('Selected: ' + item.label);
+            ShowTableDynamic(dictionary[item.label],"dgTMAL");  
+        });
+
+         // bind to 'select' event.
+        $('#jqxcombobox_CCTBA').bind('select', function (event) {
+            var args = event.args;
+            var item = $('#jqxcombobox_CCTBA').jqxComboBox('getItem', args.index);
+            //alert('Selected: ' + item.label);
+            ShowTableDynamic(dictionary[item.label], "dgCCTBA");  
+        });
+
+        // bind to 'select' event.
+        $('#jqxcombobox_ALEXA').bind('select', function (event) {
+            var args = event.args;
+            var item = $('#jqxcombobox_ALEXA').jqxComboBox('getItem', args.index);
+            //alert('Selected: ' + item.label);
+            ShowTableDynamic(dictionary[item.label], "dgALEXA");  
+        });
     }
 
-    function ShowTableDynamic(_todoP, i){
-        setTimeout(function(){
-
-        $('#dgTMAL').jqGrid("clearGridData");
-        $('#dgTMAL').jqGrid('GridDestroy');
-        // $('#dgTMAL').remove();
-        var tableaaa = document.createElement('dgTMAL');
-        // $('#tabs-1').append(tableaaa);
-    
-
+    function ShowTableDynamic(_todoP, productKind)
+    {
+        $('#'+ productKind).jqGrid('GridUnload');  
         var colNames = [];
         var colModel = [];
         for ( var colName in _todoList[_todoP])
@@ -338,7 +378,7 @@
                 colModel.push({name:colName, index:colName, align:"center", width:120, editable:true, cellattr: addCellAttr});
             }
         }
-        var table = "dg" + "TMAL" ;
+        var table = productKind ;
         var jqgridWidth = parseInt($(window).width()) * 0.7;
         // 準備資料           
         $("#" + table).jqGrid({
@@ -413,11 +453,6 @@
             lastSearchData = null;
             $("#load_" + table).show();
         });
-        },i * 20);  
-    }
-    function showSelectTable(table) 
-    {
-
     }
 </script>
 
@@ -439,7 +474,7 @@
               <li><a href="#tabs-5">ALEXA</a></li>
             </ul>
             <div id = "tabs-1" >
-                <div id='jqxcombobox'></div>
+                <div id='jqxcombobox_TMAL'></div>
                 <div class = "row justify-content-center">
                 <table id="dgTMAL" ></table> 
                 <div id="dgTMALpager"></div>
@@ -458,12 +493,14 @@
                 </div>        
             </div>
             <div id="tabs-4">
+                <div id='jqxcombobox_CCTBA'></div>
                 <div class = "row justify-content-center">  
                 <table id="dgCCTBA" ></table> 
                 <div id="dgCCTBApager"></div>
                 </div>     
             </div>
             <div id="tabs-5" >
+                <div id='jqxcombobox_ALEXA'></div>
                 <div class = "row justify-content-center">
                 <table id="dgALEXA" ></table> 
                 <div id="dgALEXApager"></div>
@@ -550,6 +587,8 @@
         var table = "dg" + $("#tabs .ui-tabs-active").text(); //呈現此table的title
         var rowIds = $('#' + table ).jqGrid('getDataIDs');
         var oper = "edit";
+        var caption = $('#' + table ).jqGrid("getGridParam", "caption");
+        
         $("#" + table).jqGrid('setFrozenColumns');   
         //判斷目前是新增或是修改
         for(idIndex = 0; idIndex < rowIds.length; ++idIndex){
@@ -564,6 +603,7 @@
                         "extraparam" : {
                             "oper": oper,
                             "table": table,
+                            "caption": caption,
                         },
                         "aftersavefunc" : function( response ) { window.location.reload() }, //重新整理頁面    
                         "errorfunc": null,
@@ -653,7 +693,8 @@
                                 "extraparam" : {                                   
                                     "id" : ret.id,
                                     "oper" : oper,
-                                    "table": table,                                 
+                                    "table": table,
+                                    "caption": caption,                                 
                                 },
                                 "aftersavefunc" : function( response ) {
                                                 },
@@ -695,6 +736,7 @@
       //獲取目前選取的資料    
       $("#Delete").click( function() {
         var table = "dg" + $("#tabs .ui-tabs-active").text(); //呈現此table的title 
+        var caption = $('#' + table ).jqGrid("getGridParam", "caption");
          var s = $("#" + table ).jqGrid('getGridParam','selrow');      
          if (s)	{
              var ret = $("#" + table ).jqGrid('getRowData',s);
@@ -708,6 +750,7 @@
                     data:{
                         "id": ret.id,
                         "table": table,
+                        "caption": caption,
                     },
                     success: function (){
                         $('#' + table ).trigger( 'reloadGrid' );
@@ -797,6 +840,8 @@
         
         var rowData = o.jqGrid('getRowData');//獲得目前顯示在表格上的資料
 
+        var caption = o.jqGrid("getGridParam", "caption");
+
         $.ajax({
                 async:false,
                 url: "ProductSPEC/export" ,//路徑
@@ -804,6 +849,7 @@
                 data:{
                     "postData": postData,
                     "table":table,
+                    "caption": caption,
                 },
                 success: function (DownLoadValue){
                     console.log(DownLoadValue);
@@ -842,7 +888,8 @@
     function Import(e) {         
         if (e.files.length  ==  0 ){return;} //檢查是否有輸入資料
         
-        var fileType = e.files[0].name.split('.').pop();  
+        var fileType = e.files[0].name.split('.').pop();
+        var fileName = e.files[0].name;     
         var allowdtypes = 'xls,xlsx';
         if (allowdtypes.indexOf(fileType) < 0) 
         {          
@@ -875,7 +922,7 @@
             var data = JSON.parse(dataImport);  //解析為Json對象   
 
             //建立動態表格
-            $("#confirmDialog").html('<span style="font-weight:bold; color:#2e6e9e;">《 檔案資料預覽 File data preview 》</span><br /><br /><table id="import_preview"></table>');
+            $("#confirmDialog").html('<span style="font-weight:bold; color:#2e6e9e;">《 檔案資料預覽 File data preview 》</span><br /><br /><table id="import_preview"></table><div id="import_previewPager"></div>');
             var colNames = [];
             var colModel = [];
             
@@ -904,17 +951,23 @@
                 colModel: colModel,
                 width: 896,
                 height: 'auto',
-                sortname: '編號',
+                sortname: 'id',
                 sortorder: "asc",
                 hidegrid: false,
                 cmTemplate: { title: false },   // Hide Tooltip
                 gridview: true,
                 shrinkToFit: false,
+                rowNum:10,
+                rowList:[10,20,50],
+                pager: '#import_previewPager',
+                caption: fileName, 
     
                 loadComplete: function (){ fixPositionsOfFrozenDivs.call(this); }, // Fix column's height are different after enable frozen column feature 
             });
             
             $("#import_preview").jqGrid('setFrozenColumns');
+             //增加Tool bar        
+            $("#import_preview").jqGrid('navGrid','#import_previewPager', { search:true, edit:false, add:false, del:false, refresh:true } );
 
 
             $("#confirmDialog").dialog({
@@ -927,6 +980,11 @@
                     "確認" : function() {
                         //$(this).dialog("close");
                         var table = "dg" + $("#tabs .ui-tabs-active").text(); //呈現此table的title
+
+                        var o = $("#" + table);
+
+                        var caption = o.jqGrid("getGridParam", "caption");
+                     
                         $("#confirmDialog").html('<span style="font-weight:bold; color:#2e6e9e;">《 上傳進度 》</span><br /><br /><div id="progressbar"></div>');                                                                                                        
                         
                         for (var i = 0; i < data.length; i++) 
@@ -941,7 +999,8 @@
                                         //datatype:"json",
                                         data: {
                                             UploadData:_upLoadData[i],
-                                            table:table                               
+                                            table:table,
+                                            caption: caption                              
                                         },
                                         success: function (response) {                                                   
                                             $( function() 

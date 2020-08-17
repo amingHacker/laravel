@@ -16,7 +16,14 @@ class ProductSPECController extends Controller
         $todosMO = DB::table('product_spec_mo')->orderBy('id','desc')->first();
         $todosPDMAT = DB::table('product_spec_pdmat')->orderBy('id','desc')->first();
         $todosCCTBA = DB::table('product_spec_cctba')->orderBy('id','desc')->first();
-        $todosALEXA = DB::table('product_spec_alexa')->orderBy('id','desc')->first();             
+        $todosALEXA = DB::table('product_spec_alexa')->orderBy('id','desc')->first();
+        
+        $todosTMAL_EG = DB::table('product_spec_tmal_tmaleg')->orderBy('id','desc')->first();
+        $todosTMAL_TW = DB::table('product_spec_tmal_tmaltw')->orderBy('id','desc')->first();
+        $todosTMAL_UM = DB::table('product_spec_tmal_tmalum')->orderBy('id','desc')->first();
+
+        $todosCCTBA_447fn_200g = DB::table('product_spec_cctba_447fn_200g')->orderBy('id','desc')->first();
+        $todosALEXA_447fn = DB::table('product_spec_alexa_447fn')->orderBy('id','desc')->first();
 
         return view('SamplingRecord.ProductSPEC',[
             'todosTMAL' => $todosTMAL,
@@ -24,6 +31,11 @@ class ProductSPECController extends Controller
             'todosPDMAT' => $todosPDMAT,
             'todosCCTBA' => $todosCCTBA,
             'todosALEXA' => $todosALEXA,
+            'todosTMAL_EG'=> $todosTMAL_EG,
+            'todosTMAL_TW'=> $todosTMAL_TW,
+            'todosTMAL_UM'=> $todosTMAL_UM,
+            'todosCCTBA_447fn_200g' => $todosCCTBA_447fn_200g,
+            'todosALEXA_447fn' => $todosALEXA_447fn,
         ]);
     }
 
@@ -56,6 +68,21 @@ class ProductSPECController extends Controller
                 break;
             case "/ProductSPEC/show/ALEXA":
                 $table = 'product_spec_alexa';
+                break;
+            case "/ProductSPEC/show/TMAL_EG":
+                $table = 'product_spec_tmal_tmaleg';
+                break;
+            case "/ProductSPEC/show/TMAL_TW":
+                $table = 'product_spec_tmal_tmaltw';
+                break;
+            case "/ProductSPEC/show/TMAL_UM":
+                $table = 'product_spec_tmal_tmalum';
+                break;
+            case "/ProductSPEC/show/CCTBA_447FN_200G":
+                $table = 'product_spec_cctba_447fn_200g';
+                break;
+            case "/ProductSPEC/show/ALEXA_447FN":
+                $table = 'product_spec_alexa_447fn';
                 break;
 
         }
@@ -150,7 +177,21 @@ class ProductSPECController extends Controller
         $table = '';
         switch ($downloadReq["table"]){
             case 'dgTMAL':
-                $table = 'product_spec_tmal';
+                switch($downloadReq["caption"])
+                {
+                    case 'TMAL_EG':
+                        $table = 'product_spec_tmal_tmaleg';
+                        break;
+                    case 'TMAL_TW':
+                        $table = 'product_spec_tmal_tmaltw';
+                        break;
+                    case 'TMAL_UM':
+                        $table = 'product_spec_tmal_tmalum';
+                        break;
+                    case 'TMAL':
+                        $table = 'product_spec_tmal';
+                        break;
+                }
                 break;
             case 'dgMO':
                 $table = 'product_spec_mo';
@@ -159,10 +200,26 @@ class ProductSPECController extends Controller
                 $table = 'product_spec_pdmat';
                 break;
             case 'dgCCTBA':
-                $table = 'product_spec_cctba';
+                switch($downloadReq["caption"])
+                {
+                    case 'CCTBA':
+                        $table = 'product_spec_cctba';
+                        break;
+                    case 'CCTBA_447FN_200G':
+                        $table = 'product_spec_cctba_447FN_200g';
+                        break;
+                }
                 break;
             case 'dgALEXA':
-                $table = 'product_spec_alexa';
+                switch($downloadReq["caption"])
+                {
+                    case 'ALEXA':
+                        $table = 'product_spec_alexa';
+                        break;
+                    case 'ALEXA_447FN':
+                        $table = 'product_spec_alexa_447FN';
+                        break;
+                }
                 break;
         }
 
@@ -272,7 +329,21 @@ class ProductSPECController extends Controller
         $table = '';
         switch ($uploadData["table"]){
             case 'dgTMAL':
-                $table = 'product_spec_tmal';
+                switch($uploadData["caption"])
+                {
+                    case 'TMAL_EG':
+                        $table = 'product_spec_tmal_tmaleg';
+                        break;
+                    case 'TMAL_TW':
+                        $table = 'product_spec_tmal_tmaltw';
+                        break;
+                    case 'TMAL_UM':
+                        $table = 'product_spec_tmal_tmalum';
+                        break;
+                    case 'TMAL':
+                        $table = 'product_spec_tmal';
+                        break;
+                }
                 break;
             case 'dgMO':
                 $table = 'product_spec_mo';
@@ -281,10 +352,26 @@ class ProductSPECController extends Controller
                 $table = 'product_spec_pdmat';
                 break;
             case 'dgCCTBA':
-                $table = 'product_spec_cctba';
+                switch($uploadData["caption"])
+                {
+                    case 'CCTBA':
+                        $table = 'product_spec_cctba';
+                        break;
+                    case 'CCTBA_447FN_200G':
+                        $table = 'product_spec_cctba_447FN_200g';
+                        break;
+                }
                 break;
             case 'dgALEXA':
-                $table = 'product_spec_alexa';
+                switch($uploadData["caption"])
+                {
+                    case 'ALEXA':
+                        $table = 'product_spec_alexa';
+                        break;
+                    case 'ALEXA_447FN':
+                        $table = 'product_spec_alexa_447FN';
+                        break;
+                }
                 break;
         } 
         $uploadData["UploadData"]["created_at"] = date('Y-m-d H:i:s');
@@ -317,7 +404,21 @@ class ProductSPECController extends Controller
         $table = '';
         switch ($Parameter["table"]){
             case 'dgTMAL':
-                $table = 'product_spec_tmal';
+                switch($Parameter["caption"])
+                {
+                    case 'TMAL_EG':
+                        $table = 'product_spec_tmal_tmaleg';
+                        break;
+                    case 'TMAL_TW':
+                        $table = 'product_spec_tmal_tmaltw';
+                        break;
+                    case 'TMAL_UM':
+                        $table = 'product_spec_tmal_tmalum';
+                        break;
+                    case 'TMAL':
+                        $table = 'product_spec_tmal';
+                        break;
+                }
                 break;
             case 'dgMO':
                 $table = 'product_spec_mo';
@@ -326,10 +427,26 @@ class ProductSPECController extends Controller
                 $table = 'product_spec_pdmat';
                 break;
             case 'dgCCTBA':
-                $table = 'product_spec_cctba';
+                switch($Parameter["caption"])
+                {
+                    case 'CCTBA':
+                        $table = 'product_spec_cctba';
+                        break;
+                    case 'CCTBA_447FN_200G':
+                        $table = 'product_spec_cctba_447FN_200g';
+                        break;
+                }
                 break;
             case 'dgALEXA':
-                $table = 'product_spec_alexa';
+                switch($Parameter["caption"])
+                {
+                    case 'ALEXA':
+                        $table = 'product_spec_alexa';
+                        break;
+                    case 'ALEXA_447FN':
+                        $table = 'product_spec_alexa_447FN';
+                        break;
+                }
                 break;
         }
       
@@ -350,7 +467,21 @@ class ProductSPECController extends Controller
         $table = '';
         switch ($AddParameter["table"]){
             case 'dgTMAL':
-                $table = 'product_spec_tmal';
+                switch($AddParameter["caption"])
+                {
+                    case 'TMAL_EG':
+                        $table = 'product_spec_tmal_tmaleg';
+                        break;
+                    case 'TMAL_TW':
+                        $table = 'product_spec_tmal_tmaltw';
+                        break;
+                    case 'TMAL_UM':
+                        $table = 'product_spec_tmal_tmalum';
+                        break;
+                    case 'TMAL':
+                        $table = 'product_spec_tmal';
+                        break;
+                }
                 break;
             case 'dgMO':
                 $table = 'product_spec_mo';
@@ -359,10 +490,26 @@ class ProductSPECController extends Controller
                 $table = 'product_spec_pdmat';
                 break;
             case 'dgCCTBA':
-                $table = 'product_spec_cctba';
+                switch($AddParameter["caption"])
+                {
+                    case 'CCTBA':
+                        $table = 'product_spec_cctba';
+                        break;
+                    case 'CCTBA_447FN_200G':
+                        $table = 'product_spec_cctba_447FN_200g';
+                        break;
+                }
                 break;
             case 'dgALEXA':
-                $table = 'product_spec_alexa';
+                switch($AddParameter["caption"])
+                {
+                    case 'ALEXA':
+                        $table = 'product_spec_alexa';
+                        break;
+                    case 'ALEXA_447FN':
+                        $table = 'product_spec_alexa_447FN';
+                        break;
+                }
                 break;
         }
         
@@ -371,7 +518,8 @@ class ProductSPECController extends Controller
         //dd($AddParameter["urgent"]);      
         if ($request->oper =='add')
         {   unset($AddParameter["oper"]);
-            unset($AddParameter["table"]);  
+            unset($AddParameter["table"]);
+            unset($AddParameter["caption"]);  
             $this->CreateRowData($AddParameter, $table);             
             return response()->json([
                 'success' => 'Record add successfully!'
@@ -382,6 +530,7 @@ class ProductSPECController extends Controller
             unset($AddParameter["oper"]);
             unset($AddParameter["table"]);
             unset($AddParameter["created_at"]);
+            unset($AddParameter["caption"]);
             $updateData = DB::table($table)->where('id', $request->id);
             $updateData->update($AddParameter);
             return response()->json([
