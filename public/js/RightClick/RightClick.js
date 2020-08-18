@@ -185,6 +185,7 @@ function ShowTableDynamic(label)
 
 function CreateToolBar(source)
 {
+    $("#jqxToolBar_SPEC").jqxToolBar("destroyTool", 2 );
     $("#jqxToolBar_SPEC").jqxToolBar('render');
 
     $("#jqxToolBar_SPEC").jqxToolBar({ 
