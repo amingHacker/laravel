@@ -185,7 +185,8 @@ function ShowTableDynamic(label)
 
 function CreateToolBar(source)
 {
-    $("#jqxToolBar_SPEC").jqxToolBar("destroyTool", 2 );
+    //var toolsCount = $("#jqxToolBar_SPEC").jqxToolBar("getTools").length - 1;
+    $("#jqxToolBar_SPEC").jqxToolBar("destroyTool", 1 );
     $("#jqxToolBar_SPEC").jqxToolBar('render');
 
     $("#jqxToolBar_SPEC").jqxToolBar({ 
@@ -206,5 +207,20 @@ function CreateToolBar(source)
                     break;  
             }
         }
+    });
+
+    var position = "last";
+
+    $("#jqxToolBar_SPEC").jqxToolBar("addTool", "combobox", position, false, function (type, tool, menuToolIninitialization) 
+    {
+        var width;
+        if (menuToolIninitialization) {
+            // specific setting for minimized tool
+            width = "100%";
+        } else {
+            width = 200;
+        }
+        tool.jqxComboBox({ width: width, source: source, selectedIndex: -1, searchMode: 'containsignorecase', autoComplete: true});
+        //tool.jqxDropDownList({ width: 130, source: _dataSource, selectedIndex: -1 });
     });
 }
