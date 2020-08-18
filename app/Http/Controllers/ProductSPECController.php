@@ -540,6 +540,56 @@ class ProductSPECController extends Controller
         }
     }
 
+    //Get Table
+    public function GetTable( Request $request )
+    {    
+        $table = '';
+            
+        switch ($_SERVER["REDIRECT_URL"])
+        {
+            case "/ProductSPEC/GetTable/TMAL":
+                $table = 'product_spec_tmal';
+                break;
+            case "/ProductSPEC/GetTable/MO":
+                $table = 'product_spec_mo';
+                break;
+            case "/ProductSPEC/GetTable/PDMAT":
+                $table = 'product_spec_pdmat';
+                break;
+            case "/ProductSPEC/GetTable/CCTBA":
+                $table = 'product_spec_cctba';
+                break;
+            case "/ProductSPEC/GetTable/ALEXA":
+                $table = 'product_spec_alexa';
+                break;
+            case "/ProductSPEC/GetTable/TMAL_EG":
+                $table = 'product_spec_tmal_tmaleg';
+                break;
+            case "/ProductSPEC/GetTable/TMAL_TW":
+                $table = 'product_spec_tmal_tmaltw';
+                break;
+            case "/ProductSPEC/GetTable/TMAL_UM":
+                $table = 'product_spec_tmal_tmalum';
+                break;
+            case "/ProductSPEC/GetTable/CCTBA_447FN_200G":
+                $table = 'product_spec_cctba_447fn_200g';
+                break;
+            case "/ProductSPEC/GetTable/ALEXA_447FN":
+                $table = 'product_spec_alexa_447fn';
+                break;
+
+        }
+        
+        $product_SPEC= DB::table($table)->get();
+    
+      
+        return response()->json([
+            'product_SPEC' => $product_SPEC,
+
+        ]);  
+    }
+
+
     //回填方法
     public function BackFill($id)
     {    

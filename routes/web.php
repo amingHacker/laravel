@@ -129,6 +129,7 @@ Route::post('/GrindingOven/BackFill/{todo}', 'GrindingOvenController@BackFill')-
 Route::get('/ProductSPEC', 'ProductSPECController@index');
 Route::get('/ProductSPEC/show/{todo}', 'ProductSPECController@show');
 Route::post('/ProductSPEC/export', 'ProductSPECController@export');
+Route::get('/ProductSPEC/GetTable/{todo}', 'ProductSPECController@GetTable');
 
 //File 大量新增和修改
 Route::post('/ProductSPEC/FileUpload/{todo}', 'ProductSPECController@FileUpload')->name('ProductSPEC.FileUpload');
