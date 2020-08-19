@@ -150,7 +150,6 @@ function showSelectSPEC()
             $('#jqxcombobox_SPEC').bind('select', function (event) {
                 var args = event.args;
                 var item = $('#jqxcombobox_SPEC').jqxComboBox('getItem', args.index);
-                alert('Selected: ' + item.label);
                 ShowTableDynamic(dictionary[item.label]);  
             });  
         }                                   
@@ -178,20 +177,21 @@ function ShowTableDynamic(label)
                     source.push(i);
                 }
             }
-            CreateToolBar(source)
+            sessionStorage.setItem('CustomerSPEC' , source);
+            CreateToolBar(source);
         }                                   
     });  
 }
 
 function CreateToolBar(source)
 {
-    //var toolsCount = $("#jqxToolBar_SPEC").jqxToolBar("getTools").length - 1;
+    //var data = sessionStorage.getItem('source');
     $("#jqxToolBar_SPEC").jqxToolBar("destroyTool", 1 );
     $("#jqxToolBar_SPEC").jqxToolBar('render');
 
     $("#jqxToolBar_SPEC").jqxToolBar({ 
         width: "400", height: '35', 
-        tools: "toggleButton dropdownlist ",
+        tools: "toggleButton",
        
         initTools: function (type, index, tool, menuToolIninitialization) 
         {
@@ -201,10 +201,6 @@ function CreateToolBar(source)
                     tool.jqxToggleButton({ width: 80, toggled: true });
                     tool.text("Customer:");
                     break;
-                case 1:
-                    tool.jqxDropDownList({ width: 200, source: source, selectedIndex: -1});
-                    //tool.jqxComboBox({ width: 130, source: _xAxisSource, selectedIndex: 0 });
-                    break;  
             }
         }
     });
@@ -221,6 +217,12 @@ function CreateToolBar(source)
             width = 200;
         }
         tool.jqxComboBox({ width: width, source: source, selectedIndex: -1, searchMode: 'containsignorecase', autoComplete: true});
-        //tool.jqxDropDownList({ width: 130, source: _dataSource, selectedIndex: -1 });
+        tool.on("change", function (event) {          
+            var args = event.args;
+                if (args) {
+                    var position = "last";                                                     
+                }
+            });
+    
     });
 }
