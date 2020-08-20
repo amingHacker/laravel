@@ -70,6 +70,14 @@
 <script src="https://www.chartjs.org/samples/latest/utils.js"></script>
 {{-- 圖表生成 Chart.js End --}}
 
+{{-- CSS設定 Start--}}
+
+<style type="text/css">
+    .ui-jqgrid-hdiv { overflow-y: hidden; }
+</style>
+ 
+{{-- CSS設定 End --}}
+
 {{-- Data資料呈現 Start --}}
 <script type="text/javascript">
 

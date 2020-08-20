@@ -67,43 +67,10 @@
 {{-- 圖表生成 Chart.js End --}}
 
 {{-- CSS設定 Start--}}
+
 <style type="text/css">
-    /*預設已是overflow:auto，寫在網頁裡再次確保會出現scroller*/
-     .ui-jqgrid .ui-jqgrid-bdiv {
-       overflow:auto; 
-     }
+   .ui-jqgrid-hdiv { overflow-y: hidden; }
 </style>
-{{-- <style type="text/css">
-    img { 
-            max-width: 100%; 
-            height: auto; 
-            margin:auto; 
-            display: block; 
-    }  
-    body,button, input, select, textarea,h1 ,h2, h3, h4, h5, h6 
-        { font-family:  微軟正黑體, Tahoma, Helvetica, Arial, "\5b8b\4f53", sans-serif;}
-    .ui-jqgrid {
-            font-size: 2em;
-    }
-    /* 修改grid標題字體大小 */
-    .ui-jqgrid .ui-jqgrid-title{
-            font-size:1em;
-            text-align: "center";
-            font-family:  微軟正黑體;
-            height:auto;
-    }  
-    
-    .ui-jqgrid .ui-jqgrid-htable th {
-            height:2em;
-            font-family:  微軟正黑體;
-            font-size: 1em;
-    }
-    .ui-jqgrid tr.jqgrow td{
-            height: 1em !important;
-            /* font-family:"Times New Roman", 微軟正黑體; */
-            font-size: 1em;
-    }
-</style> --}}
 
 {{-- CSS設定 End --}}
 

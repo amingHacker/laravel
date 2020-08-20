@@ -77,6 +77,8 @@
         margin:0 auto;
         padding:10px;
     } */
+    .ui-jqgrid-hdiv { overflow-y: hidden; }
+
 </style>
 
 {{-- CSS設定 End --}}

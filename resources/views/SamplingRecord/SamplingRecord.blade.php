@@ -97,11 +97,13 @@
 
 <style>
     .text-break {
-       white-space: normal !important;
-       height:auto;
-       vertical-align:text-top;
-       padding-top:2px;
-     }
+        white-space: normal !important;
+        height:auto;
+        vertical-align:text-top;
+        padding-top:2px;
+    }
+    .ui-jqgrid-hdiv { overflow-y: hidden; }
+
 </style>
 
 {{-- CSS設定 End --}}
@@ -305,6 +307,8 @@
             lastSearchData = null;
             $("#load_dg").show();
         });
+
+        
             
         //獲得combobox的內容
         combobox_items = getComboboxItem();

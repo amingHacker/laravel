@@ -93,7 +93,9 @@
        height:auto;
        vertical-align:text-top;
        padding-top:2px;
-     }
+    }
+    .ui-jqgrid-hdiv { overflow-y: hidden; }
+
 </style>
 
 {{-- CSS設定 End --}}

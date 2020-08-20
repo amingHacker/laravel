@@ -49,7 +49,8 @@ function showSelectSPEC()
             + '<table id= "ProductSPEC"></table>'
             + '<div id= "ProductSPECPager"></div>'
             + '</br>'
-            + '<table id= '+ table + '></table>';
+            + '<table id= '+ table + '></table>'
+            + '</br></br>';
            
            
             
