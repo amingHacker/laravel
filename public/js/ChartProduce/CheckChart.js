@@ -145,8 +145,14 @@ function DrowChart( dataLo, chartTypeGroup, dataXaxisGroup, dataYaxisGroup,
                     batch_number : dataToChartBatchNumGroup[i][value],
                     sampling_date : dataToChartSampleTimeGroup[i][value]
                 }
-            }         
-            tmp.push(dataxy);
+            }   
+            
+            if (dataxy.x != -1)
+            {
+                tmp.push(dataxy);
+            }
+                    
+            
         }
         dataToChart.push(tmp);               
     }
@@ -244,7 +250,7 @@ function DrowChart( dataLo, chartTypeGroup, dataXaxisGroup, dataYaxisGroup,
     }
 
     //設定度量的標準
-    var Scales = designScale(chartTypeGroup, dataXaxisGroup, UpandDown, horizontalLineScales);
+    var Scales = designScale(chartTypeGroup, dataXaxisGroup, UpandDown, horizontalLineScales, dataToChartXGroup);
 
 
     //產生新圖
@@ -568,7 +574,7 @@ function changeBorderColor(data, UCL, LCL)
 }
 
 /*設定Scale方法*/
-function designScale(chartTypeGroup, dataXaxisGroup, UpandDown, horizontalLineScales)
+function designScale(chartTypeGroup, dataXaxisGroup, UpandDown, horizontalLineScales, dataToChartXGroup)
 {
     var Scales;
     var SuggestMax, SuggestMin;
@@ -585,17 +591,24 @@ function designScale(chartTypeGroup, dataXaxisGroup, UpandDown, horizontalLineSc
     {
         Scales = (dataXaxisGroup[0] == '次數' || dataXaxisGroup[0] == '批號')? {
             xAxes: [{
-                //type: 'time',
+                type: 'linear',
                 display: true,
                 scaleLabel: {
                     display: true,
-                    labelString: 'Count'+'(' + dataXaxisGroup[0] + ')'
+                    labelString: 'Value'+'(' + dataXaxisGroup[0] + ')'
                 },
+                position: 'bottom',
                 ticks: {
+                    stepSize: 1,
                     major: {
                         fontStyle: 'bold',
                         fontColor: '#FF0000'
-                    }
+                    },
+                    min: 0,
+                    max: dataToChartXGroup[0].length -1,
+                    callback:function(value, index, values){
+                        return dataToChartXGroup[0][value];
+                    },
                 }
             }],
             yAxes: [{
@@ -618,6 +631,7 @@ function designScale(chartTypeGroup, dataXaxisGroup, UpandDown, horizontalLineSc
             xAxes: [{
                 type: 'time',
                 time: {
+                    unit: 'day',
                     displayFormats: {
                         'day': 'YYYY-MM-DD'
                     }
@@ -625,13 +639,13 @@ function designScale(chartTypeGroup, dataXaxisGroup, UpandDown, horizontalLineSc
                 display: true,
                 scaleLabel: {
                     display: true,
-                    labelString: 'Date'+'(' + dataXaxisGroup[0] + ')'
+                    labelString: 'Value'+'(' + dataXaxisGroup[0] + ')'
                 },
                 ticks: {
                     major: {
                         fontStyle: 'bold',
                         fontColor: '#FF0000'
-                    }
+                    },
                 }
             }],
             yAxes: [{
@@ -656,16 +670,24 @@ function designScale(chartTypeGroup, dataXaxisGroup, UpandDown, horizontalLineSc
     {
         Scales = (dataXaxisGroup[0] == '次數' || dataXaxisGroup[0] == '批號')? {
             xAxes: [{
+                type: 'linear',
                 display: true,
                 scaleLabel: {
                     display: true,
-                    labelString: 'Count'+'(' + dataXaxisGroup[0] + ')'
+                    labelString: 'Value'+'(' + dataXaxisGroup[0] + ')'
                 },
+                position: 'bottom',
                 ticks: {
+                    stepSize: 1,
                     major: {
                         fontStyle: 'bold',
                         fontColor: '#FF0000'
-                    }
+                    },
+                    min: 0,
+                    max: dataToChartXGroup[0].length -1,
+                    callback:function(value, index, values){
+                        return dataToChartXGroup[0][value];
+                    },
                 }
             }],
             yAxes: [{
@@ -680,6 +702,7 @@ function designScale(chartTypeGroup, dataXaxisGroup, UpandDown, horizontalLineSc
             xAxes: [{
                 type: 'time',
                 time: {
+                    unit: 'day',
                     displayFormats: {
                         'day': 'YYYY-MM-DD'
                     }
@@ -687,7 +710,7 @@ function designScale(chartTypeGroup, dataXaxisGroup, UpandDown, horizontalLineSc
                 display: true,
                 scaleLabel: {
                     display: true,
-                    labelString: 'Date'+'(' + dataXaxisGroup[0] + ')'
+                    labelString: 'Value'+'(' + dataXaxisGroup[0] + ')'
                 },
                 ticks: {
                     major: {

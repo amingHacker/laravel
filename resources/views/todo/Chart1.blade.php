@@ -111,18 +111,18 @@
 
     //var ctx = document.getElementById('canvas').getContext('2d');
     var xMap = ["January", "February", "March", "April", "May", "June", "July"];
-        var yMap = ['Request Added', 'Request Viewed', 'Request Accepted', 'Request Solved', 'Solving Confirmed'];
+    var yMap = ['Request Added', 'Request Viewed', 'Request Accepted', 'Request Solved', 'Solving Confirmed'];
 
-        var mapDataPoint = function(xValue, yValue) {
+    var mapDataPoint = function(xValue, yValue) {
         return {
             x: xMap.indexOf(xValue),
             y: yMap.indexOf(yValue)
         };
-        };
+    };
 
-        var ctx2 = document.getElementById("canvas").getContext("2d");
-        var myLine2 = new Chart(ctx2, {
-        type: 'line',
+    var ctx2 = document.getElementById("canvas").getContext("2d");
+    var myLine2 = new Chart(ctx2, {
+    type: 'line',
         data: {
             datasets: [{
             label: "My First dataset",
@@ -160,8 +160,8 @@
                 min: 0,
                 max: xMap.length - 1,
                 callback: function(value) {
-                    return xMap[value];
-                },
+                        return xMap[value];
+                    },
                 },
             }],
             yAxes: [{
@@ -180,8 +180,9 @@
             }]
             }
         }
-        });
+    });
 
+    var ppp = 0;
     // var horizonalLinePlugin = {
     //     afterDraw: function(chartInstance) 
     //     {
