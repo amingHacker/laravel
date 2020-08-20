@@ -147,7 +147,12 @@ function addCellAttr(rowId, val, rawObject, cm, rdata) {
                         product = 'product_pdmat';
                         switch (rawObject.level)
                         {
-                
+                            case 'EG':
+                                product_level = 'PDMAT_TSMC_CL_EG';
+                                break;
+                            case 'PG':
+                                product_level = 'PDMAPG_TSMC_CL_PG';
+                                break;
                         } 
                         break;
                     case 'CCTBA': //not yet
@@ -175,12 +180,28 @@ function addCellAttr(rowId, val, rawObject, cm, rdata) {
                 for(var j in productSpec[product])
                 {
                     var _productS = productSpec[product][j];
-                    if ( _productS["ELEMENT"] == cloumnName &&  parseFloat(_productS[product_level]) <  parseFloat(val) && _productS[product_level] != '-')
+                    if ( _productS["ELEMENT"] == cloumnName )
                     {
-                        sty = "style='font-size:14px; background-color:#9dbcfa'" ;
+                        // Assay, Parameter A, Component A這些值小於SPEC 就是異常
+                        if(_productS["ELEMENT"] =='Assay (Purity)' || _productS["ELEMENT"] == 'Component A' || _productS["ELEMENT"] == 'Parameter A')
+                        {
+                            if(parseFloat(_productS[product_level]) >  parseFloat(val))
+                            {
+                                sty = "style='font-size:14px; background-color:#9dbcfa'" ;
+                            }
+
+                        }
+                        
+                        //其他大於SPEC就是異常
+                        else
+                        {
+                            if (parseFloat(_productS[product_level]) <  parseFloat(val))
+                            {
+                                sty = "style='font-size:14px; background-color:#9dbcfa'" ;
+                            }
+                        }   
                     }
                 }
-    
                 return sty;
             }
         }

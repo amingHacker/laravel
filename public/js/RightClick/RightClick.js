@@ -47,7 +47,6 @@ function showSelectSPEC()
             + '<div id="jqxToolBar_SPEC" style = margin:0px auto; text-align:justify ></div>'
             + '</br>'
             + '<table id= "ProductSPEC"></table>'
-            + '<div id= "ProductSPECPager"></div>'
             + '</br>'
             + '<table id= '+ table + '></table>'
             + '</br></br>';
@@ -93,7 +92,7 @@ function showSelectSPEC()
                 rowNum:10,
                 rowList:[10,20,50],
                 pager: '#import_previewPager',
-                caption: "產品 Product", 
+                caption: "Product", 
                 loadComplete: function (){ fixPositionsOfFrozenDivs.call(this); }, // Fix column's height are different after enable frozen column feature 
                 gridComplete: function() { $("#" + table).jqGrid('setFrozenColumns');}
             });
@@ -108,49 +107,34 @@ function showSelectSPEC()
                     "關閉" : function() {
                         $(this).dialog("close");
                                                                         
-                    },
-            
+                    },          
                 }
             });
-            
-            var source_TMAL = [
+
+            var sourceSPEC = [
                 "TMAL",
                 "TMALEG",
                 "TMALTW",
                 "TMALUM",
-                    ];
-            var source_CCTBA = [
+                "MO",
+                "PDMAT",
                 "CCTBA",
                 "CCTBA-447FN-200G",
-            ];
-            var source_ALEXA = [
                 "ALEXA",
                 "ALEXA-447FN",
-            ];
+            ]
             var dictionary ={
                 "TMALEG": "TMAL_EG",
                 "TMALTW": "TMAL_TW",
                 "TMALUM": "TMAL_UM",
                 "TMAL": "TMAL",
+                "MO":"MO",
+                "PDMAT":"PDMAT",
                 "CCTBA":"CCTBA",
                 "CCTBA-447FN-200G":"CCTBA_447FN_200G",
                 "ALEXA":"ALEXA",
                 "ALEXA-447FN": "ALEXA_447FN"
             };
-
-            var sourceSPEC;
-            switch (data[0]["product_name"])
-            {
-                case "TMAL":
-                    sourceSPEC = source_TMAL;
-                    break;
-                case "CCTBA":
-                    sourceSPEC = source_CCTBA;
-                    break;
-                case "ALEXA":
-                    sourceSPEC = source_ALEXA;
-                    break;
-            }
 
             $("#jqxcombobox_SPEC").jqxComboBox({ source: sourceSPEC, selectedIndex: -1, width: '200px', height: '25' });
         
@@ -239,14 +223,14 @@ function CreateToolBar(source)
 
                     }
 
-                    CompareItemWithSPEC(_compare);
+                    CompareItemWithSPEC(_compare, label);
                 }
             });
     
     });
 }
 
-function CompareItemWithSPEC(_compare) 
+function CompareItemWithSPEC(_compare, label) 
 {
     sessionStorage.setItem('_CompareSource', JSON.stringify(_compare));
     var data =  JSON.parse(sessionStorage.getItem('CustomerItem'));
@@ -290,7 +274,7 @@ function CompareItemWithSPEC(_compare)
         rowNum:10,
         rowList:[10,20,50],
         pager: '#import_previewPager',
-        caption: "產品 Product", 
+        caption: "Product", 
         loadComplete: function (){ fixPositionsOfFrozenDivs.call(this); }, // Fix column's height are different after enable frozen column feature 
         gridComplete: function() { $("#" + table).jqGrid('setFrozenColumns');}
     });
@@ -344,8 +328,7 @@ function CompareItemWithSPEC(_compare)
         shrinkToFit: false,
         rowNum:10,
         rowList:[10,20,50],
-        pager:'#ProductSPECPager',
-        caption: "客戶 SPEC", 
+        caption: "Customer SPEC" + '(' + label + ')', 
         loadComplete: function (){ fixPositionsOfFrozenDivs.call(this); }, // Fix column's height are different after enable frozen column feature 
         gridComplete: function() { $("#" + table).jqGrid('setFrozenColumns');}
     });
@@ -356,8 +339,6 @@ function CompareItemWithSPEC(_compare)
 function compareCellAttr(rowId, val, rawObject, cm, rdata)
 {
     var data = JSON.parse(sessionStorage.getItem('_CompareSource'));
-    var product = '';
-    var product_level = '';
     var cloumnName = getColumnNameFromDatabaseToChinese(cm["name"]);
     var sty = "style='font-size:14px'";
 
@@ -365,12 +346,28 @@ function compareCellAttr(rowId, val, rawObject, cm, rdata)
             
     val = value[value.length - 1];
    
+    //val Product的值
     for(var j in data)
     {
-        var _productS = data[j]["SPEC"];
-        if ( data[j]["ELEMENT"] == cloumnName &&  (parseFloat(_productS) <  parseFloat(val)) && _productS != '-')
+        var _customerSPEC = data[j]["SPEC"];
+        if ( data[j]["ELEMENT"] == cloumnName )
         {
-            sty = "style='font-size:14px; background-color:#9dbcfa'" ;
+            // Assay, Parameter A, Component A這些值小於SPEC 就是異常
+            if (data[j]["ELEMENT"] == 'Assay (Purity)' || data[j]["ELEMENT"] == 'Component A' || data[j]["ELEMENT"] == 'Parameter A')
+            {
+                if (parseFloat(_customerSPEC) >  parseFloat(val))
+                {
+                    sty = "style='font-size:14px; color:red; background-color:#9dbcfa'" ;
+                }
+            }
+            //其他大於SPEC就是異常
+            else
+            {
+                if ( parseFloat(_customerSPEC) <  parseFloat(val) )
+                {
+                    sty = "style='font-size:14px; color:red; background-color:#9dbcfa'" ;
+                }
+            }
         }
     }
 
