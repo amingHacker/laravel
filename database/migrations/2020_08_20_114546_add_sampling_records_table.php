@@ -14,7 +14,7 @@ class AddSamplingRecordsTable extends Migration
     public function up()
     {
         Schema::table('sampling_records', function (Blueprint $table) {
-            $table->string("IR A", 50)->after('Sum223840');
+            $table->string("IR_A", 50)->after('Sum223840');
         });
     }
 

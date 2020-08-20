@@ -445,7 +445,8 @@ class SamplingRecordController extends Controller
                 '2_2ppm' => $RowData["2_2ppm"],
                 '3_8ppm' => $RowData["3_8ppm"],
                 '4_0ppm' => $RowData["4_0ppm"],
-                'Sum223840' => $RowData["Sum223840"],                  
+                'Sum223840' => $RowData["Sum223840"],
+                'IR_A' => $RowData["IR_A"],                    
             ]    
         );
     }
@@ -612,7 +613,8 @@ class SamplingRecordController extends Controller
             '2_2ppm',
             '3_8ppm',
             '4_0ppm',
-            'Sum223840',     
+            'Sum223840',
+            'IR_A',     
             '建立時間',
             '更新時間'            
         ];
@@ -856,7 +858,8 @@ class SamplingRecordController extends Controller
             '2_2ppm' => '[δ2.2ppm]',
             '3_8ppm' => '[δ3.8ppm]',
             '4_0ppm' => '[δ4.0ppm]',
-            'Sum223840' => 'Sum[2.2+3.8+4.0]',              
+            'Sum223840' => 'Sum[2.2+3.8+4.0]',
+            'IR_A' => 'IR A',                 
         ];
 
         if (array_key_exists($col, $dbCol))
