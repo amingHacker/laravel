@@ -212,8 +212,6 @@ class SamplingRecordController extends Controller
         return response()->json([
             //'success' =>  $UpdateValue
             'success' => $DownLoadValue,
-            'sss' =>$Record
-            
         ]); 
     }
 
@@ -326,28 +324,28 @@ class SamplingRecordController extends Controller
     //回填方法
     public function BackFill($id)
     {    
-        $RowData = Solvent_removal::find($id);
-        //var_dump($RowData["crude_batch"]);
-        $_tmp = $RowData["crude_batch"];
-        $updateItemSelect = DB::table('sampling_records')->where('batch_number', $_tmp)->first();//得到陣列 
+        // $RowData = Solvent_removal::find($id);
+        // //var_dump($RowData["crude_batch"]);
+        // $_tmp = $RowData["crude_batch"];
+        // $updateItemSelect = DB::table('sampling_records')->where('batch_number', $_tmp)->first();//得到陣列 
         
-        //dd($updateItemSelect->{'2_2ppm'});
-        if ($updateItemSelect != null )
-        {
-            $RowData->update(
-                [
-                    'Crude_assay' => $updateItemSelect->Assay, 
-                    'Crude_2_2ppm' => $updateItemSelect->{'2_2ppm'}, 
-                    'updated_at' => date('Y-m-d H:i:s') 
-                ]             
-            );                 
-        }
+        // //dd($updateItemSelect->{'2_2ppm'});
+        // if ($updateItemSelect != null )
+        // {
+        //     $RowData->update(
+        //         [
+        //             'Crude_assay' => $updateItemSelect->Assay, 
+        //             'Crude_2_2ppm' => $updateItemSelect->{'2_2ppm'}, 
+        //             'updated_at' => date('Y-m-d H:i:s') 
+        //         ]             
+        //     );                 
+        // }
 
-        //$UpdateValue = DB::table('solvent_removals')->orderBy('id','desc')->get(); //回傳原本的資料
-        return response()->json([
-            'success' =>  'OK'
+        // //$UpdateValue = DB::table('solvent_removals')->orderBy('id','desc')->get(); //回傳原本的資料
+        // return response()->json([
+        //     'success' =>  'OK'
             
-        ]);       
+        // ]);       
     }
 
     public function CreateRowData($RowData)

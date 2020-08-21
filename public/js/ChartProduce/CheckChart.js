@@ -3,14 +3,29 @@
 @version 20200807
 @aim Check Data to Chart
 */
+/*翻譯X軸的資料*/ 
+function XAxisDataTransLate(data) 
+{
+    var XAxisData = {
+        "sampling_date" : "typeDate",
+        "次數" : "typeCount",
+        "batch_number" : "typeLabel",
+        "solid_Started" : "typeDate",
+        "tank_batch" : "typeLabel",
+        "crude_batch" : "typeLabel",  
+    };
+
+    return XAxisData[data];
+
+}
 
 /*產生圖表*/
 function DrowChart( dataLo, chartTypeGroup, dataXaxisGroup, dataYaxisGroup,  
-    columnNameGroup, itemGroup, USLGroup, LSLGroup, UCLGroup, LCLGroup)
+    columnNameGroup, itemGroup, USLGroup, LSLGroup, UCLGroup, LCLGroup, LabelItem, DateItem)
 {         
     //實際產生Chart資料的陣列
     var dataToChartXGroup = [], dataToChartYGroup = []; 
-    var dataToChartIDGroup = [], dataToChartBatchNumGroup = [], dataToChartSampleTimeGroup = [];  //label上的資料 
+    var dataToChartIDGroup = [], dataToChartLabelItemGroup = [], dataToChartSampleTimeGroup = [];  //label上的資料 
 
     //宣告Chart 會使用到的資訊
     for(var j = 0; j < chartTypeGroup.length; j++)
@@ -18,7 +33,7 @@ function DrowChart( dataLo, chartTypeGroup, dataXaxisGroup, dataYaxisGroup,
         dataToChartXGroup[j] = new Array();
         dataToChartYGroup[j] = new Array();
         dataToChartIDGroup[j] = new Array();
-        dataToChartBatchNumGroup[j] = new Array();
+        dataToChartLabelItemGroup[j] = new Array();
         dataToChartSampleTimeGroup[j] = new Array();                
     }
 
@@ -34,31 +49,31 @@ function DrowChart( dataLo, chartTypeGroup, dataXaxisGroup, dataYaxisGroup,
                     if (itemGroup[i] == dataLo[key][p])
                     {
                         var tmX = '', tmY ='';
-                        var tID = '', tBatchNum = '', tSamplingTime;
+                        var tID = '', tLabelItem = '', tSamplingTime;
                         
-                        if (dataXaxisGroup[i] == 'sampling_date')
+                        if (XAxisDataTransLate(dataXaxisGroup[i]) == 'typeDate')
                         {
                             tmX = dataLo[key][dataXaxisGroup[i]];
                             tmY = dataLo[key][dataYaxisGroup[i]];
                             tID = dataLo[key]["id"];
-                            tBatchNum = dataLo[key]["batch_number"];
-                            tSamplingTime = dataLo[key]["sampling_date"];
+                            tLabelItem = dataLo[key][LabelItem[0]];
+                            tSamplingTime = dataLo[key][DateItem[0]];
                         }
-                        else if(dataXaxisGroup[i] == '批號')
+                        else if(XAxisDataTransLate(dataXaxisGroup[i]) == 'typeLabel')
                         {       
-                            tmX = dataLo[key]["batch_number"];       
+                            tmX = dataLo[key][dataXaxisGroup[i]];       
                             tmY = dataLo[key][dataYaxisGroup[i]];
                             tID = dataLo[key]["id"];
-                            tBatchNum = dataLo[key]["batch_number"];
-                            tSamplingTime = dataLo[key]["sampling_date"];
+                            tLabelItem = dataLo[key][LabelItem[0]];
+                            tSamplingTime = dataLo[key][DateItem[0]];
                         }
                         else //次數
                         {
                             tmX = dataToChartXGroup[i].length + 1;                           
                             tmY = dataLo[key][dataYaxisGroup[i]];
                             tID = dataLo[key]["id"];
-                            tBatchNum = dataLo[key]["batch_number"];
-                            tSamplingTime = dataLo[key]["sampling_date"];
+                            tLabelItem = dataLo[key][LabelItem[0]];
+                            tSamplingTime = dataLo[key][DateItem[0]];
                         }
 
                         var tmyRevpatern = [];
@@ -80,7 +95,7 @@ function DrowChart( dataLo, chartTypeGroup, dataXaxisGroup, dataYaxisGroup,
                         dataToChartXGroup[i].push(tmX);
                         dataToChartYGroup[i].push(tmY);
                         dataToChartIDGroup[i].push(tID);
-                        dataToChartBatchNumGroup[i].push(tBatchNum);
+                        dataToChartLabelItemGroup[i].push(tLabelItem);
                         dataToChartSampleTimeGroup[i].push(tSamplingTime);
                     }
                 }     
@@ -126,13 +141,13 @@ function DrowChart( dataLo, chartTypeGroup, dataXaxisGroup, dataYaxisGroup,
         for(var value in dataToChartXGroup[i])
         {
             var dataxy;
-            if (dataXaxisGroup[i] == '批號')
+            if (XAxisDataTransLate(dataXaxisGroup[i]) == 'typeLabel')
             {
                 dataxy = { 
                     x: dataToChartXGroup[0].indexOf(dataToChartXGroup[i][value]),
                     y: dataToChartYGroup[i][value],
                     id: dataToChartIDGroup[i][value],
-                    batch_number : dataToChartBatchNumGroup[i][value],
+                    labelitem : dataToChartLabelItemGroup[i][value],
                     sampling_date : dataToChartSampleTimeGroup[i][value]
                 }
             }
@@ -142,7 +157,7 @@ function DrowChart( dataLo, chartTypeGroup, dataXaxisGroup, dataYaxisGroup,
                     x: dataToChartXGroup[i][value],
                     y: dataToChartYGroup[i][value],
                     id: dataToChartIDGroup[i][value],
-                    batch_number : dataToChartBatchNumGroup[i][value],
+                    labelitem : dataToChartLabelItemGroup[i][value],
                     sampling_date : dataToChartSampleTimeGroup[i][value]
                 }
             }   
@@ -335,7 +350,7 @@ function DrowChart( dataLo, chartTypeGroup, dataXaxisGroup, dataYaxisGroup,
                                         ' Y:' + data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index].y +
                                         ' 取樣日期: ' + data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index].sampling_date+ 
                                         ' ID:' + data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index].id +
-                                        ' 批號: ' + data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index].batch_number;
+                                        ' Label: ' + data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index].labelitem;
                                         
                             return dataInf;
                         
@@ -589,7 +604,7 @@ function designScale(chartTypeGroup, dataXaxisGroup, UpandDown, horizontalLineSc
 
     if (chartTypeGroup[0] != 'Scatter Chart')
     {
-        Scales = (dataXaxisGroup[0] == '次數' || dataXaxisGroup[0] == '批號')? {
+        Scales = (XAxisDataTransLate(dataXaxisGroup[0]) == 'typeCount' || XAxisDataTransLate(dataXaxisGroup[0]) == 'typeLabel')? {
             xAxes: [{
                 type: 'linear',
                 display: true,
@@ -615,7 +630,6 @@ function designScale(chartTypeGroup, dataXaxisGroup, UpandDown, horizontalLineSc
                 display: true,
                 scaleLabel: {
                     display: true,
-                    //labelString: 'value'+'(' + dataYaxisGroup[0] + ')'
                     labelString: 'value(Unit)'
                 },
                 gridLines: {
@@ -652,7 +666,6 @@ function designScale(chartTypeGroup, dataXaxisGroup, UpandDown, horizontalLineSc
                 display: true,
                 scaleLabel: {
                     display: true,
-                    //labelString: 'value'+'(' + dataYaxisGroup[0] + ')'
                     labelString: 'value(Unit)'
                 },
                 gridLines: {
@@ -668,7 +681,7 @@ function designScale(chartTypeGroup, dataXaxisGroup, UpandDown, horizontalLineSc
     }
     else
     {
-        Scales = (dataXaxisGroup[0] == '次數' || dataXaxisGroup[0] == '批號')? {
+        Scales = (XAxisDataTransLate(dataXaxisGroup[0]) == 'typeCount' || XAxisDataTransLate(dataXaxisGroup[0]) == 'typeLabel')? {
             xAxes: [{
                 type: 'linear',
                 display: true,
@@ -694,7 +707,6 @@ function designScale(chartTypeGroup, dataXaxisGroup, UpandDown, horizontalLineSc
                 display: true,
                 scaleLabel: {
                     display: true,
-                    //labelString: 'value'+'(' + dataYaxisGroup[0] + ')'
                     labelString: 'value(Unit)'
                 },
             }]
@@ -723,7 +735,6 @@ function designScale(chartTypeGroup, dataXaxisGroup, UpandDown, horizontalLineSc
                 display: true,
                 scaleLabel: {
                     display: true,
-                    //labelString: 'value'+'(' + dataYaxisGroup[0] + ')'
                     labelString: 'value(Unit)'
                 },
             }]

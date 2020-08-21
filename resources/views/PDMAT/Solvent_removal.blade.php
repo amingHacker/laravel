@@ -64,10 +64,18 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bluebird/3.3.4/bluebird.min.js"></script>
 
 {{-- 圖表生成 Chart.js Start--}}
-<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.13.0/moment.min.js"></script>
-<script src="https://www.chartjs.org/dist/2.9.3/Chart.min.js"></script>
-<script src="https://www.chartjs.org/samples/latest/utils.js"></script>
+<script type="text/javascript" src="{{asset('js/chart/moment.min.js')}}"></script>
+<script type="text/javascript" src="{{asset('js/chart/Chart.min.js')}}"></script>
+<script type="text/javascript" src="{{asset('js/chart/utils.js')}}"></script>
 {{-- 圖表生成 Chart.js End --}}
+
+{{-- Data to Chart Start--}}
+<script type="text/javascript" src="{{asset('js/ChartProduce/CheckChart.js')}}"></script>
+{{-- Data to Chart End--}}
+
+{{-- ToolBar Start--}}
+<script type="text/javascript" src="{{asset('js/ToolBarProduce/ToolBar.js')}}"></script>
+{{-- ToolBar End--}}
 
 
 {{-- CSS設定 Start--}}
@@ -149,14 +157,11 @@
                 colModel.push(
                     {
                         name:colName, index:colName, width:100, align:"center",sortable:true, editable:true, cellattr: addCellAttr,
-                        //sorttype: "text", search:true,
-                        //edittype:'select', editoptions:{value: getSelectItem()},
                         stype:'text',
                         edittype:'custom', editoptions:
                         {
                             custom_element: combobox_elem, custom_value:combobox_value
                         }, 
-                        //searchoptions:{value: getSelectItem('item')}, stype:'select',
                         stype:'custom', searchoptions:
                         {
                             custom_element: combobox_elem, custom_value:combobox_value                   
@@ -170,44 +175,12 @@
                 colModel.push({name:colName, index:colName, align:"center", width:120, editable:true, cellattr: addCellAttr});
             }
         }
-
-        //舊key到新key的映射，colName的轉換
-        var oldkey = {
-                id: "編號",
-                solid_Started: "solid Started",
-                tank_batch: "tank batch",
-                Crude_assay: "Crude assay",
-                Crude_2_2ppm: "Crude δ2.2 ppm",
-                crude_batch: "crude batch",
-                Line: "Line",
-                sol_expect_wt: "sol. expect wt.",
-                end_Temp: "end Temp",
-                solvent_Input: "solvent Input",
-                solid_output: "solid output",
-                cycle_Time: "cycle Time",
-                solid_yield: "solid yield",
-                output_system_oxygen: "output system oxygen",
-                glove_box: "glove box",
-                output_time_spent: "output time spent",
-                solid_consumed_1: "solid_consumed_1",
-                solid_consumed_2: "solid_consumed_2",
-                solid_consumed_3: "solid_consumed_3",
-                solid_consumed_4: "solid_consumed_4",
-                solid_consumed_5: "solid_consumed_5",        
-                created_at: "建立時間",
-                updated_at: "更新時間",
-            };
-
+ 
         for(var index in colNames)
-        {
-            for(var key in oldkey)
-            {        
-                if (colNames[index] == key)
-                {
-                    colNames[index] = oldkey[key];
-                }
-            }
+        {     
+            colNames[index] = getColumnNameFromDatabaseToChinese(colNames[index]);                
         }
+
         var jqgridWidth = parseInt($(window).width()) * 0.7;
 
         // 準備資料           
@@ -244,7 +217,7 @@
                         },
             loadComplete: function (){ 
                 fixPositionsOfFrozenDivs.call(this);
-                this.p.lastSelected = lastSelected; 
+             
             }, // Fix column's height are different after enable frozen column feature 
             gridComplete: function(){
                 //根據瀏覽器寬度動態改變
@@ -287,20 +260,102 @@
         //獲得combobox的內容
         combobox_items = getComboboxItem();
 
-        //獲得最後一次搜尋的資料
-        var oldFrom = $.jgrid.from,
-            lastSelected;
+        var _ChartTypeSource = ["Scatter Chart", "Control Chart"];
+        var _xAxisSource = ["solid Started", "次數", "tank batch", "crude batch"];
+        var _yAxisSource = ["Crude assay", "Crude δ2.2 ppm", "sol. expect wt.", "end Temp", "solvent Input", "solid output", 
+                            "cycle Time", "solid yield", "output system oxygen", "output time spent", "solid consumed 1", 
+                            "solid consumed 2", "solid consumed 3", "solid consumed 4", "solid consumed 5"
+                        ];
+        var _GroupSource = ["tank batch", "crude batch", "Line", "glove box"
+        ];
 
-        $.jgrid.from = function (source, initalQuery) {
-            var result = oldFrom.call(this, source, initalQuery),
-                old_select = result.select;
-                result.select = function (f) {
-                    lastSelected = old_select.call(this, f);
-                    return lastSelected;
-                };
-            return result;
-        };
+        //建立ToolBar
+        PrepareToToolbar(_ChartTypeSource, _xAxisSource, _yAxisSource, _GroupSource);
+
     });
+
+    /*輸入Database ColumnName 輸出中文 ColumnName*/
+    function getColumnNameFromDatabaseToChinese(ColumnName)
+    {
+        var Result = '';
+        //舊key到新key的映射，colName的轉換
+        var oldkey = {
+            id: "編號",
+            solid_Started: "solid Started",
+            tank_batch: "tank batch",
+            Crude_assay: "Crude assay",
+            Crude_2_2ppm: "Crude δ2.2 ppm",
+            crude_batch: "crude batch",
+            Line: "Line",
+            sol_expect_wt: "sol. expect wt.",
+            end_Temp: "end Temp",
+            solvent_Input: "solvent Input",
+            solid_output: "solid output",
+            cycle_Time: "cycle Time",
+            solid_yield: "solid yield",
+            output_system_oxygen: "output system oxygen",
+            glove_box: "glove box",
+            output_time_spent: "output time spent",
+            solid_consumed_1: "solid_consumed_1",
+            solid_consumed_2: "solid_consumed_2",
+            solid_consumed_3: "solid_consumed_3",
+            solid_consumed_4: "solid_consumed_4",
+            solid_consumed_5: "solid_consumed_5",        
+            created_at: "建立時間",
+            updated_at: "更新時間",
+        };
+
+        for(var key in oldkey)
+        {        
+            if (ColumnName == key)
+            {
+                Result = oldkey[key];
+            }
+        }
+        return Result = (Result == '')?  ColumnName : Result;
+
+    }
+
+    /* 輸入中文 ColumnName 輸出Database ColumnName*/
+    function getColumnNameFromChineseToDatabase(ColumnName)
+    {
+        var Result = '';
+         //舊key到新key的映射，colName的轉換
+        var oldkey = {
+            "編號" : "id",
+            "solid Started" : "solid_Started",
+            "tank batch": "tank_batch",
+            "Crude assay" : "Crude_assay",
+            "Crude δ2.2 ppm" : "Crude_2_2ppm",
+            "crude batch": "crude_batch",
+            "Line": "Line",
+            "sol. expect wt.": "sol_expect_wt",
+            "end Temp": "end_Temp",
+            "solvent Input" : "solvent_Input",
+            "solid output": "solid_output",
+            "cycle Time" : "cycle_Time",
+            "solid yield" : "solid_yield",
+            "output system oxygen" : "output_system_oxygen",
+            "glove box" : "glove_box",
+            "output time spent" : "output_time_spent",
+            "solid_consumed_1" : "solid_consumed_1",
+            "solid_consumed_2" : "solid_consumed_2",
+            "solid_consumed_3" : "solid_consumed_3" ,
+            "solid_consumed_4" : "solid_consumed_4",
+            "solid_consumed_5" : "solid_consumed_5",        
+            "建立時間" : "created_at",
+            "更新時間" : "updated_at",
+        };
+        for(var key in oldkey)
+        {        
+            if (ColumnName == key)
+            {
+                Result = oldkey[key];
+            }
+        }
+        return Result = (Result == '')?  ColumnName : Result;
+    }
+
         
     /*****修改GridView欄位字體顏色*****/
     function addCellAttrID(rowId, val, rawObject, cm, rdata) {
@@ -439,20 +494,41 @@
         <div id="warningDialog" title="Warning Information">
             <p></p>
         </div>
-        <input type="BUTTON" class="btn btn-outline-info btn-space" id="BackFill" value="回填" />
         <input type="BUTTON" class="btn btn-outline-info btn-space" id="ExportChart" value="圖表" />
-        <input type="BUTTON" class="btn btn-outline-info btn-space" id="CloseChart" value="收合" />  
+        <input type="BUTTON" class="btn btn-outline-info btn-space" id="CloseChart" value="收合" />
+        <input type="BUTTON" class="btn btn-outline-info btn-space" id="BackFill" value="回填" />  
     </div>  
 </div>
+    {{-- Tab ToolBar Start --}}
     <h1 class="my-4"></h1>
-    <div id="jqxToolBar" style = "margin:0px auto; display: none;" >
+    <div id='tabs' style = 'width: 1200px; margin:0px auto; text-align:justify; display:none' >
+        <button id='add-tab' class="btn btn-outline-info btn-space">＋ Groups</button>
+        <button id='remove-tab' class="btn btn-outline-info btn-space">－ Groups</button>
+        <button id='view-outlier' class="btn btn-outline-info btn-space">View Outlier</button>
+        <ul>
+            <li><a href='#tab1'>Group 1</a></li>
+        </ul>
+        <div id='tab1' style='background-color:powderblue;'>
+            <span style='font-weight:bold; color:#2e6e9e; display:block; text-align:center'>《 Group 1 》</span> <br />
+            <div id="jqxToolBar1" style = "margin:0px auto; text-align:justify" ></div>
+            <h1 class="my-1"></h1>
+            <div id="jqxToolBarConChart1" style = " margin:0px auto; text-align:justify" ></div>
+        </div>
     </div>
+    {{-- Tab ToolBar End --}}    
     
     {{-- Chart Start --}}
     <div id = canvas_div style="width:70%; margin:0px auto; display: none;" >
         <canvas id="canvas" ></canvas>
     </div>
-    {{-- Chart End --}}           
+    {{-- Chart End --}}
+    
+    {{-- Chart選單 Start --}}
+    <ul id="Chartmenu" style="display:none;" >
+        <li><a href="#" onclick="saveoutlierChartData();return false;"><span class="ui-icon ui-icon-disk"></span>Save</a></li>
+        <li><a href="#" onclick="removeChartData();return false;"><span class="ui-icon ui-icon-trash"></span>Delete</a></li>
+    </ul>
+    {{-- Chart選單 End --}}
 
 {{-- 表單送出方法 inline Start --}}
 <script type="text/javascript">
@@ -536,7 +612,6 @@
             for(var key in selectRowData )
             {
                 var elem = $("#" + target_id + "_" + key);
-                //console.log(elem);
                 
                 if (elem.is(':checkbox'))
                 {
@@ -764,7 +839,6 @@
 
         var getData = o.jqGrid('getGridParam', 'data');//獲得所有jqgrid的資料
         
-        var lastSearchData = o.jqGrid('getGridParam', 'lastSelected'); //獲得最後一次搜尋的資料
         
         //o.jqGrid('setGridParam', { rowNum: rowNumber }).trigger('reloadGrid', [{current:true}]);//此方式可能會lag                  
         
@@ -778,7 +852,6 @@
                     "postData": postData,
                 },
                 success: function (DownLoadValue){
-                    //console.log(DownLoadValue);
                     var dataExport = DownLoadValue.success;
                     //產生要寫入excel的data
                     var i = 1;
@@ -932,11 +1005,6 @@
             // Hide caption
             // $("#gview_import_preview > .ui-jqgrid-titlebar").hide();
 
-            // for(var i=0; i < data.length; i++)
-            // {
-            //     $("#import_preview").jqGrid('addRowData', i+1, data[i]);
-            // }    
-
             $("#confirmDialog").dialog({
                 width:'auto', height:'auto', autoResize:true, modal:true, closeText:"關閉", 
                 resizable:true, closeOnEscape:true, dialogClass:'top-dialog',
@@ -1005,40 +1073,73 @@
 
 {{-- Chart.js Start --}}
 <script>
-    $("#ExportChart").click( function(){
-        document.getElementById("canvas_div").style.display=""; //顯示Chart
-        document.getElementById("jqxToolBar").style.display=""; //顯示Toolbar
-        var dataXaxis = '', dataYaxis = ''; //X軸, Y軸, Group Name名稱
-        var dataGroup = [];                                     //資料的群組
-        var dataToChartX = [], dataToChartY = [], dataToChartID = [], dataToChartBatchNum = [], dataToChartTankNum = [];  //資料的陣列
+    /*關閉Chart*/
+    $("#CloseChart").click( function(){
+        document.getElementById("canvas_div").style.display="none"; //關閉Chart
+        document.getElementById("tabs").style.display="none"; //關閉Chart tab
+    })
 
-        //獲得Toolbar的資料
-        var tools = $("#jqxToolBar").jqxToolBar("getTools");
-        dataXaxis = tools[1].tool[0].textContent;        
-        dataYaxis = tools[3].tool[0].lastChild.value;
-        
-        //把不屬於X axis, Y axis, Group的這些toggle文字記錄下來, 因這是代表組別
-        for (var key in tools)
+    /*產生圖表*/
+    $("#ExportChart").click( function(){
+        //初始圖表時不產生"無資料"的提醒
+        var initial = 'false';
+        if(document.getElementById("tabs").style.display =='none')
         {
-            for (var p in tools[key])
-            {  
-                if (p == "type" && tools[key][p] == "input")
-                {                   
-                    dataGroup.push(tools[key].tool[0].value);       
-                }          
-               
-            }
-        }    
+            initial = 'true'; 
+        }  
+        document.getElementById("canvas_div").style.display=""; //顯示Chart
+        document.getElementById("tabs").style.display=""; //顯示Control Toolbar
+        var num_tabs = $("#tabs ul li").length; //Group 組數
         
-        //宣告分組的X座標和Y座標
-        for(var key in dataGroup)
+        if (initial == 'true')
         {
-            dataToChartX[dataGroup[key]] = new Array();
-            dataToChartY[dataGroup[key]] = new Array();
-            dataToChartID[dataGroup[key]] = new Array();
-            dataToChartBatchNum[dataGroup[key]] = new Array(); 
-            dataToChartTankNum[dataGroup[key]] = new Array();                
+            return;
         }
+
+        //分組的分組資料
+        var dataXaxisGroup = [];     //紀錄Group X軸資料 
+        var dataYaxisGroup = [];     //紀錄Group Y軸資料 
+        var chartTypeGroup = [];     //紀錄Group Chart Type資料
+        var columnNameGroup = [];    //紀錄Group 欄位名稱
+        var itemGroup = [];      //紀錄Group Item名稱
+        var USLGroup = [], LSLGroup = [], UCLGroup = [], LCLGroup = [];  //紀錄Group control line資料
+        var LabelItem = [];  //紀錄要在圖面呈現的欄位資訊
+        var DateItem = [];  //紀錄data日期資訊 
+
+        for(var j = 0; j < num_tabs; j++)
+        {
+          
+            //獲得Toolbar的資料
+            var tools = $("#jqxToolBar" + ( j + 1 )).jqxToolBar("getTools");
+            var chartType = tools[1].tool[0].textContent; 
+            var dataXaxis = getColumnNameFromChineseToDatabase(tools[3].tool[0].textContent);        
+            var dataYaxis = getColumnNameFromChineseToDatabase(tools[5].tool[0].lastChild.value);
+            var columnName = getColumnNameFromChineseToDatabase(tools[7].tool[0].lastChild.value);
+            var item = tools[8].tool[0].value;
+
+            chartTypeGroup.push(chartType);
+            dataXaxisGroup.push(dataXaxis);
+            dataYaxisGroup.push(dataYaxis);
+            columnNameGroup.push(columnName);
+            itemGroup.push(item);
+
+            //獲得Toolbar的資料
+            var toolsConChart = $("#jqxToolBarConChart" + ( j + 1 )).jqxToolBar("getTools");
+            var tUSL = toolsConChart[1].tool[0].value;
+            var tLSL = toolsConChart[3].tool[0].value;
+            var tUCL = toolsConChart[5].tool[0].value;
+            var tLCL = toolsConChart[7].tool[0].value;
+            USLGroup.push(tUSL);
+            LSLGroup.push(tLSL);
+            UCLGroup.push(tUCL);
+            LCLGroup.push(tLCL);
+            LabelItem.push("tank_batch");
+            DateItem.push("solid_Started");           
+        }
+        
+        //檢查選擇Control Chart時，Group 不能大於1組以上，UCL 或LCL需同時為空或有值避免Center Line計算錯誤
+        var _checkControlChartWithGroup = checkControlChartWithGroup(chartTypeGroup, UCLGroup, LCLGroup); 
+        if (_checkControlChartWithGroup !==''){alert(_checkControlChartWithGroup); return;}
 
         //獲得資料
         var o = $("#dg");
@@ -1051,8 +1152,6 @@
 
         // var getData = o.jqGrid('getGridParam', 'data');//獲得所有jqgrid的資料
 
-        // var lastSearchData = o.jqGrid('getGridParam', 'lastSelected'); //獲得最後一次搜尋的資料
-
         // var dataLo = (lastSearchData == null)? getData: lastSearchData;
 
         $.ajax({
@@ -1064,290 +1163,163 @@
                 },
                 success: function (DownLoadValue){
                     var dataLo = DownLoadValue.success;
-                    //產生要寫入excel的data
-                    DrowChart(dataLo, dataGroup, dataToChartX, dataToChartY, dataToChartID, dataToChartBatchNum, dataToChartTankNum, dataXaxis, dataYaxis);                  
-                    }                               
+                  //產生要寫入excel的data
+                    //參數格式: original data -> toolbar data -> toolbar control data 
+                    DrowChart( dataLo, 
+                            chartTypeGroup, dataXaxisGroup, dataYaxisGroup, 
+                            columnNameGroup, itemGroup, 
+                            USLGroup, LSLGroup, UCLGroup, LCLGroup, LabelItem, DateItem
+                        );
+                    }                                  
                 });    
               
     })
-
-    function newDate(days) {
-        return moment().add(days, 'd').toDate();
-    }
-
-    function newDateString(days) {
-        return moment().add(days, 'd').format();
-    }
-
-    $("#CloseChart").click( function(){
-        document.getElementById("canvas_div").style.display="none"; //顯示Chart
-        document.getElementById("jqxToolBar").style.display="none"; //顯示Toolbar
-    })
-
-    function DrowChart(dataLo, dataGroup, dataToChartX, dataToChartY, dataToChartID, dataToChartBatchNum, dataToChartTankNum, dataXaxis, dataYaxis){
-        
-        var i = 0;
-
-        for (var key in dataLo)
-        {
-            for (var p in dataLo[key])
-            {              
-                for (var _index in dataGroup)
-                {
-                    if (dataLo[key][p] == dataGroup[_index])
-                    {
-                        var tmX = '', tmY ='';
-                        var tID = '', tBatchNum = '', tTankNum = '';
-                        if (dataXaxis != '次數')
-                        {
-                            tmX = dataLo[key][dataXaxis];
-                            tmY = dataLo[key][dataYaxis];
-                            tID = dataLo[key]["id"];
-                            tBatchNum = dataLo[key]["crude_batch"];
-                            tTankNum = dataLo[key]["tank_batch"];
-                        }
-                        else
-                        {
-                            tmX = dataToChartX[dataGroup[_index]].length + 1;
-                            tmY = dataLo[key][dataYaxis];
-                            tID = dataLo[key]["id"];
-                            tBatchNum = dataLo[key]["crude_batch"];
-                            tTankNum = dataLo[key]["tank_batch"];
-                        }
-                        var tmyRevpatern = tmY.split("<");
-                        tmY = tmyRevpatern[tmyRevpatern.length - 1];
-
-                        dataToChartX[dataGroup[_index]].push(tmX);
-                        dataToChartY[dataGroup[_index]].push(tmY);
-                        dataToChartID[dataGroup[_index]].push(tID);
-                        dataToChartBatchNum[dataGroup[_index]].push(tBatchNum);
-                        dataToChartTankNum[dataGroup[_index]].push(tTankNum);
-                    }
-                }       
-            }     
-        }
-
-        var dataToChart = [];
-        for (var i in dataToChartX)
-        {
-            var tmp = [];
-            for(var value in dataToChartX[i])
-            {
-                var dataxy = { 
-                    x: dataToChartX[i][value],
-                    y: dataToChartY[i][value],
-                    id: dataToChartID[i][value],
-                    crude_number : dataToChartBatchNum[i][value],
-                    tank_number : dataToChartTankNum[i][value],
-                }
-                tmp.push(dataxy);
-            }
-            dataToChart.push(tmp);               
-        }          
-        var color = Chart.helpers.color;
-
-        var _dataset = [];
-        var _chartcolor = [window.chartColors.red, window.chartColors.blue, window.chartColors.green, window.chartColors.yellow, window.chartColors.purple];
-        for (var i in dataToChart)
-        {
-            var tmp = {
-                label: dataGroup[i],
-                borderColor: _chartcolor[i],
-                backgroundColor: color(_chartcolor[i]).alpha(0.2).rgbString(),
-                data:dataToChart[i], 
-                fill:false
-            }
-            _dataset.push(tmp);
-        }
-
-        var scatterChartData = {
-            datasets: _dataset
-        };
-
-        var scatterScales = (dataXaxis == '次數')? {
-            xAxes: [{
-                //type: 'time',
-                display: true,
-                scaleLabel: {
-                    display: true,
-                    labelString: 'Count'+'(' + dataXaxis + ')'
-                },
-                ticks: {
-                    major: {
-                        fontStyle: 'bold',
-                        fontColor: '#FF0000'
-                    }
-                }
-            }],
-            yAxes: [{
-                display: true,
-                scaleLabel: {
-                    display: true,
-                    labelString: 'value'+'(' + dataYaxis + ')'
-                }
-            }]
-        }:{
-            xAxes: [{
-                type: 'time',
-                display: true,
-                scaleLabel: {
-                    display: true,
-                    labelString: 'Date'+'(' + dataXaxis + ')'
-                },
-                ticks: {
-                    major: {
-                        fontStyle: 'bold',
-                        fontColor: '#FF0000'
-                    }
-                }
-            }],
-            yAxes: [{
-                display: true,
-                scaleLabel: {
-                    display: true,
-                    labelString: 'value'+'(' + dataYaxis + ')'
-                }
-            }]
-        }
-
-        if (window.myLine !== undefined && window.myLine !== null) 
-        {
-            window.myLine.destroy();
-        }
-
-        var ctx = document.getElementById('canvas').getContext('2d');
-
-        window.myLine = new Chart.Scatter(ctx,
-            {
-                data: scatterChartData,
-                options: {
-                    title: {
-                        display: true,
-                        text: 'Solvent Removal'
-                    },
-                    scales: scatterScales,
-                         
-                    tooltips: {
-                        callbacks: {
-                            // afterBody: function(t, d) {
-                            //     return 'loss 15%'; //return a string that you wish to append
-                            label: function(tooltipItem, data) 
-                            {
-                                var dataInf = 'X:' + data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index].x + 
-                                            ' Y:' + data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index].y + 
-                                            ' ID:' + data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index].id +
-                                            ' Crude batch: ' + data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index].crude_number +
-                                            ' Tank batch: ' + data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index].tank_number;
-                                return dataInf;
-                            
-                            }                    
-                        }
-                    },
-                    onClick: graphClickEvent,
-                }
-
-            }  
-        );
-    }
-
-    function graphClickEvent(event, array){
-        if(array[0])
-        {
-            removeData(array);
-        }
-    }
-
-    function removeData(array) {
-        var removeDataSetIndex = array[0]._datasetIndex;
-        var removeIndex = array[0]._index;    
-       
-        var answer = window.confirm("確認在圖面刪除此筆資料?");
-             if (answer)
-             {
-                 //var ctx = document.getElementById('canvas').getContext('2d');
-                window.myLine.data.labels.splice(removeIndex, 1);
-                window.myLine.data.datasets[removeDataSetIndex].data.splice(removeIndex, 1);
-                window.myLine.update();
-             }        
-       
-    }               
+   
 </script>
 
 {{-- Chart.js End --}}
 
-{{-- Toolbar Start --}}
+{{-- Show outlier Log Start --}}
 <script type="text/javascript">
-    $(document).ready(function () {
-        var _xAxisSource = ["solid_Started", "次數"];
-        var _yAxisSource = ["Crude_assay", "Crude_2_2ppm", "sol_expect_wt", "end_Temp", "solvent_Input", "solid_output", "cycle_Time", "solid_yield", "output_system_oxygen", "output_time_spent", "solid_consumed_1", "solid_consumed_2", 
-                             "solid_consumed_3", "solid_consumed_4", "solid_consumed_5"];
-        var _dataSource = [];  //用來保存
-        var itemCount = 6; // The item count of Toolbar.
 
-        $("#jqxToolBar").jqxToolBar({ 
-            width: "65%", height: '35', 
-            tools: "toggleButton dropdownlist | toggleButton combobox | toggleButton | button  button  ",
-            //tools: "toggleButton toggleButton toggleButton | dropdownlist combobox | input",
-            initTools: function (type, index, tool, menuToolIninitialization) 
-            {
-                switch (index) 
+    $("button#view-outlier").click(
+        function() 
+        {
+            var outlier_data = [];
+            for(var i=0;i<sessionStorage.length;i++){
+                var key=sessionStorage.key(i);
+                var value=sessionStorage[key];
+                if(key.indexOf("restoreID") != -1)
                 {
-                    case 0:
-                        tool.jqxToggleButton({ width: 80, toggled: true });
-                        tool.text("X axis:");
-                        break;
-                    case 1:
-                        tool.jqxDropDownList({ width: 130, source: _xAxisSource, selectedIndex: -1});
-                        //tool.jqxComboBox({ width: 130, source: _xAxisSource, selectedIndex: 0 });
-                        break;  
-                    case 2:
-                        tool.jqxToggleButton({ width: 80, toggled: true });
-                        tool.text("Y axis:");
-                        break;                 
-                    case 3:
-                        //tool.jqxDropDownList({ width: 130, source: _yAxisSource, selectedIndex:  -1});
-                        tool.jqxComboBox({ width: 130, source: _yAxisSource, selectedIndex: -1, searchMode: 'containsignorecase', autoComplete: true });
-                        break;
-                    case 4:
-                        tool.jqxToggleButton({ width: 80, toggled: true });
-                        tool.text("Group:");
-                        break;
-                    case 5:
-                        tool.text("＋");
-                        tool.on("click", function (event) {                            
-                                        var position = "last";
-                                        $("#jqxToolBar").jqxToolBar("addTool", "input", position, false, function (type, tool, menuToolIninitialization) {          
-                                            var width;
-                                            if (menuToolIninitialization) {
-                                            // specific setting for minimized tool
-                                                width = "100%";
-                                            } else {
-                                                width = 100;
-                                            }
-                                            
-                                            tool.jqxInput({ width: 100, placeHolder: "Type here..." })
-    
-                                        });                                 
-                                        
-                                    });
-                        break;
-                    case 6:
-                        tool.text("－");
-                        tool.on("click", function (event) 
-                            {                            
-                                var position = "last";
-                                var toolsCount = $("#jqxToolBar").jqxToolBar("getTools").length - 1;
-                                if (toolsCount > 6)
-                                {
-                                    $("#jqxToolBar").jqxToolBar("destroyTool", toolsCount );
-                                }             
-                            });                    
-                        break;                             
+                    outlier_data.push(value);
                 }
             }
-        });
-    });
-</script>
-{{-- Toolbar End --}}
+    
+            if(outlier_data.length == 0)
+            {
+                alert("There is no outlier data.");
+                return;
+            }
+    
+            
+            $.ajax({
+                    async:false,
+                    url: "SolventRemoval/GetDataFromID" ,//路徑
+                    type: "POST",           
+                    data:{
+                        "postData": outlier_data,
+                    },
+                    success: function (DownLoadValue){
+                        var data = DownLoadValue.success;
+                        //產生要寫入excel的data
+                        var table = "import_preview";
+                        var pcontent = '<span style="font-weight:bold; color:#2e6e9e;">《 極端值 view outlier  》</span><br /><br />' + '<table id= '+ table + '></table><div id="import_previewPager"></div>';
+                        
+                        //建立動態表格
+                        $("#confirmDialog").html(pcontent);
+                        var colNames = [];
+                        var colModel = [];
+                        
+                        for ( var colName in data[0])
+                        {
+                            colNames.push(getColumnNameFromDatabaseToChinese(colName));
+                        }
+    
+                        for ( var colName in data[0])
+                        {           
+                            if (colName === 'id')
+                            {
+                                colModel.push({name:colName, index:colName, align:"center", width:84, frozen:true, sortable:true, sorttype:"int"});
+                            }
+                            else
+                            {
+                                colModel.push({name:colName, index:colName, align:"center", width:112});
+                            }
+                        }
+                        
+                        $("#" + table).jqGrid({      
+                            datatype: "local",
+                            data:data,
+                            colNames: colNames,
+                            colModel: colModel,
+                            width: 896,
+                            height: 'auto',
+                            sortname: 'id',
+                            sortorder: "asc",
+                            hidegrid: false,
+                            cmTemplate: { title: false },   // Hide Tooltip
+                            gridview: true,
+                            shrinkToFit: false,
+                            rowNum:10,
+                            rowList:[10,20,50],
+                            pager: '#import_previewPager',
+                            caption: "極端值紀錄 Outlier Log", 
+                            loadComplete: function (){ fixPositionsOfFrozenDivs.call(this); }, // Fix column's height are different after enable frozen column feature 
+                            gridComplete: function() { $("#" + table).jqGrid('setFrozenColumns');}
+                        });
+                        
+                        
+                        //$("#" + table).jqGrid('setFrozenColumns');
+                        //增加Tool bar        
+                        $("#" + table).jqGrid('navGrid','#import_previewPager', { search:true, edit:false, add:false, del:false, refresh:true } );
+                            
+    
+                        $("#confirmDialog").dialog({
+                            width:'auto', height:'auto', autoResize:true, modal:true, closeText:"關閉", 
+                            resizable:true, closeOnEscape:true, dialogClass:'top-dialog',position:['center',168],
+                            show:{effect: "fade", duration: 140},
+                            hide:{effect: "clip", duration: 140},
+                            focus: function() { $(".ui-dialog").focus(); }, // Unfocus the default focus elem
+                            buttons : {
+                                "關閉" : function() {
+                                    $(this).dialog("close");
+                                                                                       
+                                },
+                                "清除極端值" : function() {
+                                    var answer = window.confirm("確認清除極端值?");
+                                    if (answer)
+                                    {
+                                        clearoutlierChartData();
+                                        $(this).dialog("close");
+                                    }
+                                                                                       
+                                },
+                                "下載": function(){
+                                    var dataExport = DownLoadValue.success;
+                                    //產生要寫入excel的data
+                                    var i = 1;
+                                    var dataToExcel = [];    
+                                    dataToExcel.push(colNames);
+    
+                                    for(var key in dataExport)
+                                    {
+                                        var tmp = [];
+                                        for (var p in dataExport[key])
+                                        {
+                                            tmp.push(dataExport[key][p]);
+                                        }
+                                        dataToExcel.push(tmp);
+                                    }
+                                    
+                                    var myDate = new Date().toISOString().slice(0,10); 
+    
+                                    //檔名
+                                    var filename = myDate + '-' + 'OutlierLog.xlsx';
+    
+                                    //表名
+                                    var sheetname = 'Sheet';
+    
+                                    //下載
+                                    downloadxlsx(filename, sheetname, dataToExcel);             
+                                            }
+                            }
+                        });                                                   
+                    }                               
+                });     
+        }
+    );      
+    </script>
+    
+    {{-- Show outlier Log End --}}
 
 @endsection

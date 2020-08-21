@@ -2,7 +2,6 @@
 
 @section('content')  
 
-
 {{-- Include CSS Start --}}
 {{-- Local Source  --}}
 <link rel="stylesheet" type="text/css" href="{{asset('css/jqgrid/jquery-ui-custom.css')}}" >

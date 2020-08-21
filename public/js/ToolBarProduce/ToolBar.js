@@ -3,10 +3,10 @@
 @version 20200807
 @aim Check Data to Chart
 */
-
-$(document).ready(function() {
+//$(document).ready(
+function PrepareToToolbar(_ChartTypeSource, _xAxisSource, _yAxisSource, _GroupSource) {
     $("#tabs").tabs();
-    createToolbar(1);
+    createToolbar(1, _ChartTypeSource, _xAxisSource, _yAxisSource, _GroupSource);
     $("button#add-tab").click(
         function() 
         {
@@ -23,7 +23,7 @@ $(document).ready(function() {
                 + "<div id='jqxToolBarConChart" + num_tabs + "' style = 'margin:0px auto; text-align:justify' ></div>"
                 + "</div>");
             
-            createToolbar(num_tabs);
+            createToolbar(num_tabs, _ChartTypeSource, _xAxisSource, _yAxisSource, _GroupSource);
             $("#jqxToolBar" + num_tabs).jqxToolBar('render');
 
             $("#tabs").tabs("refresh");
@@ -41,32 +41,11 @@ $(document).ready(function() {
             $("#tabs").tabs("refresh");
         }
     );               
-});
+}
+//);
 
-function createToolbar(num_tabs){
-    var _ChartTypeSource = ["Scatter Chart", "Control Chart"];
-    var _xAxisSource = ["sampling_date", "次數", "批號"];
-    var _yAxisSource = ["MeO", "Assay", "HC", "Si", "Sn", "Al", "I", "Fe", "Zn", "Ag", "As", "Au", "B", "Ba",
-                        "Be", "Bi", "Ca", "Cd", "Ce", "Co", "Cr", "Cs", "Cu", "Ga", "Ge", "Hg", "In", "K",
-                        "La", "Li", "Mg", "Mn", "Mo", "Na", "Nb", "Ni", "P", "Pb", "Pd", "Pt", "Rb", "Re", "Rh", 
-                        "Ru", "S", "Sb", "Se", "Sr", "Ta", "Tb", "Te", "Th", "Ti", "Tl", "U", "V", "W", "Y", "Zr", 
-                        "F", "Cl", "Parameter A", "Parameter B", "Parameter C", "Parameter D", "Impurity A","Impurity B", 
-                        "Impurity C", "Impurity D", "Impurity E", "Impurity F", "1H NMR", "Other Metals", "Organic impurity",
-                        "[δ2.2ppm]", "[δ3.8ppm]", "[δ4.0ppm]", "Sum[2.2+3.8+4.0]"
-                    ];
-    var _GroupSource = ["品名","等級", "瓶號","批號", "取樣者", "樣品來源", 
-        "分析項目","分析者", "完成日","判定", "備註", 
-        "MeO", "Assay", "HC", "Si", "Sn", "Al", "I", "Fe", "Zn", "Ag", "As", "Au", "B", "Ba",
-        "Be", "Bi", "Ca", "Cd", "Ce", "Co", "Cr", "Cs", "Cu", "Ga", "Ge", "Hg", "In", "K",
-        "La", "Li", "Mg", "Mn", "Mo", "Na", "Nb", "Ni", "P", "Pb", "Pd", "Pt", "Rb", "Re", "Rh", 
-        "Ru", "S", "Sb", "Se", "Sr", "Ta", "Tb", "Te", "Th", "Ti", "Tl", "U", "V", "W", "Y", "Zr", 
-        "F", "Cl", "Parameter A", "Parameter B", "Parameter C", "Parameter D", "Impurity A","Impurity B", 
-        "Impurity C", "Impurity D", "Impurity E", "Impurity F", "1H NMR", "Other Metals", "Organic impurity",
-        "[δ2.2ppm]", "[δ3.8ppm]", "[δ4.0ppm]", "Sum[2.2+3.8+4.0]"
-    ];
-
-
-
+function createToolbar(num_tabs, _ChartTypeSource, _xAxisSource, _yAxisSource, _GroupSource){
+ 
     var _dataSource = [];  //用來保存
     // var itemCount = 7; // The item count of Toolbar.
     $("#jqxToolBar" + num_tabs).jqxToolBar({ 

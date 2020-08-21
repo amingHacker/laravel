@@ -60,25 +60,14 @@
 
 
 {{-- 圖表生成 Chart.js Start--}}
-<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.13.0/moment.min.js"></script>
-<script src="https://www.chartjs.org/dist/2.9.3/Chart.min.js"></script>
-<script src="https://www.chartjs.org/samples/latest/utils.js"></script>
+<script type="text/javascript" src="{{asset('js/chart/moment.min.js')}}"></script>
+<script type="text/javascript" src="{{asset('js/chart/Chart.min.js')}}"></script>
+<script type="text/javascript" src="{{asset('js/chart/utils.js')}}"></script>
 {{-- 圖表生成 Chart.js End --}}
 
 {{-- CSS設定 Start--}}
 <style type="text/css">
-    /* 預設已是overflow:auto，寫在網頁裡再次確保會出現scroller
-     .ui-jqgrid .ui-jqgrid-bdiv {
-       overflow:auto; 
-     } */
-
-    /* .container{
-        width:1200px;
-        margin:0 auto;
-        padding:10px;
-    } */
     .ui-jqgrid-hdiv { overflow-y: hidden; }
-
 </style>
 
 {{-- CSS設定 End --}}
@@ -224,8 +213,7 @@
                     var winwidth= parseInt($(window).width()) * 0.7;     
                     $("#" + table).jqGrid('setGridWidth', winwidth);
                 });
-            },
-            rowattr: function (rd){if (rd.determination === 'Fail'){ return {"class": "failRow"};}}                                                            
+            },                                                           
         }).jqGrid('setFrozenColumns'); 
 
 

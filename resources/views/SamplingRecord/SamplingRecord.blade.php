@@ -87,14 +87,6 @@
 
 
 {{-- CSS設定 Start--}}
-{{-- <style type="text/css">
-    /*預設已是overflow:auto，寫在網頁裡再次確保會出現scroller*/
-     .ui-jqgrid .ui-jqgrid-bdiv {
-       overflow:auto; 
-     }
-</style> --}}
-
-
 <style>
     .text-break {
         white-space: normal !important;
@@ -103,7 +95,6 @@
         padding-top:2px;
     }
     .ui-jqgrid-hdiv { overflow-y: hidden; }
-
 </style>
 
 {{-- CSS設定 End --}}
@@ -263,7 +254,7 @@
 
             loadComplete: function (){ 
                 fixPositionsOfFrozenDivs.call(this);
-                this.p.lastSelected = lastSelected;
+               
             }, // Fix column's height are different after enable frozen column feature
             gridComplete: function(){
                 //根據瀏覽器寬度動態改變
@@ -318,20 +309,30 @@
 
         //獲得權限設定
         getAuthority();
-        
-        //獲得最後一次搜尋的資料
-        var oldFrom = $.jgrid.from,
-            lastSelected;
 
-        $.jgrid.from = function (source, initalQuery) {
-            var result = oldFrom.call(this, source, initalQuery),
-                old_select = result.select;
-                result.select = function (f) {
-                    lastSelected = old_select.call(this, f);
-                    return lastSelected;
-                };
-            return result;
-        };
+        var _ChartTypeSource = ["Scatter Chart", "Control Chart"];
+        var _xAxisSource = ["取樣日期", "次數", "批號"];
+        var _yAxisSource = ["MeO", "Assay", "HC", "Si", "Sn", "Al", "I", "Fe", "Zn", "Ag", "As", "Au", "B", "Ba",
+                            "Be", "Bi", "Ca", "Cd", "Ce", "Co", "Cr", "Cs", "Cu", "Ga", "Ge", "Hg", "In", "K",
+                            "La", "Li", "Mg", "Mn", "Mo", "Na", "Nb", "Ni", "P", "Pb", "Pd", "Pt", "Rb", "Re", "Rh", 
+                            "Ru", "S", "Sb", "Se", "Sr", "Ta", "Tb", "Te", "Th", "Ti", "Tl", "U", "V", "W", "Y", "Zr", 
+                            "F", "Cl", "Parameter A", "Parameter B", "Parameter C", "Parameter D", "Impurity A","Impurity B", 
+                            "Impurity C", "Impurity D", "Impurity E", "Impurity F", "1H NMR", "Other Metals", "Organic impurity",
+                            "[δ2.2ppm]", "[δ3.8ppm]", "[δ4.0ppm]", "Sum[2.2+3.8+4.0]", "IR A"
+                        ];
+        var _GroupSource = ["品名","等級", "瓶號","批號", "取樣者", "樣品來源", 
+            "分析項目","分析者", "完成日","判定", "備註", 
+            "MeO", "Assay", "HC", "Si", "Sn", "Al", "I", "Fe", "Zn", "Ag", "As", "Au", "B", "Ba",
+            "Be", "Bi", "Ca", "Cd", "Ce", "Co", "Cr", "Cs", "Cu", "Ga", "Ge", "Hg", "In", "K",
+            "La", "Li", "Mg", "Mn", "Mo", "Na", "Nb", "Ni", "P", "Pb", "Pd", "Pt", "Rb", "Re", "Rh", 
+            "Ru", "S", "Sb", "Se", "Sr", "Ta", "Tb", "Te", "Th", "Ti", "Tl", "U", "V", "W", "Y", "Zr", 
+            "F", "Cl", "Parameter A", "Parameter B", "Parameter C", "Parameter D", "Impurity A","Impurity B", 
+            "Impurity C", "Impurity D", "Impurity E", "Impurity F", "1H NMR", "Other Metals", "Organic impurity",
+            "[δ2.2ppm]", "[δ3.8ppm]", "[δ4.0ppm]", "Sum[2.2+3.8+4.0]", "IR A"
+        ];
+        //建立ToolBar
+        PrepareToToolbar(_ChartTypeSource, _xAxisSource, _yAxisSource, _GroupSource);
+        
 
     });
 
@@ -657,7 +658,7 @@
             <input type="BUTTON" class="btn btn-outline-info btn-space" id="ViewLog" style="display: none" value="紀錄" />   
     </div>
 </div> 
-
+{{-- Tab ToolBar Start --}}
     <h1 class="my-4"></h1>
     <div id='tabs' style = 'width: 1200px; margin:0px auto; text-align:justify; display:none' >
         <button id='add-tab' class="btn btn-outline-info btn-space">＋ Groups</button>
@@ -673,7 +674,7 @@
             <div id="jqxToolBarConChart1" style = " margin:0px auto; text-align:justify" ></div>
         </div>
     </div>
-    
+{{-- Tab ToolBar End --}}    
 
 {{-- Chart Start --}}
     <div id = canvas_div style="width:70%; margin:0px auto; display: none;" >
@@ -1165,8 +1166,6 @@
 
         var getData = o.jqGrid('getGridParam', 'data');//獲得所有jqgrid的資料
         
-        //var lastSearchData = o.jqGrid('getGridParam', 'lastSelected'); //獲得最後一次搜尋的資料
-        
         //o.jqGrid('setGridParam', { rowNum: rowNumber }).trigger('reloadGrid', [{current:true}]);//此方式可能會lag                  
         
         var rowData = o.jqGrid('getRowData');//獲得目前顯示在表格上的資料
@@ -1339,19 +1338,9 @@
                 gridComplete: function() { $("#" + table).jqGrid('setFrozenColumns');}
             });
             
-            //$("#" + table).jqGrid('setFrozenColumns');
             //增加Tool bar        
             $("#" + table).jqGrid('navGrid','#import_previewPager', { search:true, edit:false, add:false, del:false, refresh:true } );
-                
-            // Hide caption
-            // $("#gview_import_preview > .ui-jqgrid-titlebar").hide();
-
-            // for(var i=0; i < data.length; i++)
-            // {
-            //     $("#import_preview").jqGrid('addRowData', i+1, data[i]);
-            // }
-            //$("#" + table).trigger( 'reloadGrid', [{current:true}] );    
-
+        
             $("#confirmDialog").dialog({
                 width:'auto', height:'auto', autoResize:true, modal:true, closeText:"關閉", 
                 resizable:true, closeOnEscape:true, dialogClass:'top-dialog',position:['center',168],
@@ -1449,7 +1438,8 @@
         var columnNameGroup = [];    //紀錄Group 欄位名稱
         var itemGroup = [];      //紀錄Group Item名稱
         var USLGroup = [], LSLGroup = [], UCLGroup = [], LCLGroup = [];  //紀錄Group control line資料
-        
+        var LabelItem = [];  //紀錄要在圖面呈現的欄位資訊
+        var DateItem = [];  //紀錄data日期資訊 
 
         for(var j = 0; j < num_tabs; j++)
         {
@@ -1457,7 +1447,7 @@
             //獲得Toolbar的資料
             var tools = $("#jqxToolBar" + ( j + 1 )).jqxToolBar("getTools");
             var chartType = tools[1].tool[0].textContent; 
-            var dataXaxis = tools[3].tool[0].textContent;        
+            var dataXaxis = getColumnNameFromChineseToDatabase(tools[3].tool[0].textContent);        
             var dataYaxis = getColumnNameFromChineseToDatabase(tools[5].tool[0].lastChild.value);
             var columnName = getColumnNameFromChineseToDatabase(tools[7].tool[0].lastChild.value);
             var item = tools[8].tool[0].value;
@@ -1477,7 +1467,9 @@
             USLGroup.push(tUSL);
             LSLGroup.push(tLSL);
             UCLGroup.push(tUCL);
-            LCLGroup.push(tLCL);          
+            LCLGroup.push(tLCL);
+            LabelItem.push("batch_number");
+            DateItem.push("sampling_date");          
         }
         
         //檢查選擇Control Chart時，Group 不能大於1組以上，UCL 或LCL需同時為空或有值避免Center Line計算錯誤
@@ -1507,7 +1499,7 @@
                         DrowChart( dataLo, 
                             chartTypeGroup, dataXaxisGroup, dataYaxisGroup, 
                             columnNameGroup, itemGroup, 
-                            USLGroup, LSLGroup, UCLGroup, LCLGroup
+                            USLGroup, LSLGroup, UCLGroup, LCLGroup, LabelItem, DateItem
                         );                  
                     }                               
                 });                 
@@ -1650,13 +1642,9 @@ $("button#view-outlier").click(
                                 downloadxlsx(filename, sheetname, dataToExcel);             
                                         }
                         }
-                    });                                 
-                    
-                    
+                    });                                                   
                 }                               
-            });  
-
-        
+            });     
     }
 );      
 </script>

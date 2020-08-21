@@ -60,25 +60,14 @@
 
 
 {{-- 圖表生成 Chart.js Start--}}
-<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.13.0/moment.min.js"></script>
-<script src="https://www.chartjs.org/dist/2.9.3/Chart.min.js"></script>
-<script src="https://www.chartjs.org/samples/latest/utils.js"></script>
+<script type="text/javascript" src="{{asset('js/chart/moment.min.js')}}"></script>
+<script type="text/javascript" src="{{asset('js/chart/Chart.min.js')}}"></script>
+<script type="text/javascript" src="{{asset('js/chart/utils.js')}}"></script>
 {{-- 圖表生成 Chart.js End --}}
 
 {{-- CSS設定 Start--}}
 <style type="text/css">
-    /* 預設已是overflow:auto，寫在網頁裡再次確保會出現scroller
-     .ui-jqgrid .ui-jqgrid-bdiv {
-       overflow:auto; 
-     } */
-
-    /* .container{
-        width:1200px;
-        margin:0 auto;
-        padding:10px;
-    } */
     .ui-jqgrid-hdiv { overflow-y: hidden; }
-
 </style>
 
 {{-- CSS設定 End --}}
@@ -239,8 +228,7 @@
                     var winwidth= parseInt($(window).width()) * 0.7;     
                     $("#" + table).jqGrid('setGridWidth', winwidth);
                 });
-            },
-            rowattr: function (rd){if (rd.determination === 'Fail'){ return {"class": "failRow"};}}                                                            
+            },                                                            
         }).jqGrid('setFrozenColumns'); 
 
 
@@ -786,7 +774,8 @@
     function Import(e) {         
         if (e.files.length  ==  0 ){return;} //檢查是否有輸入資料
         
-        var fileType = e.files[0].name.split('.').pop();  
+        var fileType = e.files[0].name.split('.').pop();
+        var fileName = e.files[0].name;    
         var allowdtypes = 'xls,xlsx';
         if (allowdtypes.indexOf(fileType) < 0) 
         {          
@@ -819,7 +808,7 @@
             var data = JSON.parse(dataImport);  //解析為Json對象   
 
             //建立動態表格
-            $("#confirmDialog").html('<span style="font-weight:bold; color:#2e6e9e;">《 檔案資料預覽 File data preview 》</span><br /><br /><table id="import_preview"></table>');
+            $("#confirmDialog").html('<span style="font-weight:bold; color:#2e6e9e;">《 檔案資料預覽 File data preview 》</span><br /><br /><table id="import_preview"></table><div id="import_previewPager">');
             var colNames = [];
             var colModel = [];
             
@@ -854,11 +843,17 @@
                 cmTemplate: { title: false },   // Hide Tooltip
                 gridview: true,
                 shrinkToFit: false,
+                rowNum:10,
+                rowList:[10,20,50],
+                pager: '#import_previewPager',
+                caption: fileName, 
     
                 loadComplete: function (){ fixPositionsOfFrozenDivs.call(this); }, // Fix column's height are different after enable frozen column feature 
             });
             
             $("#import_preview").jqGrid('setFrozenColumns');
+             //增加Tool bar        
+            $("#import_preview").jqGrid('navGrid','#import_previewPager', { search:true, edit:false, add:false, del:false, refresh:true } );
 
 
             $("#confirmDialog").dialog({
