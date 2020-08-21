@@ -59,6 +59,32 @@
 <script type="text/javascript" src="{{asset('js/jQWidget/jqxtoolbar.js')}}"></script>
 {{-- Include combobox, DatePicker End --}}
 
+{{-- ajax同步 This is for es5 (ie11)--}}
+<script type="text/javascript" src="{{asset('js/bluebird/bluebird.min.js')}}"></script>
+
+
+{{-- 圖表生成 Chart.js Start--}}
+<script type="text/javascript" src="{{asset('js/chart/moment.min.js')}}"></script>
+<script type="text/javascript" src="{{asset('js/chart/Chart.min.js')}}"></script>
+<script type="text/javascript" src="{{asset('js/chart/utils.js')}}"></script>
+{{-- 圖表生成 Chart.js End --}}
+
+{{-- Data to Chart Start--}}
+<script type="text/javascript" src="{{asset('js/ChartProduce/CheckChart.js')}}"></script>
+{{-- Data to Chart End--}}
+
+{{-- ToolBar Start--}}
+<script type="text/javascript" src="{{asset('js/ToolBarProduce/ToolBar.js')}}"></script>
+{{-- ToolBar End--}}
+
+
+{{-- CSS設定 Start--}}
+{{-- <style type="text/css">
+    /*預設已是overflow:auto，寫在網頁裡再次確保會出現scroller*/
+     .ui-jqgrid .ui-jqgrid-bdiv {
+       overflow:auto; 
+     }
+</style> --}}
 
 
 <style>
