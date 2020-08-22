@@ -72,7 +72,6 @@ Route::post('/SolventRemoval/GetDataFromID', 'Solvent_removal_Controller@GetData
 Route::get('/SolventRemoval', 'Solvent_removal_Controller@index');
 Route::get('/SolventRemoval/GetComboboxItem', 'Solvent_removal_Controller@ComboboxItem');
 
-
 //File 大量新增和修改
 Route::post('/SolventRemoval/FileUpload/{todo}', 'Solvent_removal_Controller@FileUpload')->name('Solvent_removal.FileUpload');
 
@@ -89,6 +88,8 @@ Route::post('/SolventRemoval/BackFill/{todo}', 'Solvent_removal_Controller@BackF
 /*************************** Sublimation *****************************/
 Route::get('/Sublimation/show', 'SublimationController@show');
 Route::post('/Sublimation/export', 'SublimationController@export');
+Route::post('/Sublimation/GetDataFromID', 'SublimationController@GetDataFromID');
+
 //資料呈現
 Route::get('/Sublimation', 'SublimationController@index');
 Route::get('/Sublimation/GetComboboxItem', 'SublimationController@ComboboxItem');

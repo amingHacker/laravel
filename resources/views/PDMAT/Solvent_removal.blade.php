@@ -2,7 +2,6 @@
 
 @section('content')  
 
-
 {{-- Include CSS Start --}}
 {{-- Local Source  --}}
 <link rel="stylesheet" type="text/css" href="{{asset('css/jqgrid/jquery-ui-custom.css')}}" >
@@ -76,7 +75,6 @@
 {{-- ToolBar Start--}}
 <script type="text/javascript" src="{{asset('js/ToolBarProduce/ToolBar.js')}}"></script>
 {{-- ToolBar End--}}
-
 
 {{-- CSS設定 Start--}}
 
@@ -267,7 +265,7 @@
                             "solid consumed 2", "solid consumed 3", "solid consumed 4", "solid consumed 5"
                         ];
         var _GroupSource = ["tank batch", "crude batch", "Line", "glove box"
-        ];
+                        ];
 
         //建立ToolBar
         PrepareToToolbar(_ChartTypeSource, _xAxisSource, _yAxisSource, _GroupSource);
@@ -313,7 +311,6 @@
             }
         }
         return Result = (Result == '')?  ColumnName : Result;
-
     }
 
     /* 輸入中文 ColumnName 輸出Database ColumnName*/
@@ -643,8 +640,6 @@
                     // Set boolean to false if there are results
                     //empty_result = false;
                 }
-
-
             }
         
             var htmlStr = "<br />您變更的值如下：<br /><br />";
@@ -838,8 +833,7 @@
         var postData = o.jqGrid('getGridParam', 'postData');//獲得搜尋條件
 
         var getData = o.jqGrid('getGridParam', 'data');//獲得所有jqgrid的資料
-        
-        
+         
         //o.jqGrid('setGridParam', { rowNum: rowNumber }).trigger('reloadGrid', [{current:true}]);//此方式可能會lag                  
         
         var rowData = o.jqGrid('getRowData');//獲得目前顯示在表格上的資料
