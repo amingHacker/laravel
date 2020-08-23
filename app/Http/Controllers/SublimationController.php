@@ -919,7 +919,6 @@ class SublimationController extends Controller
        
       
         return response()->json([
-            //'success' => $todos,
             'glove_box' => $glove_box,
             'PLC_status' => $PLC_status,
             'input_op' => $input_op,

@@ -110,6 +110,7 @@ Route::post('/Sublimation/BackFill/{todo}', 'SublimationController@BackFill')->n
 /*************************** GrindingOven *****************************/
 Route::get('/GrindingOven/show', 'GrindingOvenController@show');
 Route::post('/GrindingOven/export', 'GrindingOvenController@export');
+Route::post('/GrindingOven/GetDataFromID', 'GrindingOvenController@GetDataFromID');
 
 //資料呈現
 Route::get('/GrindingOven', 'GrindingOvenController@index');
