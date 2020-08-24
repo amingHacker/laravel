@@ -116,6 +116,7 @@
               <li><a href="#tabs-2">Add UCL LCL</a></li>
               <li><a href="#tabs-3">Save Outlier</a></li>
               <li><a href="#tabs-4">Delete Outlier</a></li>
+              <li><a href="#tabs-5">View SPEC</a></li>
         
             </ul>
             <div id = "tabs-1" >
@@ -128,7 +129,7 @@
             <div id = "tabs-2" >
                 <div class = "row justify-content-center">     
                     <div class = "row justify-content-center">    
-                        <video width="90%" height="auto" controls>
+                        <video width="87%" height="auto" controls>
                             <source src="video/Add_UCL_LCL_USL_LSL.mp4" type="video/mp4">
                         </video>
                     </div> 
@@ -140,10 +141,18 @@
                         <source src="video/Save_Outlier.mp4" type="video/mp4">
                     </video>
                 </div>        
-            </div><div id="tabs-4">
+            </div>
+            <div id="tabs-4">
                 <div class = "row justify-content-center">     
                     <video width="90%" height="auto" controls>
                         <source src="video/Delete_Outlier.mp4" type="video/mp4">
+                    </video>
+                </div>        
+            </div>
+            <div id="tabs-5">
+                <div class = "row justify-content-center">     
+                    <video width="90%" height="auto" controls>
+                        <source src="video/ViewSPEC.mp4" type="video/mp4">
                     </video>
                 </div>        
             </div>
