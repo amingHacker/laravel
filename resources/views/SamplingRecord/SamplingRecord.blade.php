@@ -168,7 +168,7 @@
             }
             else if (colName === 'product_name'|| colName === 'level' || colName === 'sampler' 
             || colName === 'sample_source' || colName === 'analytical_item' || colName === 'analyst' 
-            || colName === 'determination')
+            || colName === 'determination' || colName === 'sampling_kind') 
             {
                 colModel.push(
                     {
@@ -375,6 +375,9 @@
             "4_0ppm":"[δ4.0ppm]",
             Sum223840:"Sum[2.2+3.8+4.0]",
             IR_A:"IR A",
+            "equipment_name":"設備名稱",
+            "standard_solution":"標準液批號", 
+            "sampling_kind": "取樣類別",
             created_at: "建立時間",
             updated_at: "更新時間",
         };
@@ -428,6 +431,9 @@
             "[δ4.0ppm]" : "4_0ppm",
             "Sum[2.2+3.8+4.0]" : "Sum223840",
             "IR A" : "IR_A",
+            "設備名稱" : "equipment_name",
+            "標準液批號" : "standard_solution", 
+            "取樣類別" : "sampling_kind",
             "建立時間" : "created_at",
             "更新時間" : "updated_at" ,
         };
@@ -1278,6 +1284,9 @@
                 "[δ4.0ppm]": "4_0ppm",
                 "Sum[2.2+3.8+4.0]": "Sum223840",
                 "IR A": "IR_A",
+                "設備名稱": "equipment_name",
+                "標準液批號": "standard_solution", 
+                "取樣類別": "sampling_kind"
             };
             //新物件被刪除時，對應的物件也會一起刪掉，並產生新物件
             for(var i = 0;i < _upLoadData.length; i++){

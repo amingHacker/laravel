@@ -18,6 +18,7 @@ class SamplingRecord extends Model
         'Te', 'Th', 'Ti', 'Tl', 'U', 'V', 'W', 'Y','Zr', 'F', 'Cl', 'Parameter_A',       
         'Impurity_A', 'Impurity_B', 'Impurity_C', 'Impurity_D', 'Impurity_E', 'Impurity_F',
         '1H_NMR', 'Other_Metals', 'Parameter_B', 'Parameter_C', 'Parameter_D', 'Organic_impurity',
-        '2_2ppm', '3_8ppm', '4_0ppm', 'Sum223840', 'IR_A', 'id'
+        '2_2ppm', '3_8ppm', '4_0ppm', 'Sum223840', 'IR_A', 'id', 'equipment_name', 'standard_solution',
+        'sampling_kind',
     ];
 }

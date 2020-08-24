@@ -444,7 +444,10 @@ class SamplingRecordController extends Controller
                 '3_8ppm' => $RowData["3_8ppm"],
                 '4_0ppm' => $RowData["4_0ppm"],
                 'Sum223840' => $RowData["Sum223840"],
-                'IR_A' => $RowData["IR_A"],                    
+                'IR_A' => $RowData["IR_A"],
+                'equipment_name' => $RowData["equipment_name"],
+                'standard_solution' => $RowData["standard_solution"],
+                'sampling_kind' => $RowData["sampling_kind"],                    
             ]    
         );
     }
@@ -612,7 +615,10 @@ class SamplingRecordController extends Controller
             '3_8ppm',
             '4_0ppm',
             'Sum223840',
-            'IR_A',     
+            'IR_A',
+            'equipment_name',
+            'standard_solution', 
+            'sampling_kind',     
             '建立時間',
             '更新時間'            
         ];
@@ -650,6 +656,7 @@ class SamplingRecordController extends Controller
         $analytical_item = DB::table('sampling_records')->select('analytical_item')->distinct()->get();
         $analyst = DB::table('sampling_records')->select('analyst')->distinct()->get();
         $determination = DB::table('sampling_records')->select('determination')->distinct()->get();
+        $sampling_kind = DB::table('sampling_records')->select('sampling_kind')->distinct()->get();
       
         return response()->json([
             //'success' => $todos,
@@ -660,6 +667,7 @@ class SamplingRecordController extends Controller
             'analytical_item' => $analytical_item,
             'analyst' => $analyst,
             'determination' => $determination,
+            'sampling_kind' => $sampling_kind
         ]);     
     }
 
@@ -857,7 +865,10 @@ class SamplingRecordController extends Controller
             '3_8ppm' => '[δ3.8ppm]',
             '4_0ppm' => '[δ4.0ppm]',
             'Sum223840' => 'Sum[2.2+3.8+4.0]',
-            'IR_A' => 'IR A',                 
+            'IR_A' => 'IR A',
+            "equipment_name" => '設備名稱',
+            "standard_solution" => '標準液批號', 
+            "sampling_kind" => '取樣類別',                 
         ];
 
         if (array_key_exists($col, $dbCol))
