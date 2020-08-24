@@ -23,12 +23,71 @@
                },
        }).done(function(data){
            UserName = data.success; 
-           document.write(UserName[0]["User_Name"] +', '+ UserName[0]["Group_Name"]);     
+           document.write(UserName[0]["User_Name"]);     
        });
        
        
    }
   </script>
+
+  {{-- Bootstrap TreeView --}}
+<script type="text/javascript">
+  // jquery ready start
+  $(document).ready(function() {
+    // jQuery code
+  
+    //////////////////////// Prevent closing from click inside dropdown
+      $(document).on('click', '.dropdown-menu', function (e) {
+        e.stopPropagation();
+      });
+  
+      // make it as accordion for smaller screens
+      if ($(window).width() < 992) {
+        $('.dropdown-menu a').click(function(e){
+          e.preventDefault();
+            if($(this).next('.submenu').length){
+              $(this).next('.submenu').toggle();
+            }
+            $('.dropdown').on('hide.bs.dropdown', function () {
+           $(this).find('.submenu').hide();
+        })
+        });
+    }
+    
+  }); // jquery end
+  </script>
+
+<style type="text/css">
+	@media (min-width: 992px){
+		.dropdown-menu .dropdown-toggle:after{
+      border-top: .3em solid transparent;
+      border-right: 0;
+      border-bottom: .3em solid transparent;
+      border-left: .3em solid;
+		}
+
+		.dropdown-menu .dropdown-menu{
+			margin-left:0; margin-right: 0;
+		}
+
+		.dropdown-menu li{
+			position: relative;
+		}
+		.nav-item .submenu{ 
+			display: none;
+			position: absolute;
+			left:100%; top:-7px;
+		}
+		.nav-item .submenu-left{ 
+			right:100%; left:auto;
+		}
+
+		.dropdown-menu > li:hover{ background-color: #f1f1f1 }
+		.dropdown-menu > li:hover > .submenu{
+			display: block;
+		}
+	}
+</style>
  
  <!-- Navigation -->
  {{-- fixed-top --}}
@@ -54,26 +113,21 @@
             <a class="dropdown-item" href="ProductSPEC">ProductSPEC</a>      
           </div>
         </li> 
+      
         <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownPortfolio" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            PDMAT
-          </a>
-          <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownPortfolio">          
-            <a class="dropdown-item" href="SolventRemoval">SolventRemoval</a>
-            <a class="dropdown-item" href="Sublimation">Sublimation</a>
-            <a class="dropdown-item" href="GrindingOven">Grinding&Oven</a>          
-          </div>
+          <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown">  Production  </a>
+            <ul class="dropdown-menu">
+            <li><a class="dropdown-item dropdown-toggle" href="#"> PDMAT </a>
+               <ul class="submenu dropdown-menu">
+                <li><a class="dropdown-item" href="SolventRemoval">SolventRemoval</a>
+                <li><a class="dropdown-item" href="Sublimation">Sublimation</a>
+                <li><a class="dropdown-item" href="GrindingOven">Grinding&Oven</a>
+             </ul>
+            </li>
+             
+            </ul>
         </li>
-        {{-- <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownBlog" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            Batch
-          </a>      
-          <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownBlog">
-            <a class="dropdown-item" href="blog-home-1.html">Batch 1</a>
-            <a class="dropdown-item" href="blog-home-2.html">Batch 2</a>
-            <a class="dropdown-item" href="blog-post.html">Batch 3</a>
-          </div>
-        </li> --}}
+        
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownBlog" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             Authority

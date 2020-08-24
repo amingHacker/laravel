@@ -12,7 +12,27 @@ function XAxisDataTransLate(data)
         "batch_number" : "typeLabel",
         "solid_Started" : "typeDate",
         "tank_batch" : "typeLabel",
-        "crude_batch" : "typeLabel",  
+        "crude_batch" : "typeLabel",
+        "bulk_started" : "typeDate",
+        "1st_crude_batch" : "typeLabel",
+        "1st_tank_batch" : "typeLabel",
+        "2nd_crude_batch" : "typeLabel",
+        "2nd_tank_batch" : "typeLabel",
+        "3rd_crude_batch" : "typeLabel",
+        "3rd_tank_batch" : "typeLabel",
+        "bulk_batch" : "typeLabel",
+        "glove_box" : "typeLabel",
+        "sap_batch" : "typeLabel",
+        "serial_number" : "typeLabel",
+        "Main_bubbler_tank" : "typeLabel",
+        "1st_bulk_batch" : "typeLabel",
+        "1st_tank_batch" : "typeLabel",
+        "2nd_bulk_batch" : "typeLabel",
+        "2nd_tank_batch" : "typeLabel",
+        "3rd_bulk_batch" : "typeLabel",
+        "3rd_tank_batch" : "typeLabel",
+        "Oven" : "typeLabel",
+        "Material" : "typeLabel", 
     };
 
     return XAxisData[data];
@@ -69,7 +89,7 @@ function DrowChart( dataLo, chartTypeGroup, dataXaxisGroup, dataYaxisGroup,
                         }
                         else //次數
                         {
-                            tmX = dataToChartXGroup[i].length + 1;                           
+                            tmX = dataToChartXGroup[i].length;                           
                             tmY = dataLo[key][dataYaxisGroup[i]];
                             tID = dataLo[key]["id"];
                             tLabelItem = dataLo[key][LabelItem[0]];

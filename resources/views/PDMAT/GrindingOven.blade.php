@@ -1185,8 +1185,8 @@
            LSLGroup.push(tLSL);
            UCLGroup.push(tUCL);
            LCLGroup.push(tLCL);
-           LabelItem.push("bulk_batch");
-           DateItem.push("bulk_started");           
+           LabelItem.push("sap_batch");
+           DateItem.push("Filling_Date");           
        }
        
        //檢查選擇Control Chart時，Group 不能大於1組以上，UCL 或LCL需同時為空或有值避免Center Line計算錯誤
