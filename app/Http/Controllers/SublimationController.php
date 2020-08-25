@@ -241,7 +241,10 @@ class SublimationController extends Controller
         else
         {
             $updateData = Sublimation::find($uploadData["UploadData"]["id"]);
-            if ($uploadData["UploadData"]["bulk_started"] ==''){$uploadData["UploadData"]["bulk_started"] = NULL;}
+            if (array_key_exists("bulk_started", $uploadData["UploadData"])) {
+                if ($uploadData["UploadData"]["bulk_started"] ==''){$uploadData["UploadData"]["bulk_started"] = NULL;}
+            }
+          
         
             if(!$updateData)
             {

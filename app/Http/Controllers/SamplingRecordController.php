@@ -245,8 +245,14 @@ class SamplingRecordController extends Controller
         else
         { 
             $updateData = SamplingRecord::find($uploadData["UploadData"]["id"]);
-            if ($uploadData["UploadData"]["sampling_date"] ==''){$uploadData["UploadData"]["sampling_date"] = NULL;}
-            if ($uploadData["UploadData"]["completion_date"] ==''){$uploadData["UploadData"]["completion_date"] = NULL;}
+            if (array_key_exists("sampling_date", $uploadData["UploadData"])) {
+                if ($uploadData["UploadData"]["sampling_date"] ==''){$uploadData["UploadData"]["sampling_date"] = NULL;}
+            }
+            if (array_key_exists("completion_date", $uploadData["UploadData"])) {
+                if ($uploadData["UploadData"]["completion_date"] ==''){$uploadData["UploadData"]["completion_date"] = NULL;}
+            }
+            
+           
             
             if(!$updateData)
             {   

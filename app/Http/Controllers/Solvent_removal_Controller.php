@@ -241,7 +241,11 @@ class Solvent_removal_Controller extends Controller
         else
         { 
             $updateData = Solvent_removal::find($uploadData["UploadData"]["id"]);
-            if ($uploadData["UploadData"]["solid_Started"] ==''){$uploadData["UploadData"]["solid_Started"] = NULL;}
+            
+            if (array_key_exists("solid_Started", $uploadData["UploadData"])) {
+                if ($uploadData["UploadData"]["solid_Started"] ==''){$uploadData["UploadData"]["solid_Started"] = NULL;}
+            }
+           
             if(!$updateData)
             {
                 $this->CreateRowData($uploadData["UploadData"]);

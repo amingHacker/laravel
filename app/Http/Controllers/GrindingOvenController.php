@@ -229,6 +229,9 @@ class GrindingOvenController extends Controller
         else
         {
             $updateData = GrindingOven::find($uploadData["UploadData"]["id"]);
+            if (array_key_exists("Filling_Date", $uploadData["UploadData"])) {
+                if ($uploadData["UploadData"]["Filling_Date"] ==''){$uploadData["UploadData"]["Filling_Date"] = NULL;}
+            }
             if ($uploadData["UploadData"]["Filling_Date"] ==''){$uploadData["UploadData"]["Filling_Date"] = NULL;}
 
             
