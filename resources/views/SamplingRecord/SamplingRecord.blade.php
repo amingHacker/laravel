@@ -168,7 +168,7 @@
             }
             else if (colName === 'product_name'|| colName === 'level' || colName === 'sampler' 
             || colName === 'sample_source' || colName === 'analytical_item' || colName === 'analyst' 
-            || colName === 'determination' || colName === 'sampling_kind') 
+            || colName === 'determination' || colName === 'sampling_kind' || colName == 'equipment_name') 
             {
                 colModel.push(
                     {

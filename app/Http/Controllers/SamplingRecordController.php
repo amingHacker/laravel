@@ -657,6 +657,7 @@ class SamplingRecordController extends Controller
         $analyst = DB::table('sampling_records')->select('analyst')->distinct()->get();
         $determination = DB::table('sampling_records')->select('determination')->distinct()->get();
         $sampling_kind = DB::table('sampling_records')->select('sampling_kind')->distinct()->get();
+        $equipment_name = DB::table('sampling_records')->select('equipment_name')->distinct()->get();
       
         return response()->json([
             //'success' => $todos,
@@ -667,7 +668,8 @@ class SamplingRecordController extends Controller
             'analytical_item' => $analytical_item,
             'analyst' => $analyst,
             'determination' => $determination,
-            'sampling_kind' => $sampling_kind
+            'sampling_kind' => $sampling_kind,
+            'equipment_name' => $equipment_name,
         ]);     
     }
 
