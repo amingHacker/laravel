@@ -117,6 +117,8 @@
               <li><a href="#tabs-3">Save Outlier</a></li>
               <li><a href="#tabs-4">Delete Outlier</a></li>
               <li><a href="#tabs-5">View SPEC</a></li>
+              <li><a href="#tabs-6">Add Record</a></li>
+              <li><a href="#tabs-7">Upload Record</a></li>
         
             </ul>
             <div id = "tabs-1" >
@@ -153,6 +155,20 @@
                 <div class = "row justify-content-center">     
                     <video width="90%" height="auto" controls>
                         <source src="video/ViewSPEC.mp4" type="video/mp4">
+                    </video>
+                </div>        
+            </div>
+            <div id="tabs-6">
+                <div class = "row justify-content-center">     
+                    <video width="90%" height="auto" controls>
+                        <source src="video/add_new_record.mp4" type="video/mp4">
+                    </video>
+                </div>        
+            </div>
+            <div id="tabs-7">
+                <div class = "row justify-content-center">     
+                    <video width="90%" height="auto" controls>
+                        <source src="video/upload_Data.mp4" type="video/mp4">
                     </video>
                 </div>        
             </div>
