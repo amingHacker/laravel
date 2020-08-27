@@ -14,7 +14,7 @@ class AddProductSpecTmalTmaltwTable extends Migration
     public function up()
     {
         Schema::table('product_spec_tmal_tmaltw', function (Blueprint $table) {
-            $table->string("Spec_EG_Micron_tight", 50)->after('ELEMENT');
+            $table->string("Spec_TW_TSMC_tight", 50)->after('ELEMENT');
         });
     }
 
