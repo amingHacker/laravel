@@ -17,34 +17,34 @@
     <div class="row">
       <div class="col-lg-4 col-sm-6 portfolio-item">
         <div class="card h-100">
-          <a href="SamplingRecord"><img class="card-img-top" src="img/SamplingRecord.png" alt=""></a>
+          <a href="SamplingRecord" style="height:100% "><img class="card-img-top" src="img/SamplingRecord.png" alt=""></a>
           <div class="card-body">
             <h4 class="card-title">
               <a href="#">Sampling Records</a>
             </h4>
-            <p class="card-text">Sampling records from our productions.</p>
+            {{-- <p class="card-text">Sampling records from our productions.</p> --}}
           </div>
         </div>
       </div>
       <div class="col-lg-4 col-sm-6 portfolio-item">
         <div class="card h-100">
-          <a href="ProductSPEC"><img class="card-img-top" src="img/ProductSPEC.png" alt=""></a>
+          <a href="ProductSPEC" style="height:100% "><img class="card-img-top" src="img/ProductSPEC.png" alt=""></a>
           <div class="card-body">
             <h4 class="card-title">
               <a href="#">Product SPEC</a>
             </h4>
-            <p class="card-text">Include productions of SPEC for our customers, include TMAL, MO, PDMAT, CCTBA, ALEXA, etc.</p>
+            {{-- <p class="card-text">Include productions of SPEC for our customers, include TMAL, MO, PDMAT, CCTBA, ALEXA, etc.</p> --}}
           </div>
         </div>
       </div>
       <div class="col-lg-4 col-sm-6 portfolio-item">
         <div class="card h-100">
-          <a href="ShowVideo"><img class="card-img-top" src="img/ShowVideo.png" alt=""></a>
+          <a href="ShowVideo" style="height:100% "><img class="card-img-top" src="img/ShowVideo.png" alt=""></a>
           <div class="card-body">
             <h4 class="card-title">
               <a href="#">Training Material</a>
             </h4>
-            <p class="card-text">Short films to train user how to use system easily.</p>
+            {{-- <p class="card-text">Short films to train user how to use ssystem easily.</p> --}}
           </div>
         </div>
       </div>
@@ -106,7 +106,7 @@
     </div> --}}
     <!-- /.row -->
 
-    <hr>
+    {{-- <hr> --}}
 
     <!-- Call to Action Section -->
     {{-- <div class="row mb-4">
