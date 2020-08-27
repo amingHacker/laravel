@@ -1176,6 +1176,11 @@
         
         var rowData = o.jqGrid('getRowData');//獲得目前顯示在表格上的資料
 
+        if(rowNumber > 10000){
+            alert("下載筆數超過10000筆，請重新縮小範圍再進行下載。(The record is more than 10000, please smaller the range and download again.) ");
+            return;
+        }
+
         $.ajax({
                 async:false,
                 url: "SamplingRecord/export" ,//路徑
@@ -1356,59 +1361,71 @@
                 show:{effect: "fade", duration: 140},
                 hide:{effect: "clip", duration: 140},
                 focus: function() { $(".ui-dialog").focus(); }, // Unfocus the default focus elem
-                buttons : {
-                    "確認" : function() {
-                        $("#confirmDialog").html('<span style="font-weight:bold; color:#2e6e9e;">《 上傳進度 》</span><br /><br /><div id="progressbar"></div>');                                                                                                        
-                        
-                        for (var i = 0; i < data.length; i++) {                              
-                                setTimeout((function (i) {                      
-                                    return function () {                                                                       
+                buttons : [
+                    {
+                        id:"button-OK",
+                        text:"確認",
+                        click:function() 
+                        {
+                            $("#confirmDialog").html('<span style="font-weight:bold; color:#2e6e9e;">《 上傳進度 》</span><br /><br /><div id="progressbar"></div>');                                                                                                        
+                            $("#confirmDialog").next(".ui-dialog-buttonpane button:contains('確定')").attr("disabled", true);
+                            $("#button-OK").button("disable");
+                            $("#button-cancel").button("disable");
+                            for (var i = 0; i < data.length; i++) 
+                            {                              
+                                    setTimeout((function (i) {                      
+                                        return function () {                                                                       
 
-                                        $.ajax({
-                                            url: 'SamplingRecord/FileUpload/' + data[i].編號,
-                                            method: 'post',
-                                            async: false,//同步請求資料
-                                            data: {
-                                                UploadData:_upLoadData[i]                               
-                                            },
-                                            success: function (response) {                                                   
-                                                if (response.message != undefined && i == 0)
-                                                {   
-                                                    alert("Upload Fail!! Please check file: " + response.message);
-                                                    
-                                                    for(var j = 0; j < data.length; j++)
-                                                    {
-                                                        clearTimeout(j);
-                                                    }                                           
-                                                    window.location.reload();                                     
-                                                }
-                                                else
-                                                {                
-                                                    if(response.message == undefined ) 
-                                                    {                                                                         
-                                                        $(function() 
-                                                            {
-                                                                $( "#progressbar" ).progressbar
-                                                                ({
-                                                                    value: (i/data.length) * 100
-                                                                });
-                                                            });      
-                                                        if (response.success == data[data.length-1].編號)
-                                                        {                                                    
-                                                            window.location.reload();
-                                                        }
+                                            $.ajax({
+                                                url: 'SamplingRecord/FileUpload/' + data[i].編號,
+                                                method: 'post',
+                                                async: false,//同步請求資料
+                                                data: {
+                                                    UploadData:_upLoadData[i]                               
+                                                },
+                                                success: function (response) {                                                   
+                                                    if (response.message != undefined && i == 0)
+                                                    {   
+                                                        alert("Upload Fail!! Please check file: " + response.message);
+                                                        
+                                                        for(var j = 0; j < data.length; j++)
+                                                        {
+                                                            clearTimeout(j);
+                                                        }                                           
+                                                        window.location.reload();                                     
                                                     }
-                                                }                             
-                                            },                                       
-                                        });
-                                    }
-                                })(i), 10);
-                            }                                                        
+                                                    else
+                                                    {                
+                                                        if(response.message == undefined ) 
+                                                        {                                                                         
+                                                            $(function() 
+                                                                {
+                                                                    $( "#progressbar" ).progressbar
+                                                                    ({
+                                                                        value: (i/data.length) * 100
+                                                                    });
+                                                                });      
+                                                            if (response.success == data[data.length-1].編號)
+                                                            {                                                    
+                                                                window.location.reload();
+                                                            }
+                                                        }
+                                                    }                             
+                                                },                                       
+                                            });
+                                        }
+                                    })(i), 10);
+                            }
+                        }                                                       
                     },
-                    "取消" : function() {
-                        $(this).dialog("close");                     
+                    {
+                        id: "button-cancel",
+                        text: "取消",
+                        click: function() {
+                            $(this).dialog("close");
+                        }
                     }
-                }
+                ]
             });                                       
         })
     }

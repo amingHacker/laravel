@@ -960,55 +960,66 @@
                 show:{effect: "fade", duration: 140},
                 hide:{effect: "clip", duration: 140},
                 focus: function() { $(".ui-dialog").focus(); }, // Unfocus the default focus elem
-                buttons : {
-                    "確認" : function() {
-                        //$(this).dialog("close");
-                        var table = "dg" + $("#tabs .ui-tabs-active").text(); //呈現此table的title
+                buttons : [
+                    {
+                        id:"button-OK",
+                        text:"確認",
+                        click:function()
+                        { 
+                            //$(this).dialog("close");
+                            var table = "dg" + $("#tabs .ui-tabs-active").text(); //呈現此table的title
 
-                        var o = $("#" + table);
+                            var o = $("#" + table);
 
-                        var caption = o.jqGrid("getGridParam", "caption");
-                     
-                        $("#confirmDialog").html('<span style="font-weight:bold; color:#2e6e9e;">《 上傳進度 》</span><br /><br /><div id="progressbar"></div>');                                                                                                        
+                            var caption = o.jqGrid("getGridParam", "caption");
                         
-                        for (var i = 0; i < data.length; i++) 
-                        {                              
-                            setTimeout((function (i) {                      
-                                return function () {                                                                       
+                            $("#confirmDialog").html('<span style="font-weight:bold; color:#2e6e9e;">《 上傳進度 》</span><br /><br /><div id="progressbar"></div>');                                                                                                        
+                            $("#confirmDialog").next(".ui-dialog-buttonpane button:contains('確定')").attr("disabled", true);
+                            $("#button-OK").button("disable");
+                            $("#button-cancel").button("disable");
+                            for (var i = 0; i < data.length; i++) 
+                            {                              
+                                setTimeout((function (i) {                      
+                                    return function () {                                                                       
 
-                                    $.ajax({
-                                        url: 'ProductSPEC/FileUpload/' + data[i].id,
-                                        method: 'post',
-                                        async: false,//同步請求資料
-                                        //datatype:"json",
-                                        data: {
-                                            UploadData:_upLoadData[i],
-                                            table:table,
-                                            caption: caption                              
-                                        },
-                                        success: function (response) {                                                   
-                                            $( function() 
-                                                {
-                                                    $( "#progressbar" ).progressbar
-                                                    ({
-                                                        value: (i/data.length) * 100
-                                                    });
-                                                });      
-                                            if (response.success == data[data.length-1].id){                                                    
-                                                window.location.reload()
+                                        $.ajax({
+                                            url: 'ProductSPEC/FileUpload/' + data[i].id,
+                                            method: 'post',
+                                            async: false,//同步請求資料
+                                            //datatype:"json",
+                                            data: {
+                                                UploadData:_upLoadData[i],
+                                                table:table,
+                                                caption: caption                              
+                                            },
+                                            success: function (response) {                                                   
+                                                $( function() 
+                                                    {
+                                                        $( "#progressbar" ).progressbar
+                                                        ({
+                                                            value: (i/data.length) * 100
+                                                        });
+                                                    });      
+                                                if (response.success == data[data.length-1].id){                                                    
+                                                    window.location.reload()
+                                                }
+                                            },
+                                            failure: function (response) {                              
                                             }
-                                        },
-                                        failure: function (response) {                              
-                                        }
-                                    });
-                                }
-                            })(i), 10);
+                                        });
+                                    }
+                                })(i), 10);
+                            }
                         }                                                        
                     },
-                    "取消" : function() {
-                        $(this).dialog("close");                     
+                    {
+                        id: "button-cancel",
+                        text: "取消",
+                        click: function() {
+                            $(this).dialog("close");
+                        }
                     }
-                }
+                ]
             });                                       
         })
     }

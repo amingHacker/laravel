@@ -1006,11 +1006,17 @@
                 show:{effect: "fade", duration: 140},
                 hide:{effect: "clip", duration: 140},
                 focus: function() { $(".ui-dialog").focus(); }, // Unfocus the default focus elem
-                buttons : {
-                    "確認" : function() {
+                buttons :[ 
+                {
+                    id:"button-OK",
+                    text:"確認",
+                    click:function()
+                    {
                         //$(this).dialog("close");
                         $("#confirmDialog").html('<span style="font-weight:bold; color:#2e6e9e;">《 上傳進度 》</span><br /><br /><div id="progressbar"></div>');                                                                                                        
-                        
+                        $("#confirmDialog").next(".ui-dialog-buttonpane button:contains('確定')").attr("disabled", true);
+                        $("#button-OK").button("disable");
+                        $("#button-cancel").button("disable");
                         for (var i = 0; i < data.length; i++) {                              
                                 setTimeout((function (i) {                      
                                     return function () {                                                                       
@@ -1053,12 +1059,17 @@
                                         });
                                     }
                                 })(i), 2);
-                            }                                                        
+                            }
+                        }                                                        
                     },
-                    "取消" : function() {
-                        $(this).dialog("close");                     
+                    {
+                        id: "button-cancel",
+                        text: "取消",
+                        click: function() {
+                            $(this).dialog("close");
+                        }                   
                     }
-                }
+                ]
             });                                       
         })
     }
