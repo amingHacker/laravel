@@ -164,6 +164,24 @@ Route::any('/Authority/AddandUpdate/{todo}', 'AuthorityController@AddandUpdate')
 Route::delete('/Authority/delete/{todo}', 'AuthorityController@destroy')->name('Authority.destroy');
 
 
+/*************************** AbnormalEvent *****************************/
+//資料呈現
+Route::get('/AbnormalEvent', 'AbnormalEventController@index');
+Route::get('/AbnormalEvent/show/{todo}', 'AbnormalEventController@show');
+Route::post('/AbnormalEvent/export', 'AbnormalEventController@export');
+
+
+
+//File 大量新增和修改
+Route::post('/AbnormalEvent/FileUpload/{todo}', 'AbnormalEventController@FileUpload')->name('AbnormalEvent.FileUpload');
+
+//Grid inline 新增和修改
+Route::any('/AbnormalEvent/AddandUpdate/{todo}', 'AbnormalEventController@AddandUpdate')->name('AbnormalEvent.AddandUpdate');
+
+//Grid 刪除
+Route::delete('/AbnormalEvent/delete/{todo}', 'AbnormalEventController@destroy')->name('AbnormalEvent.destroy');
+
+
 
 
 /********* Todo ***********/

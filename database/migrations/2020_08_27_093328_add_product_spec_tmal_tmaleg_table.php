@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateProductSpecAlexaTable extends Migration
+class AddProductSpecTmalTmalegTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,8 @@ class CreateProductSpecAlexaTable extends Migration
      */
     public function up()
     {
-        Schema::create('product_spec_alexa', function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('ELEMENT',100);
-            $table->string('ALEXA_TSMC_Spec_EG_TSMC_tight',100);
-            $table->timestamps();
+        Schema::table('product_spec_tmal_tmaleg', function (Blueprint $table) {
+            $table->string("Spec_EG_Micron_tight", 50)->after('ELEMENT');
         });
     }
 
@@ -28,6 +25,8 @@ class CreateProductSpecAlexaTable extends Migration
      */
     public function down()
     {
-        //
+        Schema::table('product_spec_tmal_tmaleg', function (Blueprint $table) {
+            //
+        });
     }
 }

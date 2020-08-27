@@ -40,7 +40,6 @@ function showSelectSPEC()
             var data = DownLoadValue.success;
             sessionStorage.setItem('CustomerItem' , JSON.stringify(DownLoadValue.success));
             
-            //產生要寫入excel的data
             var table = "import_preview";
             var pcontent = '<span style="font-weight:bold; color:#2e6e9e;">《 產品規格 ProductSPEC 》</span><br /><br />'
             + '<div id="jqxcombobox_SPEC" ></div>' 
@@ -49,9 +48,9 @@ function showSelectSPEC()
             + '<table id= "ProductSPEC"></table>'
             + '</br>'
             + '<table id= '+ table + '></table>'
-            + '</br></br>';
-           
-           
+            +'</br>'
+            + '<div id="judge_result" >判定: </div>' 
+            + '</br></br>';     
             
             //建立動態表格
             $("#confirmDialog").html(pcontent);
@@ -119,9 +118,7 @@ function showSelectSPEC()
                 "MO",
                 "PDMAT",
                 "CCTBA",
-                "CCTBA-447FN-200G",
-                "ALEXA",
-                "ALEXA-447FN",
+                "ALEXA",  
             ]
             var dictionary ={
                 "TMALEG": "TMAL_EG",
@@ -130,10 +127,8 @@ function showSelectSPEC()
                 "TMAL": "TMAL",
                 "MO":"MO",
                 "PDMAT":"PDMAT",
-                "CCTBA":"CCTBA",
-                "CCTBA-447FN-200G":"CCTBA_447FN_200G",
-                "ALEXA":"ALEXA",
-                "ALEXA-447FN": "ALEXA_447FN"
+                "CCTBA":"CCTBA",       
+                "ALEXA":"ALEXA", 
             };
 
             $("#jqxcombobox_SPEC").jqxComboBox({ source: sourceSPEC, selectedIndex: -1, width: '200px', height: '25' });
@@ -178,7 +173,7 @@ function CreateToolBar(source)
 {
     $("#jqxToolBar_SPEC").jqxToolBar("destroyTool", 1 );
     $("#jqxToolBar_SPEC").jqxToolBar('render');
-
+    
     $("#jqxToolBar_SPEC").jqxToolBar({ 
         width: "400", height: '35', 
         tools: "toggleButton",
@@ -207,7 +202,8 @@ function CreateToolBar(source)
             width = 200;
         }
         tool.jqxComboBox({ width: width, source: source, selectedIndex: -1, searchMode: 'containsignorecase', autoComplete: true});
-        tool.on("change", function (event) {          
+        tool.on("change", function (event) {
+            sessionStorage.setItem('judge_result', "");          
             var args = event.args;
                 if (args) {
                     var label = args.item["label"]
@@ -224,10 +220,20 @@ function CreateToolBar(source)
                     }
 
                     CompareItemWithSPEC(_compare, label);
+                    if (sessionStorage.getItem('judge_result') == "Fail")
+                    {
+                        document.getElementById('judge_result').innerText='判定: Fail';
+                        document.getElementById('judge_result').style.color='red';
+                    }
+                    else
+                    {
+                        document.getElementById('judge_result').innerText='判定: Pass';
+                        document.getElementById('judge_result').style.color='green';
+                    }
                 }
             });
     
-    });
+    });   
 }
 
 function CompareItemWithSPEC(_compare, label) 
@@ -358,6 +364,7 @@ function compareCellAttr(rowId, val, rawObject, cm, rdata)
                 if (parseFloat(_customerSPEC) >  parseFloat(val))
                 {
                     sty = "style='font-size:14px; color:red; background-color:#9dbcfa'" ;
+                    sessionStorage.setItem('judge_result', "Fail");
                 }
             }
             //其他大於SPEC就是異常
@@ -366,6 +373,7 @@ function compareCellAttr(rowId, val, rawObject, cm, rdata)
                 if ( parseFloat(_customerSPEC) <  parseFloat(val) )
                 {
                     sty = "style='font-size:14px; color:red; background-color:#9dbcfa'" ;
+                    sessionStorage.setItem('judge_result', "Fail");
                 }
             }
         }

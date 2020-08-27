@@ -85,8 +85,7 @@
     var TMAL_TW = @json($todosTMAL_TW);
     var TMAL_UM = @json($todosTMAL_UM);
 
-    var CCTBA_447FN_200G = @json($todosCCTBA_447fn_200g);
-    var ALEXA_447FN = @json($todosALEXA_447fn);
+ 
     var _todoList = {
             TMAL: TMAL,
             MO: MO, 
@@ -96,8 +95,7 @@
             TMAL_EG: TMAL_EG,
             TMAL_TW: TMAL_TW,
             TMAL_UM: TMAL_UM,
-            CCTBA_447FN_200G: CCTBA_447FN_200G,
-            ALEXA_447FN: ALEXA_447FN,
+    
         };
     $(document).ready(function () {      
         var i = 0;
@@ -288,11 +286,9 @@
                 ];
         var source_CCTBA = [
             "CCTBA",
-            "CCTBA-447FN-200G",
         ];
         var source_ALEXA = [
             "ALEXA",
-            "ALEXA-447FN",
         ];
         var dictionary ={
             "TMALEG": "TMAL_EG",
@@ -300,9 +296,7 @@
             "TMALUM": "TMAL_UM",
             "TMAL": "TMAL",
             "CCTBA":"CCTBA",
-            "CCTBA-447FN-200G":"CCTBA_447FN_200G",
             "ALEXA":"ALEXA",
-            "ALEXA-447FN": "ALEXA_447FN"
         };
         // Create a jqxComboBox
         $("#jqxcombobox_TMAL").jqxComboBox({ source: source_TMAL, selectedIndex: 0, width: '200px', height: '25' });

@@ -4,34 +4,23 @@ namespace App\Http\Controllers;
 
 use DB;
 use Illuminate\Http\Request;
-use App\ProductSPEC;
+// use App\ProductSPEC;
 use Validator;
 
-class ProductSPECController extends Controller
+class AbnormalEventController extends Controller
 {
     //This is the controller index
     public function index( Request $request )
     {      
-        $todosTMAL = DB::table('product_spec_tmal')->orderBy('id','desc')->first();
-        $todosMO = DB::table('product_spec_mo')->orderBy('id','desc')->first();
-        $todosPDMAT = DB::table('product_spec_pdmat')->orderBy('id','desc')->first();
-        $todosCCTBA = DB::table('product_spec_cctba')->orderBy('id','desc')->first();
-        $todosALEXA = DB::table('product_spec_alexa')->orderBy('id','desc')->first();
-        
-        $todosTMAL_EG = DB::table('product_spec_tmal_tmaleg')->orderBy('id','desc')->first();
-        $todosTMAL_TW = DB::table('product_spec_tmal_tmaltw')->orderBy('id','desc')->first();
-        $todosTMAL_UM = DB::table('product_spec_tmal_tmalum')->orderBy('id','desc')->first();
+        $todosAccounts = DB::table('sampling_records_accounts')->orderBy('id','desc')->first();
+        $todosGroups = DB::table('sampling_records_groups')->orderBy('id','desc')->first();
+        $todosPermissions = DB::table('sampling_records_permissions')->orderBy('id','desc')->first();
+            
 
-
-        return view('SamplingRecord.ProductSPEC',[
-            'todosTMAL' => $todosTMAL,
-            'todosMO' => $todosMO,
-            'todosPDMAT' => $todosPDMAT,
-            'todosCCTBA' => $todosCCTBA,
-            'todosALEXA' => $todosALEXA,
-            'todosTMAL_EG'=> $todosTMAL_EG,
-            'todosTMAL_TW'=> $todosTMAL_TW,
-            'todosTMAL_UM'=> $todosTMAL_UM,
+        return view('SamplingRecord.Authority',[
+            'todosAccounts' => $todosAccounts,
+            'todosGroups' => $todosGroups,
+            'todosPermissions' => $todosPermissions,
         ]);
     }
 
@@ -50,29 +39,14 @@ class ProductSPECController extends Controller
         
         switch ($_SERVER["REDIRECT_URL"])
         {
-            case "/ProductSPEC/show/TMAL":
-                $table = 'product_spec_tmal';
+            case "/Authority/show/Accounts":
+                $table = 'sampling_records_accounts';
                 break;
-            case "/ProductSPEC/show/MO":
-                $table = 'product_spec_mo';
+            case "/Authority/show/Groups":
+                $table = 'sampling_records_groups';
                 break;
-            case "/ProductSPEC/show/PDMAT":
-                $table = 'product_spec_pdmat';
-                break;
-            case "/ProductSPEC/show/CCTBA":
-                $table = 'product_spec_cctba';
-                break;
-            case "/ProductSPEC/show/ALEXA":
-                $table = 'product_spec_alexa';
-                break;
-            case "/ProductSPEC/show/TMAL_EG":
-                $table = 'product_spec_tmal_tmaleg';
-                break;
-            case "/ProductSPEC/show/TMAL_TW":
-                $table = 'product_spec_tmal_tmaltw';
-                break;
-            case "/ProductSPEC/show/TMAL_UM":
-                $table = 'product_spec_tmal_tmalum';
+            case "/Authority/show/Permissions":
+                $table = 'sampling_records_permissions';
                 break;
         }
         // var_dump($_SERVER["REDIRECT_URL"]);
@@ -165,45 +139,16 @@ class ProductSPECController extends Controller
 
         $table = '';
         switch ($downloadReq["table"]){
-            case 'dgTMAL':
-                switch($downloadReq["caption"])
-                {
-                    case 'TMAL_EG':
-                        $table = 'product_spec_tmal_tmaleg';
-                        break;
-                    case 'TMAL_TW':
-                        $table = 'product_spec_tmal_tmaltw';
-                        break;
-                    case 'TMAL_UM':
-                        $table = 'product_spec_tmal_tmalum';
-                        break;
-                    case 'TMAL':
-                        $table = 'product_spec_tmal';
-                        break;
-                }
+            case 'dgAccounts':
+                $table = 'sampling_records_accounts';
                 break;
-            case 'dgMO':
-                $table = 'product_spec_mo';
+            case 'dgGroups':
+                $table = 'sampling_records_groups';
                 break;
-            case 'dgPDMAT':
-                $table = 'product_spec_pdmat';
+            case 'dgPermissions':
+                $table = 'sampling_records_permissions';
                 break;
-            case 'dgCCTBA':
-                switch($downloadReq["caption"])
-                {
-                    case 'CCTBA':
-                        $table = 'product_spec_cctba';
-                        break;
-                }
-                break;
-            case 'dgALEXA':
-                switch($downloadReq["caption"])
-                {
-                    case 'ALEXA':
-                        $table = 'product_spec_alexa';
-                        break;
-                }
-                break;
+         
         }
 
         $_search = $downloadReq["postData"]["_search"];  
@@ -311,50 +256,21 @@ class ProductSPECController extends Controller
 
         $table = '';
         switch ($uploadData["table"]){
-            case 'dgTMAL':
-                switch($uploadData["caption"])
-                {
-                    case 'TMAL_EG':
-                        $table = 'product_spec_tmal_tmaleg';
-                        break;
-                    case 'TMAL_TW':
-                        $table = 'product_spec_tmal_tmaltw';
-                        break;
-                    case 'TMAL_UM':
-                        $table = 'product_spec_tmal_tmalum';
-                        break;
-                    case 'TMAL':
-                        $table = 'product_spec_tmal';
-                        break;
-                }
+            case 'dgAccounts':
+                $table = 'sampling_records_accounts';
                 break;
-            case 'dgMO':
-                $table = 'product_spec_mo';
+            case 'dgGroups':
+                $table = 'sampling_records_groups';
                 break;
-            case 'dgPDMAT':
-                $table = 'product_spec_pdmat';
+            case 'dgPermissions':
+                $table = 'sampling_records_permissions';
                 break;
-            case 'dgCCTBA':
-                switch($uploadData["caption"])
-                {
-                    case 'CCTBA':
-                        $table = 'product_spec_cctba';
-                        break;
-                }
-                break;
-            case 'dgALEXA':
-                switch($uploadData["caption"])
-                {
-                    case 'ALEXA':
-                        $table = 'product_spec_alexa';
-                        break;
-                }
-                break;
+           
         } 
         $uploadData["UploadData"]["created_at"] = date('Y-m-d H:i:s');
         $uploadData["UploadData"]["updated_at"] = date('Y-m-d H:i:s');
 
-        // $updateData = ProductSPEC::find($uploadData["UploadData"]["id"]);
+      
         $updateData = DB::table($table)->where("id", $uploadData["UploadData"]["id"]);
         $isExist = DB::table($table)->where("id", $uploadData["UploadData"]["id"])->first();
 
@@ -380,44 +296,14 @@ class ProductSPECController extends Controller
         // dd($Parameter);
         $table = '';
         switch ($Parameter["table"]){
-            case 'dgTMAL':
-                switch($Parameter["caption"])
-                {
-                    case 'TMAL_EG':
-                        $table = 'product_spec_tmal_tmaleg';
-                        break;
-                    case 'TMAL_TW':
-                        $table = 'product_spec_tmal_tmaltw';
-                        break;
-                    case 'TMAL_UM':
-                        $table = 'product_spec_tmal_tmalum';
-                        break;
-                    case 'TMAL':
-                        $table = 'product_spec_tmal';
-                        break;
-                }
+            case 'dgAccounts':
+                $table = 'sampling_records_accounts';
                 break;
-            case 'dgMO':
-                $table = 'product_spec_mo';
+            case 'dgGroups':
+                $table = 'sampling_records_groups';
                 break;
-            case 'dgPDMAT':
-                $table = 'product_spec_pdmat';
-                break;
-            case 'dgCCTBA':
-                switch($Parameter["caption"])
-                {
-                    case 'CCTBA':
-                        $table = 'product_spec_cctba';
-                        break;
-                }
-                break;
-            case 'dgALEXA':
-                switch($Parameter["caption"])
-                {
-                    case 'ALEXA':
-                        $table = 'product_spec_alexa';
-                        break;
-                }
+            case 'dgPermissions':
+                $table = 'sampling_records_permissions';
                 break;
         }
       
@@ -435,46 +321,17 @@ class ProductSPECController extends Controller
     {      
         $AddParameter = $request->all();
         
+
         $table = '';
         switch ($AddParameter["table"]){
-            case 'dgTMAL':
-                switch($AddParameter["caption"])
-                {
-                    case 'TMAL_EG':
-                        $table = 'product_spec_tmal_tmaleg';
-                        break;
-                    case 'TMAL_TW':
-                        $table = 'product_spec_tmal_tmaltw';
-                        break;
-                    case 'TMAL_UM':
-                        $table = 'product_spec_tmal_tmalum';
-                        break;
-                    case 'TMAL':
-                        $table = 'product_spec_tmal';
-                        break;
-                }
+            case 'dgAccounts':
+                $table = 'sampling_records_accounts';
                 break;
-            case 'dgMO':
-                $table = 'product_spec_mo';
+            case 'dgGroups':
+                $table = 'sampling_records_groups';
                 break;
-            case 'dgPDMAT':
-                $table = 'product_spec_pdmat';
-                break;
-            case 'dgCCTBA':
-                switch($AddParameter["caption"])
-                {
-                    case 'CCTBA':
-                        $table = 'product_spec_cctba';
-                        break;
-                }
-                break;
-            case 'dgALEXA':
-                switch($AddParameter["caption"])
-                {
-                    case 'ALEXA':
-                        $table = 'product_spec_alexa';
-                        break;
-                }
+            case 'dgPermissions':
+                $table = 'sampling_records_permissions';
                 break;
         }
         
@@ -483,8 +340,7 @@ class ProductSPECController extends Controller
         //dd($AddParameter["urgent"]);      
         if ($request->oper =='add')
         {   unset($AddParameter["oper"]);
-            unset($AddParameter["table"]);
-            unset($AddParameter["caption"]);  
+            unset($AddParameter["table"]);  
             $this->CreateRowData($AddParameter, $table);             
             return response()->json([
                 'success' => 'Record add successfully!'
@@ -495,7 +351,6 @@ class ProductSPECController extends Controller
             unset($AddParameter["oper"]);
             unset($AddParameter["table"]);
             unset($AddParameter["created_at"]);
-            unset($AddParameter["caption"]);
             $updateData = DB::table($table)->where('id', $request->id);
             $updateData->update($AddParameter);
             return response()->json([
@@ -505,48 +360,16 @@ class ProductSPECController extends Controller
         }
     }
 
-    //Get Table
-    public function GetTable( Request $request )
-    {    
-        $table = '';
-            
-        switch ($_SERVER["REDIRECT_URL"])
-        {
-            case "/ProductSPEC/GetTable/TMAL":
-                $table = 'product_spec_tmal';
-                break;
-            case "/ProductSPEC/GetTable/MO":
-                $table = 'product_spec_mo';
-                break;
-            case "/ProductSPEC/GetTable/PDMAT":
-                $table = 'product_spec_pdmat';
-                break;
-            case "/ProductSPEC/GetTable/CCTBA":
-                $table = 'product_spec_cctba';
-                break;
-            case "/ProductSPEC/GetTable/ALEXA":
-                $table = 'product_spec_alexa';
-                break;
-            case "/ProductSPEC/GetTable/TMAL_EG":
-                $table = 'product_spec_tmal_tmaleg';
-                break;
-            case "/ProductSPEC/GetTable/TMAL_TW":
-                $table = 'product_spec_tmal_tmaltw';
-                break;
-            case "/ProductSPEC/GetTable/TMAL_UM":
-                $table = 'product_spec_tmal_tmalum';
-                break;
-        }
-        
-        $product_SPEC= DB::table($table)->get();
-    
+     //獲得Authority Groups
+     public function GetAuthorityGroup(Request $request)
+     {    
+        //dd($request);    
+        $group_name = DB::table('sampling_records_groups')->select('Group_Name')->distinct()->get();
       
         return response()->json([
-            'product_SPEC' => $product_SPEC,
-
-        ]);  
-    }
-
+            'Group_Name' => $group_name ,
+        ]);     
+     }
 
     //回填方法
     public function BackFill($id)
