@@ -68,6 +68,10 @@
 {{-- CSS設定 Start--}}
 <style type="text/css">
     .ui-jqgrid-hdiv { overflow-y: hidden; }
+    .ui-tabs
+    {
+        width:71%;
+    }
 </style>
 
 {{-- CSS設定 End --}}
@@ -447,8 +451,8 @@
     <div style = "margin:0px auto;"  >
         <img class=" img-responsive" src="img/Logo_ProductSPEC.png" >   
     </div>  
-<div class = "container-fluid" >
-    <div class = "row justify-content-center">
+
+    <div align="center">
         <div id="tabs"  >
             <ul class = "row justify-content-center">
               <li><a href="#tabs-1">TMAL</a></li>
@@ -500,19 +504,19 @@
             <p></p>
         </div>
     </div>
-</div> 
+
     
-<div class = "row justify-content-center">
+<div align = "center">
       <input type="BUTTON" class="btn btn-outline-info btn-space" id="New" style="display: none" value="新增" />
         <input type="BUTTON" class="btn btn-outline-info btn-space" id="Edit" style="display: none" value="編輯" />
         <input type="BUTTON" class="btn btn-outline-info btn-space" id="Save" style="display: none" disabled="true" value="儲存" />
         <input type="BUTTON" class="btn btn-outline-info btn-space" id="Cancel" style="display: none" disabled="true" value="取消" />       
         <input type="BUTTON" class="btn btn-outline-info btn-space" id="Delete" style="display: none" value="刪除" />
         <input type="BUTTON" class="btn btn-outline-info btn-space" id="ExportExcel" style="display: none" value="下載" />   
-        <div>
+        {{-- <div> --}}
             <input id="file" type="file" onchange="Import(this)" style="display: none" />
             <input type="button" onclick="file.click()" class="btn btn-outline-info btn-space" id="Import" style="display: none" value="上傳" />
-        </div>    
+        {{-- </div>     --}}
 </div>
 <h1 class="my-4"></h1>
 

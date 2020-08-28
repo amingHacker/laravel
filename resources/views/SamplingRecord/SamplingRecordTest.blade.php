@@ -833,6 +833,7 @@
 
 <div class = "container">
     <div class = "row justify-content-center">
+        
         <input type="BUTTON" class="btn btn-outline-info btn-space" id="New" style="display: none"  value="新增" />
         <input type="BUTTON" class="btn btn-outline-info btn-space" id="Edit" style="display: none" value="編輯" />
         <input type="BUTTON" class="btn btn-outline-info btn-space" id="Save" style="display: none" disabled="true" value="儲存" />

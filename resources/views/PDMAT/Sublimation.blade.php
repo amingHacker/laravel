@@ -512,13 +512,12 @@
         <img class=" img-responsive" src="img/Logo_Sublimation.png" >   
     </div>
 
-    <div class = "row justify-content-center"> 
-        
+    <div align="center">
         <table id="dg"></table>    
         <div id="dgPager"></div>                         
     </div>
-<div class = "container">    
-    <div class = "row justify-content-center">
+{{-- <div class = "container">     --}}
+    <div align="center">
         <input type="BUTTON" class="btn btn-outline-info btn-space" id="New"  value="新增" />
         <input type="BUTTON" class="btn btn-outline-info btn-space" id="Edit"  value="編輯" />
         <input type="BUTTON" class="btn btn-outline-info btn-space" id="Save"  disabled="true" value="儲存" />
@@ -526,22 +525,21 @@
         <input type="BUTTON" class="btn btn-outline-info btn-space" id="Delete" value="刪除" />
         <input type="BUTTON" class="btn btn-outline-info btn-space" id="ExportExcel" value="下載" />
         
-        <div>
+        {{-- <div> --}}
             <input id="file" type="file" onchange="Import(this)" style="display: none" />
             <input type="button" onclick="file.click()" class="btn btn-outline-info btn-space" id="Import" value="上傳" />
-        </div>
-
-        <div id="confirmDialog" title="Comfirm Information">
-            <p></p>
-        </div>
-        <div id="warningDialog" title="Warning Information">
-            <p></p>
-        </div>
-            <input type="BUTTON" class="btn btn-outline-info btn-space" id="ExportChart" value="圖表" />
-            <input type="BUTTON" class="btn btn-outline-info btn-space" id="CloseChart" value="收合" />
-            <input type="BUTTON" class="btn btn-outline-info btn-space" id="BackFill" value="回填" />         
+        {{-- </div> --}}
+        <input type="BUTTON" class="btn btn-outline-info btn-space" id="ExportChart" value="圖表" />
+        <input type="BUTTON" class="btn btn-outline-info btn-space" id="CloseChart" value="收合" />
+        <input type="BUTTON" class="btn btn-outline-info btn-space" id="BackFill" value="回填" />         
+    </div>
+    <div id="confirmDialog" title="Comfirm Information">
+        <p></p>
+    </div>
+    <div id="warningDialog" title="Warning Information">
+        <p></p>
     </div>  
-</div> 
+
     {{-- Tab ToolBar Start --}}
     <h1 class="my-4"></h1>
     <div id='tabs' style = 'width: 1200px; margin:0px auto; text-align:justify; display:none' >

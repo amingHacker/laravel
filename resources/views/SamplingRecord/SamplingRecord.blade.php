@@ -619,22 +619,19 @@
 {{-- Data資料呈現 End --}}
  
 <meta name="csrf-token" content="{{ csrf_token() }}"> 
-{{-- <div class = "container"> --}}
-
+    
     <h1 class="my-2"></h1>
   
     <div style = "margin:0px auto;"  >
         <img class=" img-responsive" src="img/Logo_SamplingRecords.png" >   
     </div>
-           
-    <div class = "row justify-content-center">     
+            
+    <div align="center">
         <table id="dg" ></table> 
-        <div id="dgPager"></div>                             
-    </div>
+        <div id="dgPager"></div>
+    </div>                             
 
-
-<div class = "container">
-    <div class = "row justify-content-center">
+    <div align="center">
         <input type="BUTTON" class="btn btn-outline-info btn-space" id="New" style="display: none"  value="新增" />
         <input type="BUTTON" class="btn btn-outline-info btn-space" id="Edit" style="display: none" value="編輯" />
         <input type="BUTTON" class="btn btn-outline-info btn-space" id="Save" style="display: none" disabled="true" value="儲存" />
@@ -642,28 +639,29 @@
         <input type="BUTTON" class="btn btn-outline-info btn-space" id="Delete" style="display: none" value="刪除" />
         <input type="BUTTON" class="btn btn-outline-info btn-space" id="ExportExcel" style="display: none" value="下載" />
         
-        <div>
-            <input id="file" type="file" onchange="Import(this)" style="display: none" />
-            <input type="button" onclick="file.click()" class="btn btn-outline-info btn-space" id="Import" style="display: none" value="上傳" />
-        </div>
+        {{-- <div> --}}
+        <input id="file" type="file" onchange="Import(this)" style="display: none" />
+        <input type="button" onclick="file.click()" class="btn btn-outline-info btn-space" id="Import" style="display: none" value="上傳" />
+        {{-- </div> --}}
 
-      
-        <div id="noChangeDialog" title="No change">
-            <p></p>
-        </div>
-
-        <div id="warningDialog" title="Warning Information">
-            <p></p>
-        </div>
-
-        <div id="confirmDialog" title="Comfirm Information">
-            <p></p>
-        </div>
-            <input type="BUTTON" class="btn btn-outline-info btn-space" id="ExportChart" value="圖表" />
-            <input type="BUTTON" class="btn btn-outline-info btn-space" id="CloseChart" value="收合" />
-            <input type="BUTTON" class="btn btn-outline-info btn-space" id="ViewLog" style="display: none" value="紀錄" />   
+        <input type="BUTTON" class="btn btn-outline-info btn-space" id="ExportChart" value="圖表" />
+        <input type="BUTTON" class="btn btn-outline-info btn-space" id="CloseChart" value="收合" />
+        <input type="BUTTON" class="btn btn-outline-info btn-space" id="ViewLog" style="display: none" value="紀錄" />   
+    
     </div>
-</div> 
+
+    <div id="noChangeDialog" title="No change">
+        <p></p>
+    </div>
+
+    <div id="warningDialog" title="Warning Information">
+        <p></p>
+    </div>
+
+    <div id="confirmDialog" title="Comfirm Information">
+        <p></p>
+    </div>
+ 
 {{-- Tab ToolBar Start --}}
     <h1 class="my-4"></h1>
     <div id='tabs' style = 'width: 1200px; margin:0px auto; text-align:justify; display:none' >
