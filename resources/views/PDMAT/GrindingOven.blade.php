@@ -513,7 +513,7 @@
         <div id="dgPager"></div>                         
     </div>
 
-    <div class = "row justify-content-center">
+    <div align="center">
         <input type="BUTTON" class="btn btn-outline-info btn-space" id="New"  value="新增" />
         <input type="BUTTON" class="btn btn-outline-info btn-space" id="Edit"  value="編輯" />
         <input type="BUTTON" class="btn btn-outline-info btn-space" id="Save"  disabled="true" value="儲存" />
