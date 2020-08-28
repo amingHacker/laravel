@@ -897,7 +897,9 @@
                                                         });
                                                     });      
                                                 if (response.success == data[data.length-1].id){                                                    
-                                                    window.location.reload()
+                                                    $(confirmDialog).dialog("close");
+                                                    $("#progressbar").remove();
+                                                    $('#dg').trigger( 'reloadGrid' );
                                                 }
                                             },
                                             failure: function (response) {                              

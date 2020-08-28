@@ -1657,7 +1657,10 @@
                                                             });      
                                                         if (response.success == data[data.length-1].編號)
                                                         {                                                    
-                                                            window.location.reload();
+                                                            //window.location.reload();
+                                                            $(confirmDialog).dialog("close");
+                                                            $("#progressbar").remove();
+                                                            $('#dg').trigger( 'reloadGrid' );
                                                         }
                                                     }
                                                 }                             
