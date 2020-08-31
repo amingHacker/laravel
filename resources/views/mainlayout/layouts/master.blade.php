@@ -12,7 +12,7 @@
 
         <link rel="icon" type="image/x-icon" href="img/favicon.ico">
 
-        <title>Merck Kaohsiung | CIM System</title>
+        <title>Merck Kaohsiung | SPC System</title>
       
         {{-- 1.填寫標題的地方 --}}
         {{-- <title>Business Casual - Start Bootstrap Theme</title> --}}
