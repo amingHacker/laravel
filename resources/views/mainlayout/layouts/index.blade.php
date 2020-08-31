@@ -5,7 +5,7 @@
   <!-- Page Content -->
   <div class="container">
 
-    <h1 class="my-4">Welcome to Merck Cim System (KH Site)</h1>
+    <h1 class="my-4">Welcome to Merck Kaohsiung | SPC System </h1>
 
     <!-- Marketing Icons Section -->
    
