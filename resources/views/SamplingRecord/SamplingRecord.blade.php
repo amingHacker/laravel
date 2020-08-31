@@ -814,7 +814,10 @@
                             "oper": oper,
                             "oper_log":add_statement,
                         },
-                        "aftersavefunc" : function( response ) { window.location.reload() }, //重新整理頁面    
+                        "aftersavefunc" : function( response ) { 
+                            $('#dg').trigger( 'reloadGrid' );
+                            //window.location.reload(); 
+                        }, //重新整理頁面    
                         "errorfunc": null,
                         "afterrestorefunc" : null,
                         "restoreAfterError" : true,
