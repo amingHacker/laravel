@@ -816,6 +816,7 @@
                         },
                         "aftersavefunc" : function( response ) { 
                             $('#dg').trigger( 'reloadGrid' );
+                            button_Control('after_Save'); 
                             //window.location.reload(); 
                         }, //重新整理頁面    
                         "errorfunc": null,
