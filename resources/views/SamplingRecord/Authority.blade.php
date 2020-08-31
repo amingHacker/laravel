@@ -70,7 +70,7 @@
     .ui-jqgrid-hdiv { overflow-y: hidden; }
     .ui-tabs
     {
-        width:71%;
+        width:72%;
     }
 </style>
 
