@@ -237,7 +237,7 @@ function DrowChart( dataLo, chartTypeGroup, dataXaxisGroup, dataYaxisGroup,
                 "text":"LCL=" + ((LCLGroup[i] != '')? LCLGroup[i] : UpandDown[i]["LCL"].toString()),
             },
 
-        ]           
+        ]            
         
         for(var j in horizontalLinetmp)
         {
@@ -336,7 +336,7 @@ function DrowChart( dataLo, chartTypeGroup, dataXaxisGroup, dataYaxisGroup,
 
                     if (line.text) {
                         ctx.fillStyle = style;
-                        ctx.fillText(line.text, canvas.width - 70, yValue + ctx.lineWidth+5);
+                        ctx.fillText(line.text, canvas.width - 100, yValue + ctx.lineWidth+5);
                     }
                     if(line.name)
                     {
@@ -349,6 +349,28 @@ function DrowChart( dataLo, chartTypeGroup, dataXaxisGroup, dataYaxisGroup,
         }
     };
     Chart.pluginService.register(horizonalLinePlugin);
+
+    var addTextOnChartPlugin = {
+        afterDraw: function (chart) {
+            var width = chart.chart.width,
+                height = chart.chart.height,
+                ctx = chart.chart.ctx;
+            //ctx.font = "0.5em sans-serif";
+            ctx.textAlign = "left";
+            ctx.textBaseline = "middle";
+            ctx.fillStyle = "black";
+            for(var i = 0; i < chart.options.addTextOnChart.length; i ++)
+            {
+                var widthbais = 0.65 + 0.1 * i ;
+                ctx.fillText("count: " + chart.options.addTextOnChart[i]["Item"], width * widthbais, height * .03);
+                ctx.fillText("average: " + chart.options.addTextOnChart[i]["Mean"], width * widthbais, height * .05);
+                ctx.fillText("S.D.(σ): " + chart.options.addTextOnChart[i]["Stddev"], width * widthbais, height * .07);
+            }               
+            return;
+        }
+    };
+    Chart.plugins.register(addTextOnChartPlugin);
+
 
     window.myLine = new Chart.Scatter(ctx,
         {
@@ -380,9 +402,9 @@ function DrowChart( dataLo, chartTypeGroup, dataXaxisGroup, dataYaxisGroup,
 
                 // tension: 0,
                 // showLine: true,
-            
                 onClick: graphClickEvent,
                 "horizontalLine": horizontalLineScales,
+                "addTextOnChart": UpandDown,
             }
 
         }  
@@ -494,6 +516,8 @@ function removeChartData()
         {   
             window.myLine.data.labels.splice(removeIndex, 1);
             window.myLine.data.datasets[removeDataSetIndex].data.splice(removeIndex, 1);
+
+            //Control Chart
             if(window.myLine.data.datasets[removeDataSetIndex].pointBackgroundColor != undefined)
             {
                 var toolsConChart = $("#jqxToolBarConChart1").jqxToolBar("getTools");
@@ -529,12 +553,19 @@ function removeChartData()
                     
                     changeBorderColor(_newYdata,  result["UCL"],  result["LCL"]);
                     
-                }     
+                }       
             }
             
+            //Scatter Chart
+            else
+            {
+                var _newYdata = getDataYFromChart(window.myLine.data.datasets[removeDataSetIndex].data);
+                var result = getDeviation(_newYdata);
+                window.myLine.data.datasets[removeDataSetIndex].data._chartjs.listeners[0].chart.options.addTextOnChart[removeDataSetIndex]["Item"] = result["Item"];
+                window.myLine.data.datasets[removeDataSetIndex].data._chartjs.listeners[0].chart.options.addTextOnChart[removeDataSetIndex]["Mean"] = result["Mean"];
+                window.myLine.data.datasets[removeDataSetIndex].data._chartjs.listeners[0].chart.options.addTextOnChart[removeDataSetIndex]["Stddev"] = result["Stddev"];
+            }
 
-            //window.myLine.data.datasets[removeDataSetIndex].data._chartjs.listeners[0].chart.options.horizontalLine[]
-           
             window.myLine.update();
             sessionStorage.removeItem('operatingChartDataSetIndex');
             sessionStorage.removeItem('operatingChartIndex');
@@ -561,7 +592,8 @@ function getDeviation(data)
         Mean: mean.toFixed(2),
         Stddev: stddev.toFixed(2),
         UCL: (mean + 3 * stddev).toFixed(2),
-        LCL: (mean - 3 * stddev).toFixed(2) 
+        LCL: (mean - 3 * stddev).toFixed(2),
+        Item: data.length, 
     };
     return Result;
 }
@@ -796,7 +828,7 @@ function checkDataToChart( dataToChartYGroup, dataToChartIDGroup )
 }
 
 /*檢查UCL LCL是否有誤*/
-function checkControlChartWithGroup(chartTypeGroup, UCLGroup, LCLGroup)
+function checkChartWithGroup(chartTypeGroup, UCLGroup, LCLGroup)
 {
     var result = '';
     
@@ -812,6 +844,20 @@ function checkControlChartWithGroup(chartTypeGroup, UCLGroup, LCLGroup)
             result = 'To prevent wrong center line, please fill in both UCL and LCL or leave both of blank.';
         }
 
+    }
+
+    if (chartTypeGroup[0] == 'Scatter Chart')
+    {
+        if(chartTypeGroup.length > 1)
+        {
+            for(var i = 0 ; i < chartTypeGroup.length ; i++)
+            {
+                if (chartTypeGroup[i] == 'Please Choose:' ) 
+                {
+                    result = 'There is no data in Group ' + ( i + 1 ) + '.';
+                }
+            }
+        }    
     }
 
     return result;

@@ -676,6 +676,9 @@
             <div id="jqxToolBar1" style = "margin:0px auto; text-align:justify" ></div>
             <h1 class="my-1"></h1>
             <div id="jqxToolBarConChart1" style = " margin:0px auto; text-align:justify" ></div>
+            <h1 class="my-1"></h1>
+            <div id="jqxToolBarChartRange1" style = " margin:0px auto; text-align:justify" ></div>
+
         </div>
     </div>
 {{-- Tab ToolBar End --}}    
@@ -1503,8 +1506,9 @@
         }
         
         //檢查選擇Control Chart時，Group 不能大於1組以上，UCL 或LCL需同時為空或有值避免Center Line計算錯誤
-        var _checkControlChartWithGroup = checkControlChartWithGroup(chartTypeGroup, UCLGroup, LCLGroup); 
-        if (_checkControlChartWithGroup !==''){alert(_checkControlChartWithGroup); return;}
+        //檢查選擇Scatter Chart時，Group 不能有值沒有選擇，避免無法產生圖表
+        var _checkChartWithGroup = checkChartWithGroup(chartTypeGroup, UCLGroup, LCLGroup); 
+        if (_checkChartWithGroup !==''){alert(_checkChartWithGroup); return;}
 
         //獲得資料
         var o = $("#dg");

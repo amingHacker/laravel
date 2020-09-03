@@ -21,6 +21,8 @@ function PrepareToToolbar(_ChartTypeSource, _xAxisSource, _yAxisSource, _GroupSo
                 + "<div id='jqxToolBar" + num_tabs + "' style = 'margin:0px auto; text-align:justify' ></div>" 
                 + "<h1 class ='my-1'></h1>"
                 + "<div id='jqxToolBarConChart" + num_tabs + "' style = 'margin:0px auto; text-align:justify' ></div>"
+                + "<h1 class ='my-1'></h1>"
+                + "<div id='jqxToolBarChartRange" + num_tabs + "' style = 'margin:0px auto; text-align:justify' ></div>"
                 + "</div>");
             
             createToolbar(num_tabs, _ChartTypeSource, _xAxisSource, _yAxisSource, _GroupSource);
@@ -132,6 +134,32 @@ function createToolbar(num_tabs, _ChartTypeSource, _xAxisSource, _yAxisSource, _
                 case 7:
                     tool.jqxInput({ width: 120, placeHolder: "Type here..." })
                     break;  
+            }
+        }
+    });
+
+    $("#jqxToolBarChartRange" + num_tabs).jqxToolBar({ 
+        width: "1000", height: '35', 
+        tools: "toggleButton input | toggleButton input",
+        //tools: "toggleButton toggleButton toggleButton | dropdownlist combobox | input",
+        initTools: function (type, index, tool, menuToolIninitialization) 
+        {
+            switch (index) 
+            {
+                case 0:
+                    tool.jqxToggleButton({ width: 80, toggled: true });
+                    tool.text("Y軸Max:");
+                    break;
+                case 1:
+                    tool.jqxInput({ width: 120, placeHolder: "Type here..." })
+                    break;  
+                case 2:
+                    tool.jqxToggleButton({ width: 80, toggled: true });
+                    tool.text("Y軸Min:");
+                    break;
+                case 3:
+                    tool.jqxInput({ width: 120, placeHolder: "Type here..." })
+                    break;
             }
         }
     });
