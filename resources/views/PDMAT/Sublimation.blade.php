@@ -1241,7 +1241,8 @@
                     DrowChart( dataLo, 
                             chartTypeGroup, dataXaxisGroup, dataYaxisGroup, 
                             columnNameGroup, itemGroup, 
-                            USLGroup, LSLGroup, UCLGroup, LCLGroup, LabelItem, DateItem
+                            USLGroup, LSLGroup, UCLGroup, LCLGroup, LabelItem, DateItem,
+                            YaxisMax, YaxisMin
                         );
                     }                                  
                 });    

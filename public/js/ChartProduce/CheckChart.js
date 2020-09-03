@@ -41,7 +41,7 @@ function XAxisDataTransLate(data)
 
 /*產生圖表*/
 function DrowChart( dataLo, chartTypeGroup, dataXaxisGroup, dataYaxisGroup,  
-    columnNameGroup, itemGroup, USLGroup, LSLGroup, UCLGroup, LCLGroup, LabelItem, DateItem)
+    columnNameGroup, itemGroup, USLGroup, LSLGroup, UCLGroup, LCLGroup, LabelItem, DateItem, YaxisMax, YaxisMin)
 {         
     //實際產生Chart資料的陣列
     var dataToChartXGroup = [], dataToChartYGroup = []; 
@@ -70,6 +70,10 @@ function DrowChart( dataLo, chartTypeGroup, dataXaxisGroup, dataYaxisGroup,
                     {
                         var tmX = '', tmY ='';
                         var tID = '', tLabelItem = '', tSamplingTime;
+
+                        //parseFloat()
+                        if(parseFloat(dataLo[key][dataYaxisGroup[i]]) > parseFloat(YaxisMax[0])){continue;}
+                        if(parseFloat(dataLo[key][dataYaxisGroup[i]]) < parseFloat(YaxisMin[0])){continue;}
                         
                         if (XAxisDataTransLate(dataXaxisGroup[i]) == 'typeDate')
                         {
@@ -552,6 +556,10 @@ function removeChartData()
                     //重新給予Y軸Data顏色
                     
                     changeBorderColor(_newYdata,  result["UCL"],  result["LCL"]);
+
+                    window.myLine.data.datasets[removeDataSetIndex].data._chartjs.listeners[0].chart.options.addTextOnChart[removeDataSetIndex]["Item"] = result["Item"];
+                    window.myLine.data.datasets[removeDataSetIndex].data._chartjs.listeners[0].chart.options.addTextOnChart[removeDataSetIndex]["Mean"] = result["Mean"];
+                    window.myLine.data.datasets[removeDataSetIndex].data._chartjs.listeners[0].chart.options.addTextOnChart[removeDataSetIndex]["Stddev"] = result["Stddev"];
                     
                 }       
             }
