@@ -15,10 +15,10 @@ class SamplingRecord extends Model
         'As', 'Au', 'B', 'Ba', 'Be', 'Bi', 'Ca', 'Cd', 'Ce', 'Co', 'Cr', 'Cs', 'Cu', 'Ga',
         'Ge', 'Hg', 'In', 'K', 'La', 'Li', 'Mg', 'Mn', 'Mo', 'Na', 'Nb', 'Ni', 'P',
         'Pb', 'Pd', 'Pt', 'Rb', 'Re', 'Rh', 'Ru', 'S', 'Sb', 'Se', 'Sr', 'Ta', 'Tb',
-        'Te', 'Th', 'Ti', 'Tl', 'U', 'V', 'W', 'Y','Zr', 'F', 'Cl', 'Parameter_A',       
+        'Te', 'Th', 'Ti', 'Tl', 'U', 'V', 'W', 'Y','Zr', 'F', 'Cl', 'Hf', 'H2O','Parameter_A',       
         'Impurity_A', 'Impurity_B', 'Impurity_C', 'Impurity_D', 'Impurity_E', 'Impurity_F',
         '1H_NMR', 'Other_Metals', 'Parameter_B', 'Parameter_C', 'Parameter_D', 'Organic_impurity',
-        '2_2ppm', '3_8ppm', '4_0ppm', 'Sum223840', 'IR_A', 'id', 'equipment_name', 'standard_solution',
+        '0_0ppm', '2_2ppm', '3_8ppm', '4_0ppm', 'Sum223840', 'IR_A', 'DMAH', 'id', 'equipment_name', 'standard_solution',
         'sampling_kind',
     ];
 }

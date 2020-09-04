@@ -316,9 +316,9 @@
                             "Be", "Bi", "Ca", "Cd", "Ce", "Co", "Cr", "Cs", "Cu", "Ga", "Ge", "Hg", "In", "K",
                             "La", "Li", "Mg", "Mn", "Mo", "Na", "Nb", "Ni", "P", "Pb", "Pd", "Pt", "Rb", "Re", "Rh", 
                             "Ru", "S", "Sb", "Se", "Sr", "Ta", "Tb", "Te", "Th", "Ti", "Tl", "U", "V", "W", "Y", "Zr", 
-                            "F", "Cl", "Parameter A", "Parameter B", "Parameter C", "Parameter D", "Impurity A","Impurity B", 
+                            "F", "Cl", "Hf", "H2O","Parameter A", "Parameter B", "Parameter C", "Parameter D", "Impurity A","Impurity B", 
                             "Impurity C", "Impurity D", "Impurity E", "Impurity F", "1H NMR", "Other Metals", "Organic impurity",
-                            "[δ2.2ppm]", "[δ3.8ppm]", "[δ4.0ppm]", "Sum[2.2+3.8+4.0]", "IR A"
+                            "[δ0.0ppm]", "[δ2.2ppm]", "[δ3.8ppm]", "[δ4.0ppm]", "Sum[2.2+3.8+4.0]", "IR A", "DMAH"
                         ];
         var _GroupSource = ["品名","等級", "瓶號","批號", "取樣者", "樣品來源", 
             "分析項目","分析者", "完成日","判定", "備註", 
@@ -326,9 +326,9 @@
             "Be", "Bi", "Ca", "Cd", "Ce", "Co", "Cr", "Cs", "Cu", "Ga", "Ge", "Hg", "In", "K",
             "La", "Li", "Mg", "Mn", "Mo", "Na", "Nb", "Ni", "P", "Pb", "Pd", "Pt", "Rb", "Re", "Rh", 
             "Ru", "S", "Sb", "Se", "Sr", "Ta", "Tb", "Te", "Th", "Ti", "Tl", "U", "V", "W", "Y", "Zr", 
-            "F", "Cl", "Parameter A", "Parameter B", "Parameter C", "Parameter D", "Impurity A","Impurity B", 
+            "F", "Cl", "Hf", "H2O", "Parameter A", "Parameter B", "Parameter C", "Parameter D", "Impurity A","Impurity B", 
             "Impurity C", "Impurity D", "Impurity E", "Impurity F", "1H NMR", "Other Metals", "Organic impurity",
-            "[δ2.2ppm]", "[δ3.8ppm]", "[δ4.0ppm]", "Sum[2.2+3.8+4.0]", "IR A"
+            "[δ0.0ppm]", "[δ2.2ppm]", "[δ3.8ppm]", "[δ4.0ppm]", "Sum[2.2+3.8+4.0]", "IR A", "DMAH"
         ];
         //建立ToolBar
         PrepareToToolbar(_ChartTypeSource, _xAxisSource, _yAxisSource, _GroupSource);
@@ -370,6 +370,7 @@
             Parameter_C: "Parameter C",
             Parameter_D: "Parameter D",
             Organic_impurity: "Organic impurity",
+            "0_0ppm":"[δ0.0ppm]",
             "2_2ppm":"[δ2.2ppm]",
             "3_8ppm":"[δ3.8ppm]",
             "4_0ppm":"[δ4.0ppm]",
@@ -426,6 +427,7 @@
             "Parameter C" : "Parameter_C",
             "Parameter D" : "Parameter_D" ,
             "Organic impurity" : "Organic_impurity",
+            "[δ0.0ppm]" : "0_0ppm",
             "[δ2.2ppm]" : "2_2ppm",
             "[δ3.8ppm]" : "3_8ppm",
             "[δ4.0ppm]" : "4_0ppm",
@@ -1289,6 +1291,7 @@
                 "Parameter C": "Parameter_C",
                 "Parameter D": "Parameter_D",
                 "Organic impurity": "Organic_impurity",
+                "[δ0.0ppm]": "0_0ppm",
                 "[δ2.2ppm]": "2_2ppm",
                 "[δ3.8ppm]": "3_8ppm",
                 "[δ4.0ppm]": "4_0ppm",
