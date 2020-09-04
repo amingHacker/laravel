@@ -508,6 +508,8 @@
             <div id="jqxToolBar1" style = "margin:0px auto; text-align:justify" ></div>
             <h1 class="my-1"></h1>
             <div id="jqxToolBarConChart1" style = " margin:0px auto; text-align:justify" ></div>
+            <h1 class="my-1"></h1>
+            <div id="jqxToolBarChartRange1" style = " margin:0px auto; text-align:justify" ></div>
         </div>
     </div>
     {{-- Tab ToolBar End --}}    
@@ -1110,7 +1112,8 @@
         var itemGroup = [];      //紀錄Group Item名稱
         var USLGroup = [], LSLGroup = [], UCLGroup = [], LCLGroup = [];  //紀錄Group control line資料
         var LabelItem = [];  //紀錄要在圖面呈現的欄位資訊
-        var DateItem = [];  //紀錄data日期資訊 
+        var DateItem = [];  //紀錄data日期資訊
+        var YaxisMax = [], YaxisMin = [];  //紀錄Y軸的最大值與最小值 
 
         for(var j = 0; j < num_tabs; j++)
         {
@@ -1140,12 +1143,20 @@
             UCLGroup.push(tUCL);
             LCLGroup.push(tLCL);
             LabelItem.push("tank_batch");
-            DateItem.push("solid_Started");           
+            DateItem.push("solid_Started");
+            
+            //獲得Toolbar的資料 
+            var toolsBarChartRange = $("#jqxToolBarChartRange" + ( j + 1 )).jqxToolBar("getTools");
+            var tYaxisMax = toolsBarChartRange[1].tool[0].value;
+            var tYaxisMin = toolsBarChartRange[3].tool[0].value;
+            YaxisMax.push(tYaxisMax);
+            YaxisMin.push(tYaxisMin);
         }
         
         //檢查選擇Control Chart時，Group 不能大於1組以上，UCL 或LCL需同時為空或有值避免Center Line計算錯誤
-        var _checkControlChartWithGroup = checkControlChartWithGroup(chartTypeGroup, UCLGroup, LCLGroup); 
-        if (_checkControlChartWithGroup !==''){alert(_checkControlChartWithGroup); return;}
+        //檢查選擇Scatter Chart時，Group 不能有值沒有選擇，避免無法產生圖表
+        var _checkChartWithGroup = checkChartWithGroup(chartTypeGroup, UCLGroup, LCLGroup); 
+        if (_checkChartWithGroup !==''){alert(_checkChartWithGroup); return;}
 
         //獲得資料
         var o = $("#dg");
