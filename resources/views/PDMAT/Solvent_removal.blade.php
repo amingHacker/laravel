@@ -201,6 +201,7 @@
             caption:"Solvent Removal 純化",
             shrinkToFit :false,
             loadonce:false,
+            multiselect : true,
 
             jsonReader : {
                             root: "dataList",
@@ -260,7 +261,8 @@
 
         var _ChartTypeSource = ["Scatter Chart", "Control Chart"];
         var _xAxisSource = ["solid Started", "次數", "tank batch", "crude batch"];
-        var _yAxisSource = ["Crude assay", "Crude δ2.2 ppm", "sol. expect wt.", "end Temp", "solvent Input", "solid output", 
+        var _yAxisSource = ["Crude assay", "Crude δ2.2 ppm", "Crude δ3.8 ppm","Crude δ4.0 ppm", "Crude δ2.2+δ3.8+δ4.0", 
+                            "sol. expect wt.", "end Temp", "solvent Input", "solid output", 
                             "cycle Time", "solid yield", "output system oxygen", "output time spent", "solid consumed 1", 
                             "solid consumed 2", "solid consumed 3", "solid consumed 4", "solid consumed 5"
                         ];
@@ -283,6 +285,9 @@
             tank_batch: "tank batch",
             Crude_assay: "Crude assay",
             Crude_2_2ppm: "Crude δ2.2 ppm",
+            Crude_3_8ppm: "Crude δ3.8 ppm",
+            Crude_4_0ppm: "Crude δ4.0 ppm",
+            Crude_223840: "Crude δ2.2+δ3.8+δ4.0",
             crude_batch: "crude batch",
             Line: "Line",
             sol_expect_wt: "sol. expect wt.",
@@ -324,6 +329,9 @@
             "tank batch": "tank_batch",
             "Crude assay" : "Crude_assay",
             "Crude δ2.2 ppm" : "Crude_2_2ppm",
+            "Crude δ3.8 ppm" : "Crude_3_8ppm",
+            "Crude δ4.0 ppm" : "Crude_4_0ppm",
+            "Crude δ2.2+δ3.8+δ4.0" : "Crude_223840",
             "crude batch": "crude_batch",
             "Line": "Line",
             "sol. expect wt.": "sol_expect_wt",
@@ -492,6 +500,9 @@
     </div>
     <div id="warningDialog" title="Warning Information">
         <p></p>
+    </div>
+    <div id="loadingImg" style = "display:none"><img src = "img/loadingImg.gif" width = "10%" height = "10%">
+        
     </div>
     
     {{-- Tab ToolBar Start --}}
@@ -743,21 +754,39 @@
         var s = $("#dg").jqGrid('getGridParam','selrow');      
         if (s)	{
             var ret = $("#dg").jqGrid('getRowData',s);
+
+            var selectedRows =  $("#dg").jqGrid('getGridParam', 'selarrrow');
+            
             //console.log(ret);           
-            var answer = window.confirm("確認回填此筆資料?");
+            
+            var answer = window.confirm("確認回填所選資料?");
             if (answer)
-            {
-                $.ajax({
-                    async:false,
-                    url: "SolventRemoval/BackFill/" + ret.id ,//路徑
-                    type: "POST",             
-                    data:{
-                        "id": ret.id,
-                    },
-                    success: function (){                  
-                        $('#dg').trigger( 'reloadGrid' );
-                    }                               
-                });
+            {  
+                for (var i = 0; i < selectedRows.length; i++) 
+                {                              
+                    setTimeout((function (i) {                      
+                        return function () {                
+                            $.ajax({
+                                async:false,
+                                url: "SolventRemoval/BackFill/" + selectedRows[i] ,//路徑
+                                type: "POST",             
+                                data:{
+                                    "id": selectedRows[i],
+                                    "count": i
+                                },
+                                success: function (response){ 
+                                    if (response.success == selectedRows.length - 1) { 
+                                        $('#loadingImg').hide();
+                                        $('#dg').trigger( 'reloadGrid' );
+                                    }                    
+                                },
+                                beforeSend:function(){
+                                    $('#loadingImg').show();
+                                }                               
+                            });
+                        }
+                    })(i), 2);
+                }
             }    
         }
         else        
@@ -849,7 +878,8 @@
                     var dataExport = DownLoadValue.success;
                     //產生要寫入excel的data
                     var i = 1;
-                    var dataToExcel = [];    
+                    var dataToExcel = [];
+                    columnNames.splice(0,1);   //因在多選的grid中，第一項為checkbox   
                     dataToExcel.push(columnNames);
 
                     for(var key in dataExport)
@@ -919,6 +949,9 @@
                 "tank batch": "tank_batch", 
                 "Crude assay": "Crude_assay",
                 "Crude δ2.2 ppm": "Crude_2_2ppm",
+                "Crude δ3.8 ppm": "Crude_3_8ppm",
+                "Crude δ4.0 ppm": "Crude_4_0ppm",
+                "Crude δ2.2+δ3.8+δ4.0": "Crude_223840",
                 "crude batch": "crude_batch",
                 //"Line": "Line", //同樣字符不須寫兩次，會被刪除
                 "sol. expect wt.": "sol_expect_wt",

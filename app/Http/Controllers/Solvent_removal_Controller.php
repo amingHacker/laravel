@@ -255,6 +255,9 @@ class Solvent_removal_Controller extends Controller
                 //以下的欄位不能由upload資料修改，可能會蓋掉原本的欄位
                 $uploadData["UploadData"]["Crude_assay"] = $updateData["Crude_assay"];
                 $uploadData["UploadData"]["Crude_2_2ppm"] = $updateData["Crude_2_2ppm"];
+                $uploadData["UploadData"]["Crude_3_8ppm"] = $updateData["Crude_3_8ppm"];
+                $uploadData["UploadData"]["Crude_4_0ppm"] = $updateData["Crude_4_0ppm"];
+                $uploadData["UploadData"]["Crude_223840"] = $updateData["Crude_223840"];
                 $updateData->update($uploadData["UploadData"]);
             }
             return response()->json([
@@ -303,9 +306,10 @@ class Solvent_removal_Controller extends Controller
     }
 
     //回填方法
-    public function BackFill($id)
+    public function BackFill(Request $request)
     {    
-        $RowData = Solvent_removal::find($id);
+        $Parameter = $request->all();
+        $RowData = Solvent_removal::find($Parameter["id"]);
         //var_dump($RowData["crude_batch"]);
         $_tmp = $RowData["crude_batch"];
         $updateItemSelect = DB::table('sampling_records')->where('batch_number', $_tmp)->first();//得到陣列 
@@ -316,7 +320,10 @@ class Solvent_removal_Controller extends Controller
             $RowData->update(
                 [
                     'Crude_assay' => $updateItemSelect->Assay, 
-                    'Crude_2_2ppm' => $updateItemSelect->{'2_2ppm'}, 
+                    'Crude_2_2ppm' => $updateItemSelect->{'2_2ppm'},
+                    'Crude_3_8ppm' => $updateItemSelect->{'3_8ppm'},
+                    'Crude_4_0ppm' => $updateItemSelect->{'4_0ppm'},
+                    'Crude_223840' => $updateItemSelect->{'Sum223840'},  
                     'updated_at' => date('Y-m-d H:i:s') 
                 ]             
             );                 
@@ -324,7 +331,7 @@ class Solvent_removal_Controller extends Controller
 
         //$UpdateValue = DB::table('solvent_removals')->orderBy('id','desc')->get(); //回傳原本的資料
         return response()->json([
-            'success' =>  'OK'
+            'success' =>  $Parameter["count"]
             
         ]);       
     }
@@ -337,6 +344,9 @@ class Solvent_removal_Controller extends Controller
                 'tank_batch' => $RowData["tank_batch"],
                 'Crude_assay' => $RowData["Crude_assay"],
                 'Crude_2_2ppm' => $RowData["Crude_2_2ppm"],
+                'Crude_3_8ppm' => $RowData["Crude_3_8ppm"],
+                'Crude_4_0ppm' => $RowData["Crude_4_0ppm"],
+                'Crude_223840' => $RowData["Crude_223840"],
                 'crude_batch' => $RowData["crude_batch"],
                 'Line' => $RowData["Line"],
                 'sol_expect_wt' => $RowData["sol_expect_wt"],
@@ -367,6 +377,9 @@ class Solvent_removal_Controller extends Controller
             'tank_batch' ,
             'Crude_assay',
             'Crude_2_2ppm',
+            'Crude_3_8ppm',
+            'Crude_4_0ppm',
+            'Crude_223840',
             'crude_batch',
             'Line',
             'sol_expect_wt',
