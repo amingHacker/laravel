@@ -267,6 +267,7 @@ class SamplingRecordController extends Controller
             }    
             return response()->json([
                 'success' => $uploadData["UploadData"]["id"],
+                'count' =>$uploadData["count"]
             ]);
         }
     }

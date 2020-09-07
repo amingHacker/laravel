@@ -1399,58 +1399,23 @@
                             if (p == 'remarks')
                             {
                                 var componentA = '', componentB = '', componentC = '', componentD = '';
-                                if (dataExport[key][p].indexOf("Component A") != -1)
+                                if (dataExport[key][p].indexOf("[δ0.0 ppm]") != -1)
                                 {
-                                    var ind = dataExport[key][p].indexOf("Component A");
-                                    var s = dataExport[key][p].slice(ind);
-                                    componentA = s.match(/\d+.\d+/);
+                                    var ind = dataExport[key][p].indexOf("[δ0.0 ppm]");
+                                    var s = dataExport[key][p].slice(ind + 7);
+                                    componentA = s.match(/\d+.\d{0,4}/);
                                 }
-                                if (dataExport[key][p].indexOf("component A") != -1)
-                                {
-                                    var ind = dataExport[key][p].indexOf("component A");
-                                    var s = dataExport[key][p].slice(ind);
-                                    componentA = s.match(/\d+.\d+/);
-                                }
-                                if (dataExport[key][p].indexOf("Component B") != -1)
-                                {
-                                    var ind = dataExport[key][p].indexOf("Component B");
-                                    var s = dataExport[key][p].slice(ind);
-                                    componentB = s.match(/\d+.\d+/);
-                                }
-                                if (dataExport[key][p].indexOf("component B") != -1)
-                                {
-                                    var ind = dataExport[key][p].indexOf("component B");
-                                    var s = dataExport[key][p].slice(ind);
-                                    componentB = s.match(/\d+.\d+/);
-                                }
-                                if (dataExport[key][p].indexOf("Component C") != -1)
-                                {
-                                    var ind = dataExport[key][p].indexOf("Component C");
-                                    var s = dataExport[key][p].slice(ind);
-                                    componentC = s.match(/\d+.\d+/);
-                                }
-                                if (dataExport[key][p].indexOf("component C") != -1)
-                                {
-                                    var ind =  dataExport[key][p].indexOf("component C");
-                                    var s = dataExport[key][p].slice(ind);
-                                    componentC = s.match(/\d+.\d+/);
-                                }
-                                if (dataExport[key][p].indexOf("Component D") != -1)
-                                {
-                                    var ind = dataExport[key][p].indexOf("Component D");
-                                    var s = dataExport[key][p].slice(ind);
-                                    componentD = s.match(/\d+.\d+/);
-                                }
-                                if (dataExport[key][p].indexOf("component D") != -1)
-                                {
-                                    var ind = dataExport[key][p].indexOf("component D");
-                                    var s = dataExport[key][p].slice(ind);
-                                    componentD = s.match(/\d+.\d+/);
-                                }
-                                dataExport[key]["Parameter_A"] = componentA[0];
-                                dataExport[key]["Parameter_B"] = componentB[0];
-                                dataExport[key]["Parameter_C"] = componentC[0];
-                                dataExport[key]["Parameter_D"] = componentD[0];
+                                // if (dataExport[key][p].indexOf("0.0 PPM") != -1)
+                                // {
+                                //     var ind = dataExport[key][p].indexOf("0.0 PPM");
+                                //     var s = dataExport[key][p].slice(ind);
+                                //     componentA = s.match(/\d+.\d{0,4}/);
+                                // }
+                                
+                                if (componentA!=null)
+                                {dataExport[key]["0_0ppm"] = componentA[0];}
+                                
+                                
                             }
                             tmp.push(dataExport[key][p]);
                         }

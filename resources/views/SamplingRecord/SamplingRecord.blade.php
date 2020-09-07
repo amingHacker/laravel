@@ -1381,50 +1381,51 @@
                             $("#button-cancel").button("disable");
                             for (var i = 0; i < data.length; i++) 
                             {                              
-                                    setTimeout((function (i) {                      
-                                        return function () {                                                                       
+                                setTimeout((function (i) {                      
+                                    return function () {                                                                       
 
-                                            $.ajax({
-                                                url: 'SamplingRecord/FileUpload/' + data[i].編號,
-                                                method: 'post',
-                                                async: false,//同步請求資料
-                                                data: {
-                                                    UploadData:_upLoadData[i]                               
-                                                },
-                                                success: function (response) {                                                   
-                                                    if (response.message != undefined && i == 0)
-                                                    {   
-                                                        alert("Upload Fail!! Please check file: " + response.message);
-                                                        
-                                                        for(var j = 0; j < data.length; j++)
-                                                        {
-                                                            clearTimeout(j);
-                                                        }                                           
-                                                        window.location.reload();                                     
-                                                    }
-                                                    else
-                                                    {                
-                                                        if(response.message == undefined ) 
-                                                        {                                                                         
-                                                            $(function() 
-                                                                {
-                                                                    $( "#progressbar" ).progressbar
-                                                                    ({
-                                                                        value: (i/data.length) * 100
-                                                                    });
-                                                                });      
-                                                            if (response.success == data[data.length-1].編號)
-                                                            {                                                                                                                    //window.location.reload();
-                                                                $(confirmDialog).dialog("close");
-                                                                $("#progressbar").remove();
-                                                                $('#dg').trigger( 'reloadGrid' );
-                                                            }
+                                        $.ajax({
+                                            url: 'SamplingRecord/FileUpload/' + data[i].編號,
+                                            method: 'post',
+                                            async: false,//同步請求資料
+                                            data: {
+                                                UploadData:_upLoadData[i],
+                                                count:i                               
+                                            },
+                                            success: function (response) {                                                   
+                                                if (response.message != undefined && i == 0)
+                                                {   
+                                                    alert("Upload Fail!! Please check file: " + response.message);
+                                                    
+                                                    for(var j = 0; j < data.length; j++)
+                                                    {
+                                                        clearTimeout(j);
+                                                    }                                           
+                                                    window.location.reload();                                     
+                                                }
+                                                else
+                                                {                
+                                                    if(response.message == undefined ) 
+                                                    {                                                                         
+                                                        $(function() 
+                                                            {
+                                                                $( "#progressbar" ).progressbar
+                                                                ({
+                                                                    value: (i/data.length) * 100
+                                                                });
+                                                            });      
+                                                        if (response.count == data.length - 1)
+                                                        {                                                                                                                    //window.location.reload();
+                                                            $(confirmDialog).dialog("close");
+                                                            $("#progressbar").remove();
+                                                            $('#dg').trigger( 'reloadGrid' );
                                                         }
-                                                    }                             
-                                                },                                       
-                                            });
-                                        }
-                                    })(i), 10);
+                                                    }
+                                                }                             
+                                            },                                       
+                                        });
+                                    }
+                                })(i), 10);
                             }
                         }                                                       
                     },

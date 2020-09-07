@@ -1084,7 +1084,8 @@
                                             method: 'post',
                                             async: false,//同步請求資料
                                             data: {
-                                                UploadData:_upLoadData[i]                              
+                                                UploadData:_upLoadData[i],
+                                                count:i                              
                                             },
                                             success: function (response) {                                                   
                                                 if (response.message != undefined && i == 0)
@@ -1108,9 +1109,8 @@
                                                                     value: (i/data.length) * 100
                                                                 });
                                                             });      
-                                                        if (response.success == data[data.length-1].編號)
+                                                        if (response.count == data.length - 1)
                                                         {                                                    
-                                                            //window.location.reload();
                                                             $(confirmDialog).dialog("close");
                                                             $("#progressbar").remove();
                                                             $('#dg').trigger( 'reloadGrid' );

@@ -877,6 +877,7 @@
                 });             
     });
 
+    /*上傳資料*/
     function Import(e) {         
         if (e.files.length  ==  0 ){return;} //檢查是否有輸入資料
         
@@ -887,7 +888,7 @@
         {          
             $("#warningDialog").html('<br />檔案格式錯誤！<br /><br />匯入之檔案必須為：<strong>Excel 2003 (.xls) </strong> 或 <strong>Excel 2007-2010 (.xlsx)</strong><br /><br />');
             $("#warningDialog").dialog({
-                width:'auto', height:'auto', autoResize:true, modal:true, closeText:"正在上傳", 
+                width:'auto', height:'auto', autoResize:true, modal:true, closeText:"關閉", 
                 resizable:false, closeOnEscape:true, dialogClass:'top-dialog',
                 show:{effect: "clip", duration: 140},
                 hide:{effect: "clip", duration: 140},
@@ -991,43 +992,42 @@
                 pager: '#import_previewPager',
                 caption: fileName,
                 loadComplete: function (){ fixPositionsOfFrozenDivs.call(this); }, // Fix column's height are different after enable frozen column feature  
+                gridComplete: function() { $("#" + table).jqGrid('setFrozenColumns');}
             });
-            $("#" + table).jqGrid('setFrozenColumns');
+           
             //增加Tool bar        
             $("#" + table).jqGrid('navGrid','#import_previewPager', { search:true, edit:false, add:false, del:false, refresh:true } );
-        
-            // Hide caption
-            // $("#gview_import_preview > .ui-jqgrid-titlebar").hide();
 
             $("#confirmDialog").dialog({
                 width:'auto', height:'auto', autoResize:true, modal:true, closeText:"關閉", 
-                resizable:true, closeOnEscape:true, dialogClass:'top-dialog',
-                //width:'auto', height:'auto', autoResize:true, modal:true, closeText:"關閉", resizable:true,
+                resizable:true, closeOnEscape:true, dialogClass:'top-dialog',position:['center',168],
                 show:{effect: "fade", duration: 140},
                 hide:{effect: "clip", duration: 140},
                 focus: function() { $(".ui-dialog").focus(); }, // Unfocus the default focus elem
                 buttons :[ 
-                {
-                    id:"button-OK",
-                    text:"確認",
-                    click:function()
                     {
-                        //$(this).dialog("close");
-                        $("#confirmDialog").html('<span style="font-weight:bold; color:#2e6e9e;">《 上傳進度 》</span><br /><br /><div id="progressbar"></div>');                                                                                                        
-                        $("#confirmDialog").next(".ui-dialog-buttonpane button:contains('確定')").attr("disabled", true);
-                        $("#button-OK").button("disable");
-                        $("#button-cancel").button("disable");
-                        for (var i = 0; i < data.length; i++) {                              
+                        id:"button-OK",
+                        text:"確認",
+                        click:function() 
+                        {
+                            $("#confirmDialog").html('<span style="font-weight:bold; color:#2e6e9e;">《 上傳進度 》</span><br /><br /><div id="progressbar"></div>');                                                                                                        
+                            $("#confirmDialog").next(".ui-dialog-buttonpane button:contains('確定')").attr("disabled", true);
+                            $("#button-OK").button("disable");
+                            $("#button-cancel").button("disable");
+                            for (var i = 0; i < data.length; i++) 
+                            {                              
                                 setTimeout((function (i) {                      
                                     return function () {                                                                       
+
                                         $.ajax({
                                             url: 'SolventRemoval/FileUpload/' + data[i].編號,
                                             method: 'post',
                                             async: false,//同步請求資料
                                             data: {
-                                                UploadData:_upLoadData[i]                              
+                                                UploadData:_upLoadData[i],
+                                                count:i                               
                                             },
-                                            success: function (response) {
+                                            success: function (response) {                                                   
                                                 if (response.message != undefined && i == 0)
                                                 {   
                                                     alert("Upload Fail!! Please check file: " + response.message);
@@ -1041,7 +1041,7 @@
                                                 else
                                                 {                
                                                     if(response.message == undefined ) 
-                                                    {                                                                         
+                                                    {                                                                 
                                                         $(function() 
                                                             {
                                                                 $( "#progressbar" ).progressbar
@@ -1049,28 +1049,27 @@
                                                                     value: (i/data.length) * 100
                                                                 });
                                                             });      
-                                                        if (response.success == data[data.length-1].編號)
-                                                        {                                                    
-                                                            //window.location.reload();
+                                                        if (response.count == data.length - 1 )
+                                                        {                                                                                                                    //window.location.reload();
                                                             $(confirmDialog).dialog("close");
                                                             $("#progressbar").remove();
                                                             $('#dg').trigger( 'reloadGrid' );
                                                         }
                                                     }
-                                                }                                            
-                                            },
+                                                }                             
+                                            },                                       
                                         });
                                     }
-                                })(i), 2);
+                                })(i), 10);
                             }
-                        }                                                        
+                        }                                                       
                     },
                     {
                         id: "button-cancel",
                         text: "取消",
                         click: function() {
                             $(this).dialog("close");
-                        }                   
+                        }
                     }
                 ]
             });                                       

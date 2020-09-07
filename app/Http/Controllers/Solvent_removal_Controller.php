@@ -259,6 +259,7 @@ class Solvent_removal_Controller extends Controller
             }
             return response()->json([
                 'success' => $uploadData["UploadData"]["id"],
+                'count' =>$uploadData["count"]
             ]);    
         }     
     }
