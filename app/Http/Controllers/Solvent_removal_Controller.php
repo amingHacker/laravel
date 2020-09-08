@@ -362,7 +362,8 @@ class Solvent_removal_Controller extends Controller
                 'solid_consumed_2' => $RowData["solid_consumed_2"],
                 'solid_consumed_3' => $RowData["solid_consumed_3"],
                 'solid_consumed_4' => $RowData["solid_consumed_4"],
-                'solid_consumed_5' => $RowData["solid_consumed_5"],             
+                'solid_consumed_5' => $RowData["solid_consumed_5"],
+                'solid_consumed_6' => $RowData["solid_consumed_6"],             
             ]    
         );  
     }
@@ -396,6 +397,7 @@ class Solvent_removal_Controller extends Controller
             'solid_consumed_3',
             'solid_consumed_4',
             'solid_consumed_5',
+            'solid_consumed_6',
             '建立時間',
             '更新時間'            
         ];

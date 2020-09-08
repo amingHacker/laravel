@@ -302,7 +302,8 @@
             solid_consumed_2: "solid consumed 2",
             solid_consumed_3: "solid consumed 3",
             solid_consumed_4: "solid consumed 4",
-            solid_consumed_5: "solid consumed 5",        
+            solid_consumed_5: "solid consumed 5",
+            solid_consumed_6: "solid consumed 6",         
             created_at: "建立時間",
             updated_at: "更新時間",
         };
@@ -346,7 +347,8 @@
             "solid consumed 2" : "solid_consumed_2",
             "solid consumed 3" : "solid_consumed_3" ,
             "solid consumed 4" : "solid_consumed_4",
-            "solid consumed 5" : "solid_consumed_5",        
+            "solid consumed 5" : "solid_consumed_5",
+            "solid consumed 6" : "solid_consumed_6",         
             "建立時間" : "created_at",
             "更新時間" : "updated_at",
         };
@@ -963,6 +965,7 @@
                 "solid consumed 3": "solid_consumed_3",
                 "solid consumed 4": "solid_consumed_4",
                 "solid consumed 5": "solid_consumed_5",
+                "solid consumed 6": "solid_consumed_6",
             };
             //新物件被刪除時，對應的物件也會一起刪掉，並產生新物件
             for(var i = 0;i < _upLoadData.length; i++){

@@ -422,8 +422,8 @@ function DrowChart( dataLo, chartTypeGroup, dataXaxisGroup, dataYaxisGroup,
         ) 
         {
             // pointBackgroundColors.push("rgba(255, 99, 132, .2)");
-            pointBackgroundColors.push("#00FF00");
-            pointBorderColors.push("#00FF00");
+            pointBackgroundColors.push("#00ed3f");
+            pointBorderColors.push("#00ed3f");
         } 
         else {
             pointBackgroundColors.push("#FF0000");
@@ -638,8 +638,8 @@ function changeBorderColor(data, UCL, LCL)
             parseFloat(data[i]) <  parseFloat(UCL) && parseFloat(data[i]) >  parseFloat(LCL)
         ) 
          {
-            window.myLine.data.datasets[0].pointBackgroundColor[i] = '#00FF00';
-            window.myLine.data.datasets[0].pointBorderColor[i] = '#00FF00';
+            window.myLine.data.datasets[0].pointBackgroundColor[i] = '#00ed3f';
+            window.myLine.data.datasets[0].pointBorderColor[i] = '#00ed3f';
          } 
         else {
             window.myLine.data.datasets[0].pointBackgroundColor[i] = '#FF0000';
