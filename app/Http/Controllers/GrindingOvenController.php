@@ -325,6 +325,9 @@ class GrindingOvenController extends Controller
         $t2 = DB::table('sublimations')->where('bulk_batch', $RowData["2nd_bulk_batch"])->where('judge', 'Pass')->first();//得到陣列
         $t3 = DB::table('sublimations')->where('bulk_batch', $RowData["3rd_bulk_batch"])->where('judge', 'Pass')->first();//得到陣列
 
+        $t1_bulk_actual_assay = ''; $t2_bulk_actual_assay = ''; $t3_bulk_actual_assay = '';
+        $t1_bulk_actual_meo = ''; $t2_bulk_actual_meo = ''; $t3_bulk_actual_meo = '';
+
         //先清空
         $RowData->update(
             [
@@ -357,7 +360,9 @@ class GrindingOvenController extends Controller
                     '1st_bulk_assay' => $t1->bulk_actual_assay,
                     '1st_bulk_meo' => $t1->bulk_actual_meo,
                 ]             
-            );         
+            );
+            $t1_bulk_actual_assay =  $t1->bulk_actual_assay;
+            $t1_bulk_actual_meo =  $t1->bulk_actual_meo;            
         }
         if ($t2 != null)
         {
@@ -366,7 +371,9 @@ class GrindingOvenController extends Controller
                     '2nd_bulk_assay' => $t2->bulk_actual_assay,
                     '2nd_bulk_meo' => $t2->bulk_actual_meo,
                 ]             
-            );         
+            );
+            $t2_bulk_actual_assay =  $t2->bulk_actual_assay;
+            $t2_bulk_actual_meo =  $t2->bulk_actual_meo;            
         }
         if ($t3 != null)
         {
@@ -375,27 +382,45 @@ class GrindingOvenController extends Controller
                     '3rd_bulk_assay' => $t3->bulk_actual_assay,
                     '3rd_bulk_meo' => $t3->bulk_actual_meo,
                 ]             
-            );         
+            );
+            $t3_bulk_actual_assay =  $t3->bulk_actual_assay;
+            $t3_bulk_actual_meo =  $t3->bulk_actual_meo;            
         }
 
+        //expect assay, expect meo 
+        //$update_expect_assay
+        //$update_expect_meo
+        $update_expect_assay = ''; $update_expect_meo = '';
+        $percent_1 = ''; $percent_2 = ''; $percent_3 = '';
 
-        //Material Spec
-        //$updateAssay
-        //$updateMeO
-        // $updateMaterial = '';
-        
-        // if( $updateAssay >= 99.65 && $updateMeO <=2.2 )
-        // {
-        //     $updateMaterial = 'TA';
-        // }
-       
+        if ($RowData["1st_bulk_wt"] !='' && $RowData["PDMAT_g"] !=''){
+            $percent_1 = (float)$RowData["1st_bulk_wt"] / (float)$RowData["PDMAT_g"];
+        }
+        if ($RowData["2nd_bulk_wt"] !='' && $RowData["PDMAT_g"] !=''){
+            $percent_2 = (float)$RowData["2nd_bulk_wt"] / (float)$RowData["PDMAT_g"];
+        }
+        if ($RowData["3rd_bulk_wt"] !='' && $RowData["PDMAT_g"] !=''){
+            $percent_3 = (float)$RowData["3rd_bulk_wt"] / (float)$RowData["PDMAT_g"];
+        }
 
+        $update_expect_assay = (float)$percent_1 * (float)$t1_bulk_actual_assay 
+                                +(float)$percent_2 * (float)$t2_bulk_actual_assay 
+                                +(float)$percent_3 * (float)$t3_bulk_actual_assay;
+        $update_expect_meo =  (float)$percent_1 *  (float)trim($t1_bulk_actual_meo, '<') 
+                                +(float)$percent_2 *  (float)trim($t2_bulk_actual_meo, '<')
+                                +(float)$percent_3 *  (float)trim($t3_bulk_actual_meo, '<');     
+
+        $RowData->update(
+            [
+                'expect_assay' => $update_expect_assay,
+                'expect_meo' => $update_expect_meo,
+            ]             
+        );         
 
 
         // $UpdateValue = DB::table('grindingovens')->orderBy('id','desc')->get(); //回傳原本的資料
         return response()->json([
-            'success' => $Parameter["count"]
-            
+            'success' => $Parameter["count"]      
         ]);       
     }
 
