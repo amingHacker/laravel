@@ -202,7 +202,6 @@
             shrinkToFit :false,
             loadonce:false,
             multiselect : true,
-
             jsonReader : {
                             root: "dataList",
                             page: "currPage",
@@ -502,7 +501,6 @@
         <p></p>
     </div>
     <div id="loadingImg" style = "display:none"><img src = "img/loadingImg.gif" width = "10%" height = "10%">
-        
     </div>
     
     {{-- Tab ToolBar Start --}}
@@ -754,10 +752,7 @@
         var s = $("#dg").jqGrid('getGridParam','selrow');      
         if (s)	{
             var ret = $("#dg").jqGrid('getRowData',s);
-
-            var selectedRows =  $("#dg").jqGrid('getGridParam', 'selarrrow');
-            
-            //console.log(ret);           
+            var selectedRows =  $("#dg").jqGrid('getGridParam', 'selarrrow');        
             
             var answer = window.confirm("確認回填所選資料?");
             if (answer)

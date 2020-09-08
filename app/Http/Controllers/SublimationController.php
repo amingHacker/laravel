@@ -301,9 +301,10 @@ class SublimationController extends Controller
     }
 
     //回填方法
-    public function BackFill($id)
-    {    
-        $RowData = Sublimation::find($id);  
+    public function BackFill(Request $request)
+    {   
+        $Parameter = $request->all(); 
+        $RowData = Sublimation::find($Parameter["id"]);  
         //var_dump($RowData["crude_batch"]);
         $_tmp = $RowData["bulk_batch"];
 
@@ -314,7 +315,9 @@ class SublimationController extends Controller
         $updateItemSelect = DB::table('sampling_records')->where('batch_number', $_tmp)->get();//得到陣列 
         
         $updateAssay = ''; $updateMeO = '';
-        $updateFailAssay = ''; $updateFailMeO = ''; 
+        $updateFailAssay = ''; $updateFailMeO = '';
+        $updataImpurity_A = '';$updataImpurity_B = '';$updataImpurity_C = '';
+        $updataImpurity_D = '';$updataImpurity_E = '';$updataImpurity_F = ''; 
 
         //先整理從Sampling Records紀錄的資料，再進一步判斷要如何更新資料
         foreach($updateItemSelect as $_tmp)
@@ -325,6 +328,12 @@ class SublimationController extends Controller
                 if ($_tmp->Assay != '')
                 {
                     $updateFailAssay = $_tmp->Assay;
+                    $updataImpurity_A = $_tmp->Impurity_A;
+                    $updataImpurity_B = $_tmp->Impurity_B;
+                    $updataImpurity_C = $_tmp->Impurity_C;
+                    $updataImpurity_D = $_tmp->Impurity_D;
+                    $updataImpurity_E = $_tmp->Impurity_E;
+                    $updataImpurity_F = $_tmp->Impurity_F;
                 }
 
                 if($_tmp->MeO != '')
@@ -339,6 +348,12 @@ class SublimationController extends Controller
                 if($_tmp->Assay != '')
                 {
                     $updateAssay = $_tmp->Assay;
+                    $updataImpurity_A = $_tmp->Impurity_A;
+                    $updataImpurity_B = $_tmp->Impurity_B;
+                    $updataImpurity_C = $_tmp->Impurity_C;
+                    $updataImpurity_D = $_tmp->Impurity_D;
+                    $updataImpurity_E = $_tmp->Impurity_E;
+                    $updataImpurity_F = $_tmp->Impurity_F;
                 }
                 if($_tmp->MeO != '')
                 {
@@ -404,6 +419,12 @@ class SublimationController extends Controller
                     [
                         'bulk_actual_assay' => $updateAssay, 
                         'bulk_actual_meo' =>  $updateMeO,
+                        'Impurity_A' => $updataImpurity_A,
+                        'Impurity_B' => $updataImpurity_B,
+                        'Impurity_C' => $updataImpurity_C,
+                        'Impurity_D' => $updataImpurity_D,
+                        'Impurity_E' => $updataImpurity_E,
+                        'Impurity_F' => $updataImpurity_F,
                     ]             
                 );
 
@@ -423,6 +444,12 @@ class SublimationController extends Controller
                             [
                                 'bulk_actual_assay' =>$updateAssay,
                                 'bulk_actual_meo' =>  $updateFailMeO,
+                                'Impurity_A' => $updataImpurity_A,
+                                'Impurity_B' => $updataImpurity_B,
+                                'Impurity_C' => $updataImpurity_C,
+                                'Impurity_D' => $updataImpurity_D,
+                                'Impurity_E' => $updataImpurity_E,
+                                'Impurity_F' => $updataImpurity_F,
                             ]
                         );
                     }
@@ -431,7 +458,13 @@ class SublimationController extends Controller
                     {
                         $RowData["bulk_actual_assay"] = $updateAssay;
                         $RowData["bulk_actual_meo"] = $updateFailMeO;
-                        $RowData["judge"] = 'Fail:MeO';        
+                        $RowData["judge"] = 'Fail:MeO';
+                        $RowData["Impurity_A"] = $updataImpurity_A;
+                        $RowData["Impurity_B"] = $updataImpurity_B;   
+                        $RowData["Impurity_C"] = $updataImpurity_C;   
+                        $RowData["Impurity_D"] = $updataImpurity_D;   
+                        $RowData["Impurity_E"] = $updataImpurity_E;   
+                        $RowData["Impurity_F"] = $updataImpurity_F;           
                         $this->CreateRowData($RowData);
                     }
                     
@@ -445,7 +478,13 @@ class SublimationController extends Controller
                     [
                         'bulk_actual_assay' => $updateAssay, 
                         'bulk_actual_meo' =>  $updateFailMeO,
-                        'judge' => 'Fail:MeO', 
+                        'judge' => 'Fail:MeO',
+                        'Impurity_A' => $updataImpurity_A,
+                        'Impurity_B' => $updataImpurity_B,
+                        'Impurity_C' => $updataImpurity_C,
+                        'Impurity_D' => $updataImpurity_D,
+                        'Impurity_E' => $updataImpurity_E,
+                        'Impurity_F' => $updataImpurity_F, 
                     ]             
                 );
 
@@ -464,6 +503,12 @@ class SublimationController extends Controller
                             [
                                 'bulk_actual_assay' =>$updateAssay,
                                 'bulk_actual_meo' =>  $updateMeO,
+                                'Impurity_A' => $updataImpurity_A,
+                                'Impurity_B' => $updataImpurity_B,
+                                'Impurity_C' => $updataImpurity_C,
+                                'Impurity_D' => $updataImpurity_D,
+                                'Impurity_E' => $updataImpurity_E,
+                                'Impurity_F' => $updataImpurity_F, 
                             ]
                         );
                     }
@@ -471,7 +516,13 @@ class SublimationController extends Controller
                     {
                         $RowData["bulk_actual_assay"] = $updateAssay;
                         $RowData["bulk_actual_meo"] = $updateMeO;
-                        $RowData["judge"] = 'Pass';        
+                        $RowData["judge"] = 'Pass';
+                        $RowData["Impurity_A"] = $updataImpurity_A;
+                        $RowData["Impurity_B"] = $updataImpurity_B;   
+                        $RowData["Impurity_C"] = $updataImpurity_C;   
+                        $RowData["Impurity_D"] = $updataImpurity_D;   
+                        $RowData["Impurity_E"] = $updataImpurity_E;   
+                        $RowData["Impurity_F"] = $updataImpurity_F;          
                         $this->CreateRowData($RowData);
                     }              
                 }
@@ -484,13 +535,25 @@ class SublimationController extends Controller
                         [
                             'bulk_actual_assay' => $updateAssay, 
                             'bulk_actual_meo' =>  $updateMeO,
-                            'judge' =>'Pass', 
+                            'judge' =>'Pass',
+                            'Impurity_A' => $updataImpurity_A,
+                            'Impurity_B' => $updataImpurity_B,
+                            'Impurity_C' => $updataImpurity_C,
+                            'Impurity_D' => $updataImpurity_D,
+                            'Impurity_E' => $updataImpurity_E,
+                            'Impurity_F' => $updataImpurity_F,  
                         ]             
                     );
                     
                     $RowData["bulk_actual_assay"] = $updateAssay;
                     $RowData["bulk_actual_meo"] = $updateFailMeO;
-                    $RowData["judge"] = 'Fail:MeO';        
+                    $RowData["judge"] = 'Fail:MeO';
+                    $RowData["Impurity_A"] = $updataImpurity_A;
+                    $RowData["Impurity_B"] = $updataImpurity_B;   
+                    $RowData["Impurity_C"] = $updataImpurity_C;   
+                    $RowData["Impurity_D"] = $updataImpurity_D;   
+                    $RowData["Impurity_E"] = $updataImpurity_E;   
+                    $RowData["Impurity_F"] = $updataImpurity_F;            
                     $this->CreateRowData($RowData);
                 }
                 if($Assay_MeO->isEmpty() == false && $Assay_FailMeO->isEmpty() == true)
@@ -499,7 +562,13 @@ class SublimationController extends Controller
                         [
                             'bulk_actual_assay' => $updateAssay, 
                             'bulk_actual_meo' =>  $updateMeO,
-                            'judge' =>'Fail:MeO', 
+                            'judge' =>'Fail:MeO',
+                            'Impurity_A' => $updataImpurity_A,
+                            'Impurity_B' => $updataImpurity_B,
+                            'Impurity_C' => $updataImpurity_C,
+                            'Impurity_D' => $updataImpurity_D,
+                            'Impurity_E' => $updataImpurity_E,
+                            'Impurity_F' => $updataImpurity_F,   
                         ]             
                     );
                 }
@@ -509,7 +578,13 @@ class SublimationController extends Controller
                         [
                             'bulk_actual_assay' => $updateAssay, 
                             'bulk_actual_meo' =>  $updateMeO,
-                            'judge' =>'Pass', 
+                            'judge' =>'Pass',
+                            'Impurity_A' => $updataImpurity_A,
+                            'Impurity_B' => $updataImpurity_B,
+                            'Impurity_C' => $updataImpurity_C,
+                            'Impurity_D' => $updataImpurity_D,
+                            'Impurity_E' => $updataImpurity_E,
+                            'Impurity_F' => $updataImpurity_F,   
                         ]             
                     );
                 }
@@ -527,6 +602,12 @@ class SublimationController extends Controller
                     [
                         'bulk_actual_assay' => $updateAssay, 
                         'bulk_actual_meo' =>  $updateMeO,
+                        'Impurity_A' => $updataImpurity_A,
+                        'Impurity_B' => $updataImpurity_B,
+                        'Impurity_C' => $updataImpurity_C,
+                        'Impurity_D' => $updataImpurity_D,
+                        'Impurity_E' => $updataImpurity_E,
+                        'Impurity_F' => $updataImpurity_F,  
                     ]             
                 );
 
@@ -546,6 +627,12 @@ class SublimationController extends Controller
                             [
                                 'bulk_actual_assay' =>$updateFailAssay,
                                 'bulk_actual_meo' =>  $updateMeO,
+                                'Impurity_A' => $updataImpurity_A,
+                                'Impurity_B' => $updataImpurity_B,
+                                'Impurity_C' => $updataImpurity_C,
+                                'Impurity_D' => $updataImpurity_D,
+                                'Impurity_E' => $updataImpurity_E,
+                                'Impurity_F' => $updataImpurity_F,  
                             ]
                         );
                     }
@@ -553,7 +640,13 @@ class SublimationController extends Controller
                     {
                         $RowData["bulk_actual_assay"] = $updateFailAssay;
                         $RowData["bulk_actual_meo"] = $updateMeO;
-                        $RowData["judge"] = 'Fail:Assay';        
+                        $RowData["judge"] = 'Fail:Assay';
+                        $RowData["Impurity_A"] = $updataImpurity_A;
+                        $RowData["Impurity_B"] = $updataImpurity_B;   
+                        $RowData["Impurity_C"] = $updataImpurity_C;   
+                        $RowData["Impurity_D"] = $updataImpurity_D;   
+                        $RowData["Impurity_E"] = $updataImpurity_E;   
+                        $RowData["Impurity_F"] = $updataImpurity_F;                
                         $this->CreateRowData($RowData);
                     }
                 }
@@ -567,6 +660,12 @@ class SublimationController extends Controller
                         'bulk_actual_assay' => $updateFailAssay, 
                         'bulk_actual_meo' =>  $updateMeO,
                         'judge' =>'Fail:Assay',
+                        'Impurity_A' => $updataImpurity_A,
+                        'Impurity_B' => $updataImpurity_B,
+                        'Impurity_C' => $updataImpurity_C,
+                        'Impurity_D' => $updataImpurity_D,
+                        'Impurity_E' => $updataImpurity_E,
+                        'Impurity_F' => $updataImpurity_F,  
                     ]             
                 );
 
@@ -585,6 +684,12 @@ class SublimationController extends Controller
                             [
                                 'bulk_actual_assay' =>$updateAssay,
                                 'bulk_actual_meo' =>  $updateMeO,
+                                'Impurity_A' => $updataImpurity_A,
+                                'Impurity_B' => $updataImpurity_B,
+                                'Impurity_C' => $updataImpurity_C,
+                                'Impurity_D' => $updataImpurity_D,
+                                'Impurity_E' => $updataImpurity_E,
+                                'Impurity_F' => $updataImpurity_F,  
                             ]
                         );
                     }
@@ -592,7 +697,13 @@ class SublimationController extends Controller
                     {
                         $RowData["bulk_actual_assay"] = $updateAssay;
                         $RowData["bulk_actual_meo"] = $updateMeO;
-                        $RowData["judge"] = 'Pass';        
+                        $RowData["judge"] = 'Pass';
+                        $RowData["Impurity_A"] = $updataImpurity_A;
+                        $RowData["Impurity_B"] = $updataImpurity_B;   
+                        $RowData["Impurity_C"] = $updataImpurity_C;   
+                        $RowData["Impurity_D"] = $updataImpurity_D;   
+                        $RowData["Impurity_E"] = $updataImpurity_E;   
+                        $RowData["Impurity_F"] = $updataImpurity_F;          
                         $this->CreateRowData($RowData);
                     }
                 }
@@ -605,13 +716,25 @@ class SublimationController extends Controller
                         [
                             'bulk_actual_assay' => $updateAssay, 
                             'bulk_actual_meo' =>  $updateMeO,
-                            'judge' =>'Pass', 
+                            'judge' =>'Pass',
+                            'Impurity_A' => $updataImpurity_A,
+                            'Impurity_B' => $updataImpurity_B,
+                            'Impurity_C' => $updataImpurity_C,
+                            'Impurity_D' => $updataImpurity_D,
+                            'Impurity_E' => $updataImpurity_E,
+                            'Impurity_F' => $updataImpurity_F,   
                         ]             
                     );
                     
                     $RowData["bulk_actual_assay"] = $updateFailAssay;
                     $RowData["bulk_actual_meo"] = $updateMeO;
-                    $RowData["judge"] = 'Fail:Assay';        
+                    $RowData["judge"] = 'Fail:Assay';
+                    $RowData["Impurity_A"] = $updataImpurity_A;
+                    $RowData["Impurity_B"] = $updataImpurity_B;   
+                    $RowData["Impurity_C"] = $updataImpurity_C;   
+                    $RowData["Impurity_D"] = $updataImpurity_D;   
+                    $RowData["Impurity_E"] = $updataImpurity_E;   
+                    $RowData["Impurity_F"] = $updataImpurity_F;          
                     $this->CreateRowData($RowData);
                 }
                 if($Assay_MeO->isEmpty() == false && $FailAssay_MeO->isEmpty() == true)
@@ -620,7 +743,13 @@ class SublimationController extends Controller
                         [
                             'bulk_actual_assay' => $updateFailAssay, 
                             'bulk_actual_meo' =>  $updateMeO,
-                            'judge' =>'Fail:Assay', 
+                            'judge' =>'Fail:Assay',
+                            'Impurity_A' => $updataImpurity_A,
+                            'Impurity_B' => $updataImpurity_B,
+                            'Impurity_C' => $updataImpurity_C,
+                            'Impurity_D' => $updataImpurity_D,
+                            'Impurity_E' => $updataImpurity_E,
+                            'Impurity_F' => $updataImpurity_F, 
                         ]             
                     );
                 }
@@ -630,7 +759,13 @@ class SublimationController extends Controller
                         [
                             'bulk_actual_assay' => $updateAssay, 
                             'bulk_actual_meo' =>  $updateMeO,
-                            'judge' =>'Pass', 
+                            'judge' =>'Pass',
+                            'Impurity_A' => $updataImpurity_A,
+                            'Impurity_B' => $updataImpurity_B,
+                            'Impurity_C' => $updataImpurity_C,
+                            'Impurity_D' => $updataImpurity_D,
+                            'Impurity_E' => $updataImpurity_E,
+                            'Impurity_F' => $updataImpurity_F, 
                         ]             
                     );
                 }
@@ -649,6 +784,12 @@ class SublimationController extends Controller
                     [
                         'bulk_actual_assay' => $updateAssay, 
                         'bulk_actual_meo' =>  $updateMeO,
+                        'Impurity_A' => $updataImpurity_A,
+                        'Impurity_B' => $updataImpurity_B,
+                        'Impurity_C' => $updataImpurity_C,
+                        'Impurity_D' => $updataImpurity_D,
+                        'Impurity_E' => $updataImpurity_E,
+                        'Impurity_F' => $updataImpurity_F,
                     ]             
                 );
                 if ($FailAssay_FailMeO->isEmpty() == true)
@@ -666,6 +807,12 @@ class SublimationController extends Controller
                             [
                                 'bulk_actual_assay' =>$updateFailAssay,
                                 'bulk_actual_meo' =>  $updateFailMeO,
+                                'Impurity_A' => $updataImpurity_A,
+                                'Impurity_B' => $updataImpurity_B,
+                                'Impurity_C' => $updataImpurity_C,
+                                'Impurity_D' => $updataImpurity_D,
+                                'Impurity_E' => $updataImpurity_E,
+                                'Impurity_F' => $updataImpurity_F,
                             ]
                         );
                     }
@@ -673,7 +820,13 @@ class SublimationController extends Controller
                     {
                         $RowData["bulk_actual_assay"] = $updateFailAssay;
                         $RowData["bulk_actual_meo"] = $updateFailMeO;
-                        $RowData["judge"] = 'Fail:Assay, MeO';        
+                        $RowData["judge"] = 'Fail:Assay, MeO';
+                        $RowData["Impurity_A"] = $updataImpurity_A;
+                        $RowData["Impurity_B"] = $updataImpurity_B;   
+                        $RowData["Impurity_C"] = $updataImpurity_C;   
+                        $RowData["Impurity_D"] = $updataImpurity_D;   
+                        $RowData["Impurity_E"] = $updataImpurity_E;   
+                        $RowData["Impurity_F"] = $updataImpurity_F;           
                         $this->CreateRowData($RowData);
                     }
                 }
@@ -687,6 +840,12 @@ class SublimationController extends Controller
                         'bulk_actual_assay' => $updateFailAssay, 
                         'bulk_actual_meo' =>  $updateFailMeO,
                         'judge' => 'Fail:Assay, MeO',
+                        'Impurity_A' => $updataImpurity_A,
+                        'Impurity_B' => $updataImpurity_B,
+                        'Impurity_C' => $updataImpurity_C,
+                        'Impurity_D' => $updataImpurity_D,
+                        'Impurity_E' => $updataImpurity_E,
+                        'Impurity_F' => $updataImpurity_F,
                     ]             
                 );
                 if ($Assay_MeO->isEmpty() == true)
@@ -704,6 +863,12 @@ class SublimationController extends Controller
                             [
                                 'bulk_actual_assay' =>$updateAssay,
                                 'bulk_actual_meo' =>  $updateMeO,
+                                'Impurity_A' => $updataImpurity_A,
+                                'Impurity_B' => $updataImpurity_B,
+                                'Impurity_C' => $updataImpurity_C,
+                                'Impurity_D' => $updataImpurity_D,
+                                'Impurity_E' => $updataImpurity_E,
+                                'Impurity_F' => $updataImpurity_F,
                             ]
                         );
                     }
@@ -711,7 +876,13 @@ class SublimationController extends Controller
                     {
                         $RowData["bulk_actual_assay"] = $updateAssay;
                         $RowData["bulk_actual_meo"] = $updateMeO;
-                        $RowData["judge"] = 'Pass';        
+                        $RowData["judge"] = 'Pass';
+                        $RowData["Impurity_A"] = $updataImpurity_A;
+                        $RowData["Impurity_B"] = $updataImpurity_B;   
+                        $RowData["Impurity_C"] = $updataImpurity_C;   
+                        $RowData["Impurity_D"] = $updataImpurity_D;   
+                        $RowData["Impurity_E"] = $updataImpurity_E;   
+                        $RowData["Impurity_F"] = $updataImpurity_F;         
                         $this->CreateRowData($RowData);
                     }
                 }
@@ -724,13 +895,25 @@ class SublimationController extends Controller
                         [
                             'bulk_actual_assay' => $updateAssay, 
                             'bulk_actual_meo' =>  $updateMeO,
-                            'judge' =>'Pass', 
+                            'judge' =>'Pass',
+                            'Impurity_A' => $updataImpurity_A,
+                            'Impurity_B' => $updataImpurity_B,
+                            'Impurity_C' => $updataImpurity_C,
+                            'Impurity_D' => $updataImpurity_D,
+                            'Impurity_E' => $updataImpurity_E,
+                            'Impurity_F' => $updataImpurity_F, 
                         ]             
                     );
                     
                     $RowData["bulk_actual_assay"] = $updateFailAssay;
                     $RowData["bulk_actual_meo"] = $updateFailMeO;
-                    $RowData["judge"] = 'Fail:Assay, MeO';        
+                    $RowData["judge"] = 'Fail:Assay, MeO';
+                    $RowData["Impurity_A"] = $updataImpurity_A;
+                    $RowData["Impurity_B"] = $updataImpurity_B;   
+                    $RowData["Impurity_C"] = $updataImpurity_C;   
+                    $RowData["Impurity_D"] = $updataImpurity_D;   
+                    $RowData["Impurity_E"] = $updataImpurity_E;   
+                    $RowData["Impurity_F"] = $updataImpurity_F;           
                     $this->CreateRowData($RowData);
                 }
                 if($Assay_MeO->isEmpty() == false && $FailAssay_FailMeO->isEmpty() == true)
@@ -739,7 +922,13 @@ class SublimationController extends Controller
                         [
                             'bulk_actual_assay' => $updateFailAssay, 
                             'bulk_actual_meo' =>  $updateFailMeO,
-                            'judge' =>'Fail:Assay, MeO', 
+                            'judge' =>'Fail:Assay, MeO',
+                            'Impurity_A' => $updataImpurity_A,
+                            'Impurity_B' => $updataImpurity_B,
+                            'Impurity_C' => $updataImpurity_C,
+                            'Impurity_D' => $updataImpurity_D,
+                            'Impurity_E' => $updataImpurity_E,
+                            'Impurity_F' => $updataImpurity_F,  
                         ]             
                     );
                 }
@@ -749,7 +938,13 @@ class SublimationController extends Controller
                         [
                             'bulk_actual_assay' => $updateAssay, 
                             'bulk_actual_meo' =>  $updateMeO,
-                            'judge' =>'Pass', 
+                            'judge' =>'Pass',
+                            'Impurity_A' => $updataImpurity_A,
+                            'Impurity_B' => $updataImpurity_B,
+                            'Impurity_C' => $updataImpurity_C,
+                            'Impurity_D' => $updataImpurity_D,
+                            'Impurity_E' => $updataImpurity_E,
+                            'Impurity_F' => $updataImpurity_F,  
                         ]             
                     );
                 }
@@ -772,7 +967,13 @@ class SublimationController extends Controller
                     [
                         'bulk_actual_assay' => $_tmpAssay, 
                         'bulk_actual_meo' => $_tmpMeO,
-                        'judge' =>$_tmpjudge,  
+                        'judge' =>$_tmpjudge,
+                        'Impurity_A' => $updataImpurity_A,
+                        'Impurity_B' => $updataImpurity_B,
+                        'Impurity_C' => $updataImpurity_C,
+                        'Impurity_D' => $updataImpurity_D,
+                        'Impurity_E' => $updataImpurity_E,
+                        'Impurity_F' => $updataImpurity_F,   
                     ]             
             );                            
         }
@@ -792,14 +993,20 @@ class SublimationController extends Controller
                     [
                         'bulk_actual_assay' => $_tmpAssay, 
                         'bulk_actual_meo' => $_tmpMeO,
-                        'judge' =>$_tmpjudge,  
+                        'judge' =>$_tmpjudge,
+                        'Impurity_A' => $updataImpurity_A,
+                        'Impurity_B' => $updataImpurity_B,
+                        'Impurity_C' => $updataImpurity_C,
+                        'Impurity_D' => $updataImpurity_D,
+                        'Impurity_E' => $updataImpurity_E,
+                        'Impurity_F' => $updataImpurity_F,   
                     ]             
             );                            
         }
 
         //$UpdateValue = DB::table('sublimations')->orderBy('id','desc')->get(); //回傳原本的資料
         return response()->json([
-            'success' =>  'OK'
+            'success' =>  $Parameter["count"]
             
         ]);       
     }
@@ -823,6 +1030,12 @@ class SublimationController extends Controller
                 'bulk_actual_assay' => $RowData["bulk_actual_assay"],
                 'bulk_actual_meo' => $RowData["bulk_actual_meo"],
                 'judge' => $RowData["judge"],
+                'Impurity_A' => $RowData["Impurity_A"],
+                'Impurity_B' => $RowData["Impurity_B"],
+                'Impurity_C' => $RowData["Impurity_C"],
+                'Impurity_D' => $RowData["Impurity_D"],
+                'Impurity_E' => $RowData["Impurity_E"],
+                'Impurity_F' => $RowData["Impurity_F"],
                 'glove_box' => $RowData["glove_box"],
                 'mantle' => $RowData["mantle"],                  
                 'PLC_status' => $RowData["PLC_status"],                
@@ -870,6 +1083,12 @@ class SublimationController extends Controller
              'bulk_actual_assay',
              'bulk_actual_meo',
              'judge',
+             'Impurity_A', 
+             'Impurity_B', 
+             'Impurity_C', 
+             'Impurity_D', 
+             'Impurity_E',
+             'Impurity_F',
              'glove_box',
              'mantle',                  
              'PLC_status',                

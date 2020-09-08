@@ -211,6 +211,7 @@
             caption:"Sublimation 昇華",
             shrinkToFit :false,
             loadonce:false,
+            multiselect : true,
             jsonReader : {
                             root: "dataList",
                             page: "currPage",
@@ -270,7 +271,8 @@
         var _xAxisSource = ["bulk started", "次數", "1st crude batch", "1st tank batch", "2nd crude batch", "2nd tank batch", "3rd crude batch", 
                             "3rd tank batch", "bulk batch", "glove box"];
         var _yAxisSource = ["1st crude wt.", "2nd crude wt.", "3rd crude wt.", "bulk actual assay", "bulk actual meo", "mantle", "solid input", 
-                            "bulk output", "bulk yield", "input system oxygen", "pre system Pump", "pre system torr", 
+                            "bulk output", "bulk yield", "input system oxygen", "pre system Pump", "pre system torr",
+                            "Impurity A", "Impurity B", "Impurity C", "Impurity D", "Impurity E", "Impurity F",
                             "output system oxygen", "top Mantle (end)", "top Tapes (end)", "top Coolant (end)", "top Turbo (end)", "top Oxygen (end)", 
                             "man Tapes (end)", "main Coolant (end)", "main Turbo (end)", "main Oxygen (end)"
                         ];
@@ -305,6 +307,12 @@
             bulk_actual_assay: "bulk actual assay",
             bulk_actual_meo: "bulk actual meo",
             judge:"judge",
+            "Impurity_A": "Impurity A",
+            "Impurity_B": "Impurity B",
+            "Impurity_C": "Impurity C",
+            "Impurity_D": "Impurity D",
+            "Impurity_E": "Impurity E",
+            "Impurity_F": "Impurity F",
             glove_box: "glove box",
             mantle: "mantle",
             PLC_status: "PLC status",
@@ -362,6 +370,12 @@
             "bulk actual assay" : "bulk_actual_assay" ,
             "bulk actual meo" : "bulk_actual_meo" ,
             "judge" : "judge" ,
+            "Impurity A": "Impurity_A",
+            "Impurity B": "Impurity_B",
+            "Impurity C": "Impurity_C",
+            "Impurity D": "Impurity_D",
+            "Impurity E": "Impurity_E",
+            "Impurity F": "Impurity_F",
             "glove box" : "glove_box",
             "mantle" : "mantle",
             "PLC status" : "PLC_status",
@@ -538,6 +552,8 @@
     </div>
     <div id="warningDialog" title="Warning Information">
         <p></p>
+    </div>
+    <div id="loadingImg" style = "display:none"><img src = "img/loadingImg.gif" width = "10%" height = "10%">
     </div>  
 
     {{-- Tab ToolBar Start --}}
@@ -789,21 +805,38 @@
     $("#BackFill").click( function() {
         var s = $("#dg").jqGrid('getGridParam','selrow');      
         if (s)	{
-            var ret = $("#dg").jqGrid('getRowData',s);        
-            var answer = window.confirm("確認回填此筆資料?");
+            var ret = $("#dg").jqGrid('getRowData',s);
+            var selectedRows =  $("#dg").jqGrid('getGridParam', 'selarrrow');
+
+            var answer = window.confirm("確認回填所選資料?");
             if (answer)
             {
-                $.ajax({
-                    async:false,
-                    url: "Sublimation/BackFill/" + ret.id ,//路徑
-                    type: "POST",             
-                    data:{
-                        "id": ret.id,
-                    },
-                    success: function (){                       
-                        $('#dg').trigger( 'reloadGrid' );
-                    }                               
-                });
+
+                for (var i = 0; i < selectedRows.length; i++) 
+                {                              
+                    setTimeout((function (i) {                      
+                        return function () {                
+                            $.ajax({
+                                async:false,
+                                url: "Sublimation/BackFill/" + selectedRows[i] ,//路徑
+                                type: "POST",             
+                                data:{
+                                    "id": selectedRows[i],
+                                    "count": i
+                                },
+                                success: function (response){ 
+                                    if (response.success == selectedRows.length - 1) { 
+                                        $('#loadingImg').hide();
+                                        $('#dg').trigger( 'reloadGrid' );
+                                    }                    
+                                },
+                                beforeSend:function(){
+                                    $('#loadingImg').show();
+                                }                               
+                            });
+                        }
+                    })(i), 2);
+                }
             }    
         }
         else        
@@ -897,7 +930,8 @@
                     var dataExport = DownLoadValue.success;
                     //產生要寫入excel的data
                     var i = 1;
-                    var dataToExcel = [];    
+                    var dataToExcel = [];
+                    columnNames.splice(0,1);   //因在多選的grid中，第一項為checkbox    
                     dataToExcel.push(columnNames);
 
                     for(var key in dataExport)
@@ -935,7 +969,7 @@
         {          
             $("#warningDialog").html('<br />檔案格式錯誤！<br /><br />匯入之檔案必須為：<strong>Excel 2003 (.xls) </strong> 或 <strong>Excel 2007-2010 (.xlsx)</strong><br /><br />');
             $("#warningDialog").dialog({
-                width:'auto', height:'auto', autoResize:true, modal:true, closeText:"正在上傳", 
+                width:'auto', height:'auto', autoResize:true, modal:true, closeText:"關閉", 
                 resizable:false, closeOnEscape:true, dialogClass:'top-dialog',
                 show:{effect: "clip", duration: 140},
                 hide:{effect: "clip", duration: 140},
@@ -976,7 +1010,13 @@
                 "bulk batch": "bulk_batch",
                 "bulk actual assay": "bulk_actual_assay",
                 "bulk actual meo": "bulk_actual_meo",
-                //"judge":"judge",             
+                //"judge":"judge",
+                "Impurity A": "Impurity_A",
+                "Impurity B": "Impurity_B",
+                "Impurity C": "Impurity_C",
+                "Impurity D": "Impurity_D",
+                "Impurity E": "Impurity_E",
+                "Impurity F": "Impurity_F",                 
                 "glove box": "glove_box",
                 //"mantle": "mantle",
                 "PLC status": "PLC_status",
@@ -1057,8 +1097,9 @@
                 pager: '#import_previewPager',
                 caption: fileName,
                 loadComplete: function (){ fixPositionsOfFrozenDivs.call(this); }, // Fix column's height are different after enable frozen column feature  
+                gridComplete: function() { $("#" + table).jqGrid('setFrozenColumns');}
             });
-            $("#" + table).jqGrid('setFrozenColumns');
+          
             //增加Tool bar        
             $("#" + table).jqGrid('navGrid','#import_previewPager', { search:true, edit:false, add:false, del:false, refresh:true } );
         

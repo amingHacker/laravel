@@ -2,7 +2,6 @@
 
 @section('content')  
 
-
 {{-- Include CSS Start --}}
 {{-- Local Source  --}}
 <link rel="stylesheet" type="text/css" href="{{asset('css/jqgrid/jquery-ui-custom.css')}}" >
@@ -62,7 +61,6 @@
 
 {{-- ajax同步 This is for es5 (ie11)--}}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bluebird/3.3.4/bluebird.min.js"></script>
-
 
 {{-- 圖表生成 Chart.js Start--}}
 <script type="text/javascript" src="{{asset('js/chart/moment.min.js')}}"></script>
@@ -200,6 +198,7 @@
             caption:"Grinding & Oven",
             shrinkToFit :false,
             loadonce:false,
+            multiselect : true,
             jsonReader : {
                             root: "dataList",
                             page: "currPage",
@@ -536,6 +535,8 @@
     <div id="warningDialog" title="Warning Information">
         <p></p>
     </div>
+    <div id="loadingImg" style = "display:none"><img src = "img/loadingImg.gif" width = "10%" height = "10%">
+    </div>
     
     {{-- Tab ToolBar Start --}}
     <h1 class="my-4"></h1>
@@ -561,8 +562,14 @@
     <div id = canvas_div style="width:70%; margin:0px auto; display: none;" >
         <canvas id="canvas" ></canvas>
     </div>
-    {{-- Chart End --}}           
-
+    {{-- Chart End --}}
+    
+     {{-- Chart選單 Start --}}
+     <ul id="Chartmenu" style="display:none;" >
+        <li><a href="#" onclick="saveoutlierChartData();return false;"><span class="ui-icon ui-icon-disk"></span>Save</a></li>
+        <li><a href="#" onclick="removeChartData();return false;"><span class="ui-icon ui-icon-trash"></span>Delete</a></li>
+    </ul>
+    {{-- Chart選單 End --}}
 
 {{-- 表單送出方法 inline Start --}}
 <script type="text/javascript">
@@ -780,21 +787,37 @@
     $("#BackFill").click( function() {
         var s = $("#dg").jqGrid('getGridParam','selrow');      
         if (s)	{
-            var ret = $("#dg").jqGrid('getRowData',s);          
-            var answer = window.confirm("確認回填此筆資料?");
+            var ret = $("#dg").jqGrid('getRowData',s);
+            var selectedRows =  $("#dg").jqGrid('getGridParam', 'selarrrow');          
+            
+            var answer = window.confirm("確認回填所選資料?");
             if (answer)
             {
-                $.ajax({
-                    async:false,
-                    url: "GrindingOven/BackFill/" + ret.id ,//路徑
-                    type: "POST",             
-                    data:{
-                        "id": ret.id,
-                    },
-                    success: function (){                      
-                        $('#dg').trigger( 'reloadGrid' );
-                    }                               
-                });
+                for (var i = 0; i < selectedRows.length; i++) 
+                {                              
+                    setTimeout((function (i) {                      
+                        return function () {                
+                            $.ajax({
+                                async:false,
+                                url: "GrindingOven/BackFill/" + selectedRows[i] ,//路徑
+                                type: "POST",             
+                                data:{
+                                    "id": selectedRows[i],
+                                    "count": i
+                                },
+                                success: function (response){ 
+                                    if (response.success == selectedRows.length - 1) { 
+                                        $('#loadingImg').hide();
+                                        $('#dg').trigger( 'reloadGrid' );
+                                    }                    
+                                },
+                                beforeSend:function(){
+                                    $('#loadingImg').show();
+                                }                               
+                            });
+                        }
+                    })(i), 2);
+                }
             }    
         }
         else        
@@ -883,11 +906,11 @@
                     "postData": postData,
                 },
                 success: function (DownLoadValue){
-                    //console.log(DownLoadValue);
                     var dataExport = DownLoadValue.success;
                     //產生要寫入excel的data
                     var i = 1;
-                    var dataToExcel = [];    
+                    var dataToExcel = [];
+                    columnNames.splice(0,1);   //因在多選的grid中，第一項為checkbox     
                     dataToExcel.push(columnNames);
 
                     for(var key in dataExport)
@@ -925,7 +948,7 @@
         {          
             $("#warningDialog").html('<br />檔案格式錯誤！<br /><br />匯入之檔案必須為：<strong>Excel 2003 (.xls) </strong> 或 <strong>Excel 2007-2010 (.xlsx)</strong><br /><br />');
             $("#warningDialog").dialog({
-                width:'auto', height:'auto', autoResize:true, modal:true, closeText:"正在上傳", 
+                width:'auto', height:'auto', autoResize:true, modal:true, closeText:"關閉", 
                 resizable:false, closeOnEscape:true, dialogClass:'top-dialog',
                 show:{effect: "clip", duration: 140},
                 hide:{effect: "clip", duration: 140},
@@ -1050,8 +1073,9 @@
                 pager: '#import_previewPager',
                 caption: fileName,
                 loadComplete: function (){ fixPositionsOfFrozenDivs.call(this); }, // Fix column's height are different after enable frozen column feature  
+                gridComplete: function() { $("#" + table).jqGrid('setFrozenColumns');}
             });
-            $("#" + table).jqGrid('setFrozenColumns');
+            
             //增加Tool bar        
             $("#" + table).jqGrid('navGrid','#import_previewPager', { search:true, edit:false, add:false, del:false, refresh:true } );
         

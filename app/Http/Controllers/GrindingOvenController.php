@@ -291,9 +291,10 @@ class GrindingOvenController extends Controller
     }
 
     //回填方法
-    public function BackFill($id)
-    {    
-        $RowData = GrindingOven::find($id);
+    public function BackFill(Request $request)
+    {   
+        $Parameter = $request->all(); 
+        $RowData = GrindingOven::find($Parameter["id"]);
         //var_dump($RowData["crude_batch"]);
         $_tmp = $RowData["sap_batch"];
         $updateItemSelect = DB::table('sampling_records')->where('batch_number', $_tmp)->get();//得到陣列 
@@ -391,9 +392,9 @@ class GrindingOvenController extends Controller
 
 
 
-        $UpdateValue = DB::table('grindingovens')->orderBy('id','desc')->get(); //回傳原本的資料
+        // $UpdateValue = DB::table('grindingovens')->orderBy('id','desc')->get(); //回傳原本的資料
         return response()->json([
-            'success' =>  $UpdateValue
+            'success' => $Parameter["count"]
             
         ]);       
     }
