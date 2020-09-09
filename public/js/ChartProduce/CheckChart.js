@@ -144,7 +144,7 @@ function DrowChart( dataLo, chartTypeGroup, dataXaxisGroup, dataYaxisGroup,
     var UpandDown = [];
     for(var key in dataToChartYGroup)
     {
-        UpandDown[key] = getDeviation(dataToChartYGroup[key]);
+        UpandDown[key] = getDeviation(dataToChartYGroup[key], USLGroup[0], LSLGroup[0]);
     }
 
     var color = Chart.helpers.color;
@@ -246,7 +246,11 @@ function DrowChart( dataLo, chartTypeGroup, dataXaxisGroup, dataYaxisGroup,
         for(var j in horizontalLinetmp)
         {
             horizontalLineScales.push(horizontalLinetmp[j]);
-        }              
+        }
+        
+        //單邊規格
+        if(UCLGroup[i] == '' && LCLGroup[i] != ''){horizontalLineScales[0] = null;}
+        if(LCLGroup[i] == '' && UCLGroup[i] != ''){horizontalLineScales[2] = null;} 
     }
 
     var scatterChartData = {
@@ -314,8 +318,8 @@ function DrowChart( dataLo, chartTypeGroup, dataXaxisGroup, dataYaxisGroup,
 
             if (chartInstance.options.horizontalLine) {
                 for (index = 0; index < chartInstance.options.horizontalLine.length; index++) {
+                    if(chartInstance.options.horizontalLine[index] == null){continue;}
                     line = chartInstance.options.horizontalLine[index];
-
                     if (!line.style) {
                         style = "rgba(169,169,169, .6)";
                     } else {
@@ -365,10 +369,13 @@ function DrowChart( dataLo, chartTypeGroup, dataXaxisGroup, dataYaxisGroup,
             ctx.fillStyle = "black";
             for(var i = 0; i < chart.options.addTextOnChart.length; i ++)
             {
-                var widthbais = 0.65 + 0.1 * i ;
+                var widthbais = 0.6 + 0.2 * i ;
                 ctx.fillText("count: " + chart.options.addTextOnChart[i]["Item"], width * widthbais, height * .03);
                 ctx.fillText("average: " + chart.options.addTextOnChart[i]["Mean"], width * widthbais, height * .05);
                 ctx.fillText("S.D.(σ): " + chart.options.addTextOnChart[i]["Stddev"], width * widthbais, height * .07);
+                ctx.fillText("Cpu: " + chart.options.addTextOnChart[i]["Cpu"], width * (widthbais + 0.1) , height * .03);
+                ctx.fillText("Cpl: " + chart.options.addTextOnChart[i]["Cpl"], width * (widthbais + 0.1), height * .05);
+                ctx.fillText("Cpk: " + chart.options.addTextOnChart[i]["Cpk"], width * (widthbais + 0.1), height * .07);
             }               
             return;
         }
@@ -525,29 +532,37 @@ function removeChartData()
             if(window.myLine.data.datasets[removeDataSetIndex].pointBackgroundColor != undefined)
             {
                 var toolsConChart = $("#jqxToolBarConChart1").jqxToolBar("getTools");
+                var tUSL = toolsConChart[1].tool[0].value;
+                var tLSL = toolsConChart[3].tool[0].value;
                 var tUCL = toolsConChart[5].tool[0].value;
+                var tLCL = toolsConChart[7].tool[0].value;
                 
                 
                 window.myLine.data.datasets[removeDataSetIndex].pointBackgroundColor.splice(removeIndex, 1);
                 //window.myLine.data.datasets[removeDataSetIndex].pointBorderColor.splice(removeIndex, 1); //border 與 background 有連動
                 var _newYdata = getDataYFromChart(window.myLine.data.datasets[removeDataSetIndex].data);
-                var result = getDeviation(_newYdata);
-                if (tUCL == '')
+                var result = getDeviation(_newYdata, tUSL, tLSL);
+                if (tUCL == '' || tLCL == '') //Aming
                 {
                     //重新計算UCL LCL
                     for (var i = 0; i < window.myLine.data.datasets[removeDataSetIndex].data._chartjs.listeners[0].chart.options.horizontalLine.length; i++)
                     {
-                        if(window.myLine.data.datasets[removeDataSetIndex].data._chartjs.listeners[0].chart.options.horizontalLine[i].text.indexOf("UCL") != -1)
+                        //若沒有這條線，就跳過
+                        if(window.myLine.data.datasets[removeDataSetIndex].data._chartjs.listeners[0].chart.options.horizontalLine[i] == null)
+                        {
+                            continue;
+                        }
+                        if(window.myLine.data.datasets[removeDataSetIndex].data._chartjs.listeners[0].chart.options.horizontalLine[i].text.indexOf("UCL") != -1 && tUCL =='')
                         {
                             window.myLine.data.datasets[removeDataSetIndex].data._chartjs.listeners[0].chart.options.horizontalLine[i].y = result["UCL"];
                             window.myLine.data.datasets[removeDataSetIndex].data._chartjs.listeners[0].chart.options.horizontalLine[i].text = "UCL=" + result["UCL"];
                         }
-                        if(window.myLine.data.datasets[removeDataSetIndex].data._chartjs.listeners[0].chart.options.horizontalLine[i].text.indexOf("Center") != -1)
+                        if(window.myLine.data.datasets[removeDataSetIndex].data._chartjs.listeners[0].chart.options.horizontalLine[i].text.indexOf("Center") != -1 && (tUCL == '' || tLCL == ''))
                         {
                             window.myLine.data.datasets[removeDataSetIndex].data._chartjs.listeners[0].chart.options.horizontalLine[i].y = result["Mean"];
                             window.myLine.data.datasets[removeDataSetIndex].data._chartjs.listeners[0].chart.options.horizontalLine[i].text = "Center=" + result["Mean"];
                         }
-                        if(window.myLine.data.datasets[removeDataSetIndex].data._chartjs.listeners[0].chart.options.horizontalLine[i].text.indexOf("LCL") != -1)
+                        if(window.myLine.data.datasets[removeDataSetIndex].data._chartjs.listeners[0].chart.options.horizontalLine[i].text.indexOf("LCL") != -1 && tLCL =='')
                         {
                             window.myLine.data.datasets[removeDataSetIndex].data._chartjs.listeners[0].chart.options.horizontalLine[i].y = result["LCL"];
                             window.myLine.data.datasets[removeDataSetIndex].data._chartjs.listeners[0].chart.options.horizontalLine[i].text = "LCL=" + result["LCL"];
@@ -560,7 +575,9 @@ function removeChartData()
                     window.myLine.data.datasets[removeDataSetIndex].data._chartjs.listeners[0].chart.options.addTextOnChart[removeDataSetIndex]["Item"] = result["Item"];
                     window.myLine.data.datasets[removeDataSetIndex].data._chartjs.listeners[0].chart.options.addTextOnChart[removeDataSetIndex]["Mean"] = result["Mean"];
                     window.myLine.data.datasets[removeDataSetIndex].data._chartjs.listeners[0].chart.options.addTextOnChart[removeDataSetIndex]["Stddev"] = result["Stddev"];
-                    
+                    window.myLine.data.datasets[removeDataSetIndex].data._chartjs.listeners[0].chart.options.addTextOnChart[removeDataSetIndex]["Cpu"] = result["Cpu"];
+                    window.myLine.data.datasets[removeDataSetIndex].data._chartjs.listeners[0].chart.options.addTextOnChart[removeDataSetIndex]["Cpl"] = result["Cpl"];
+                    window.myLine.data.datasets[removeDataSetIndex].data._chartjs.listeners[0].chart.options.addTextOnChart[removeDataSetIndex]["Cpk"] = result["Cpk"];
                 }       
             }
             
@@ -568,10 +585,13 @@ function removeChartData()
             else
             {
                 var _newYdata = getDataYFromChart(window.myLine.data.datasets[removeDataSetIndex].data);
-                var result = getDeviation(_newYdata);
+                var result = getDeviation(_newYdata, tUSL, tLSL);
                 window.myLine.data.datasets[removeDataSetIndex].data._chartjs.listeners[0].chart.options.addTextOnChart[removeDataSetIndex]["Item"] = result["Item"];
                 window.myLine.data.datasets[removeDataSetIndex].data._chartjs.listeners[0].chart.options.addTextOnChart[removeDataSetIndex]["Mean"] = result["Mean"];
                 window.myLine.data.datasets[removeDataSetIndex].data._chartjs.listeners[0].chart.options.addTextOnChart[removeDataSetIndex]["Stddev"] = result["Stddev"];
+                window.myLine.data.datasets[removeDataSetIndex].data._chartjs.listeners[0].chart.options.addTextOnChart[removeDataSetIndex]["Cpu"] = result["Cpu"];
+                    window.myLine.data.datasets[removeDataSetIndex].data._chartjs.listeners[0].chart.options.addTextOnChart[removeDataSetIndex]["Cpl"] = result["Cpl"];
+                    window.myLine.data.datasets[removeDataSetIndex].data._chartjs.listeners[0].chart.options.addTextOnChart[removeDataSetIndex]["Cpk"] = result["Cpk"];
             }
 
             window.myLine.update();
@@ -583,9 +603,10 @@ function removeChartData()
 }
 
 /*獲得標準差, UCL, LCL*/
-function getDeviation(data)
-{
+function getDeviation(data, tUSL, tLSL)
+{   
     var result = json2array(data);
+    var tCpu = '', tCpl = '', tCpk = '';
     //var result = [1,1,3,5,5];
     var sum = function(x, y){ return x + y; };　　
     var square = function(x){ return x * x; };　　
@@ -596,12 +617,21 @@ function getDeviation(data)
     //console.log("平均值："+mean);
     //console.log("偏差："+deviations);
     //console.log("標準差："+stddev);
+    if (tUSL != ''){tCpu = Math.abs((tUSL - mean) / ( 3 * stddev.toFixed(2))).toFixed(2);}
+    if (tLSL != ''){tCpl = Math.abs((mean - tLSL) / ( 3 * stddev.toFixed(2))).toFixed(2);}
+    if (tUSL != '' && tLSL == ''){ tCpk = tCpu; }
+    if (tUSL == '' && tLSL != ''){ tCpk = tCpl; }
+    if (tUSL != '' && tLSL != ''){ tCpk = Math.min(tCpu, tCpl);}
+    
     var Result = {
         Mean: mean.toFixed(2),
         Stddev: stddev.toFixed(2),
         UCL: (mean + 3 * stddev).toFixed(2),
         LCL: (mean - 3 * stddev).toFixed(2),
-        Item: data.length, 
+        Item: data.length,
+        Cpu: tCpu,
+        Cpl: tCpl,
+        Cpk: tCpk,
     };
     return Result;
 }
@@ -656,8 +686,12 @@ function designScale(chartTypeGroup, dataXaxisGroup, UpandDown, horizontalLineSc
     var tmp = [];
 
     for(var i in horizontalLineScales)
-    { 
-        tmp.push(parseFloat(horizontalLineScales[i].y));   
+    {
+        if (horizontalLineScales[i]!=null) 
+        {
+            tmp.push(parseFloat(horizontalLineScales[i].y));   
+        }
+        
     }
     SuggestMax = Math.max.apply(Math,tmp);
     SuggestMin = Math.min.apply(Math,tmp);
@@ -847,10 +881,10 @@ function checkChartWithGroup(chartTypeGroup, UCLGroup, LCLGroup)
             result = 'In control chart, there should not exceed 1 group.';
         }
 
-        if ((UCLGroup[0] !=='' && LCLGroup[0] === '') || (UCLGroup[0] ==='' && LCLGroup[0] !== '')) 
-        {
-            result = 'To prevent wrong center line, please fill in both UCL and LCL or leave both of blank.';
-        }
+        // if ((UCLGroup[0] !=='' && LCLGroup[0] === '') || (UCLGroup[0] ==='' && LCLGroup[0] !== '')) 
+        // {
+        //     result = 'To prevent wrong center line, please fill in both UCL and LCL or leave both of blank.';
+        // }
 
     }
 
