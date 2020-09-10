@@ -166,6 +166,30 @@
                     }
                 );
             }
+            else if (colName === 'created_at' || colName === 'updated_at')
+            {
+                colModel.push(
+                    {
+                        name:colName, index:colName, width: 150, align:"center",sortable:true, editable:false, cellattr: addCellAttr,
+                        sorttype: "date",
+                        search:true,
+                        searchoptions: {
+                            sopt: ['eq','le','ge'],
+                            dataInit : function (elem) 
+                            {
+                                var self = this;
+                                $(elem).datepicker({
+                                    dateFormat: 'yy-mm-dd',                                 
+                                    changeYear: true,
+                                    changeMonth: true,
+                                    showOn: 'focus',
+                                    autoclose:1
+                                });
+                            }
+                        },                                   
+                    }
+                );
+            }
             else if (colName === 'product_name'|| colName === 'level' || colName === 'sampler' 
             || colName === 'sample_source' || colName === 'analytical_item' || colName === 'analyst' 
             || colName === 'determination' || colName === 'sampling_kind' || colName == 'equipment_name') 
