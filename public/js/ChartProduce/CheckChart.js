@@ -424,8 +424,8 @@ function DrowChart( dataLo, chartTypeGroup, dataXaxisGroup, dataYaxisGroup,
     for (i = 0; i < window.myLine.data.datasets[0].data.length; i++) 
     {
         if (
-            (parseFloat(window.myLine .data.datasets[0].data[i]["y"]) < ((UCLGroup[0] != '')? parseFloat(UCLGroup[0]) : parseFloat(UpandDown[0]["UCL"]))) && 
-            (parseFloat(window.myLine .data.datasets[0].data[i]["y"]) > ((LCLGroup[0] != '')? parseFloat(LCLGroup[0]) : parseFloat(UpandDown[0]["LCL"])))
+            (parseFloat(window.myLine .data.datasets[0].data[i]["y"]) <= ((UCLGroup[0] != '')? parseFloat(UCLGroup[0]) : parseFloat(UpandDown[0]["UCL"]))) && 
+            (parseFloat(window.myLine .data.datasets[0].data[i]["y"]) >= ((LCLGroup[0] != '')? parseFloat(LCLGroup[0]) : parseFloat(UpandDown[0]["LCL"])))
         ) 
         {
             // pointBackgroundColors.push("rgba(255, 99, 132, .2)");
