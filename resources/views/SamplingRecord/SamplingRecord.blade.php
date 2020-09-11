@@ -561,7 +561,7 @@
     function combobox_value(elem)
     {
         // Check if elem is jqxComboBox and get value from input inside div
-        // Because if jqxComboBox autoComplete set to true, it will not fill Null when input value wiped after selected items (forced to select first item)
+        // Because if jqxComboBox autoComplete set to true, it will not fill Null when input value wiped after selected items (forced to select first item)    
         return elem.find("input").val();
     }
 
@@ -687,6 +687,7 @@
     <div id="confirmDialog" title="Comfirm Information">
         <p></p>
     </div>
+    
  
 {{-- Tab ToolBar Start --}}
     <h1 class="my-4"></h1>
@@ -781,6 +782,8 @@
      $("#Save").click( function(){
         var rowIds = $('#dg').jqGrid('getDataIDs');
         var oper = "edit";
+        var tProductSPEC = '';
+        var tJudgeIncludeFail = 'false';
         //判斷目前是新增或是修改
         for(idIndex = 0; idIndex < rowIds.length; ++idIndex){
            if (rowIds[idIndex] == "0"){oper = "add";}
@@ -882,7 +885,11 @@
                 // Because if jqxComboBox autoComplete set to true, it will not fill Null when input value wiped after selected items (forced to select first item)
                 else if (elem.attr('role') === 'combobox')
                 {
-                    cellvalue = elem.find("input").val();               
+                    cellvalue = elem.find("input").val();
+                    if (cellvalue == 'Fail')
+                    {   
+                        tJudgeIncludeFail = 'true';      
+                    }               
                 }
                 else
                 {
@@ -898,83 +905,103 @@
                     // Set boolean to false if there are results
                     empty_result = false;
                 }
-
-
             }
+
             // If nothing changed
             if (empty_result === true)
             {
                 $("#noChangeDialog").dialog({modal:true, focus: function() { $(".ui-dialog").focus(); }, buttons : {"返回" : function() {$(this).dialog("close");}}});
-            }
-           
+            }     
             else
             {
-                var htmlStr = "<br />您變更的值如下：<br /><br />";
-            
-                var addstring = "";    
-                // Display changed title:value in confirm dialog
-                for (var key in result)
+                if (tJudgeIncludeFail == 'true')
                 {
-                    
-                    // Transform Null values to 'Empty' string for display
-                    var value_before = (result[key][1] === "") ? 'Null' : result[key][1];
-                    var value_after = (result[key][2] === "") ? 'Null' : result[key][2];
-                    
-                    // Generate log statement with changed values
-                    edit_statement += result[key][0] + "：\"" + value_before + "\" to \"" + value_after + "\", ";
-                    
-                    // Generate dialog html to display
-                    addString = "<strong>" + result[key][0] + "</strong>" + "：變更 " + "<strong>" + value_before + "</strong>" + " 為 " + "<strong>" + value_after + "</strong><br />";
-                    htmlStr += addString;
+                    var tProductSPEC = judgeFailEvent(ret.id);
+                    var dataImport; //用來承接promise方法的回傳參數
+                    tProductSPEC.then(function (dataImport) 
+                    {   
+                        var _upLoadData = dataImport;
+                        SamplingRecord_ReadyToDataBase(result, edit_statement, dataImport, target_id, ret, oper);                                         
+                    })           
                 }
-                
-                edit_statement = '[ ' + '編號' + '：' + target_id + ' ] ' + edit_statement;
-                edit_statement = edit_statement.slice(0, -2);
-                htmlStr += "<br />確定要修改所選的資料嗎?<br /><br />";
-
-                $("#confirmDialog").html(htmlStr);
-                $("#confirmDialog").dialog({
-                    width:'auto', height:'auto', autoResize:true, modal:true, closeText:"關閉", resizable:false,
-                    show:{effect: "fade", duration: 140},
-                    hide:{effect: "clip", duration: 140},
-                    focus: function() { $(".ui-dialog").focus(); }, // Unfocus the default focus elem
-                    buttons : {
-                        "確認" : function() {
-                                    $(this).dialog("close");
-                                    saveparameters = {
-                                    "successfunc" : null,
-                                    "url" : 'SamplingRecord/AddandUpdate/'+ret.id,
-                                    "extraparam" : {                                   
-                                        "id" : ret.id,
-                                        "oper" : oper,
-                                        "oper_log": edit_statement,                              
-                                    },
-                                    "aftersavefunc" : function( response ) {
-                                                    },
-                                    "errorfunc": null,
-                                    "afterrestorefunc" : null,
-                                    "restoreAfterError" : true,
-                                    "mtype" : "POST"
-                            }
-                            $("#dg").jqGrid('saveRow',target_id, saveparameters);
-                            target_id = 'none';
-                            $("#dg").jqGrid('resetSelection');
-                            button_Control('after_Save');                                            
-                        },
-                        "取消" : function() {
-                            $(this).dialog("close");                     
-                            target_id = 'none';
-                            var rowIds = $('#dg').jqGrid('getDataIDs'); 
-                            for(idIndex = 0; idIndex < rowIds.length; ++idIndex){
-                                $("#dg").jqGrid('restoreRow',rowIds[idIndex], true); 
-                            }
-                            button_Control('after_Cancel');
-                        }
-                    }
-                }); 
+                else
+                {
+                    SamplingRecord_ReadyToDataBase(result, edit_statement, tProductSPEC, target_id, ret, oper);
+                }
             }                                     
         }
      });
+
+     function SamplingRecord_ReadyToDataBase(result, edit_statement, tProductSPEC, target_id, ret, oper){
+        var htmlStr = "<br />您變更的值如下：<br /><br />";     
+        var addstring = "";    
+        // Display changed title:value in confirm dialog
+        for (var key in result)
+        {
+            
+            // Transform Null values to 'Empty' string for display
+            var value_before = (result[key][1] === "") ? 'Null' : result[key][1];
+            var value_after = (result[key][2] === "") ? 'Null' : result[key][2];
+            
+            // Generate log statement with changed values
+            edit_statement += result[key][0] + "：\"" + value_before + "\" to \"" + value_after + "\", ";
+            
+            // Generate dialog html to display
+            addString = "<strong>" + result[key][0] + "</strong>" + "：變更 " + "<strong>" + value_before + "</strong>" + " 為 " + "<strong>" + value_after + "</strong><br />";
+            htmlStr += addString;
+        }
+        
+        edit_statement = '[ ' + '編號' + '：' + target_id + ' ] ' + edit_statement;
+        edit_statement = edit_statement.slice(0, -2);
+        htmlStr += "<br />確定要修改所選的資料嗎?<br /><br />";
+        if (tProductSPEC != '')
+        {
+            htmlStr += "SPEC:" + tProductSPEC;
+        }
+        
+
+        $("#confirmDialog").html(htmlStr);
+        $("#confirmDialog").dialog({
+            width:'auto', height:'auto', autoResize:true, modal:true, closeText:"關閉", resizable:false,
+            show:{effect: "fade", duration: 140},
+            hide:{effect: "clip", duration: 140},
+            focus: function() { $(".ui-dialog").focus(); }, // Unfocus the default focus elem
+            buttons : {
+                "確認" : function() {
+                            $(this).dialog("close");
+                            saveparameters = {
+                            "successfunc" : null,
+                            "url" : 'SamplingRecord/AddandUpdate/'+ret.id,
+                            "extraparam" : {                                   
+                                "id" : ret.id,
+                                "oper" : oper,
+                                "oper_log": edit_statement,
+                                "tProductSPEC":tProductSPEC,                              
+                            },
+                            "aftersavefunc" : function( response ) {
+                                            },
+                            "errorfunc": null,
+                            "afterrestorefunc" : null,
+                            "restoreAfterError" : true,
+                            "mtype" : "POST"
+                    }
+                    $("#dg").jqGrid('saveRow',target_id, saveparameters);
+                    target_id = 'none';
+                    $("#dg").jqGrid('resetSelection');
+                    button_Control('after_Save');                                            
+                },
+                "取消" : function() {
+                    $(this).dialog("close");                     
+                    target_id = 'none';
+                    var rowIds = $('#dg').jqGrid('getDataIDs'); 
+                    for(idIndex = 0; idIndex < rowIds.length; ++idIndex){
+                        $("#dg").jqGrid('restoreRow',rowIds[idIndex], true); 
+                    }
+                    button_Control('after_Cancel');
+                }
+            }
+        }); 
+     }
 
      $("#Cancel").click( function(){
         target_id = 'none';

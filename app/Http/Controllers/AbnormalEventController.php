@@ -12,15 +12,10 @@ class AbnormalEventController extends Controller
     //This is the controller index
     public function index( Request $request )
     {      
-        $todosAccounts = DB::table('sampling_records_accounts')->orderBy('id','desc')->first();
-        $todosGroups = DB::table('sampling_records_groups')->orderBy('id','desc')->first();
-        $todosPermissions = DB::table('sampling_records_permissions')->orderBy('id','desc')->first();
-            
-
-        return view('SamplingRecord.Authority',[
-            'todosAccounts' => $todosAccounts,
-            'todosGroups' => $todosGroups,
-            'todosPermissions' => $todosPermissions,
+        $sampling_records_abnormalevent = DB::table('sampling_records_abnormalevent')->orderBy('id','desc')->first();
+      
+        return view('SamplingRecord.AbnormalEvent',[
+            'sampling_records_abnormalevent' => $sampling_records_abnormalevent,
         ]);
     }
 
@@ -39,14 +34,8 @@ class AbnormalEventController extends Controller
         
         switch ($_SERVER["REDIRECT_URL"])
         {
-            case "/Authority/show/Accounts":
-                $table = 'sampling_records_accounts';
-                break;
-            case "/Authority/show/Groups":
-                $table = 'sampling_records_groups';
-                break;
-            case "/Authority/show/Permissions":
-                $table = 'sampling_records_permissions';
+            case "/ProductSPEC/show/sampling_records_abnormalevent":
+                $table = 'sampling_records_abnormalevent';
                 break;
         }
         // var_dump($_SERVER["REDIRECT_URL"]);
@@ -139,16 +128,9 @@ class AbnormalEventController extends Controller
 
         $table = '';
         switch ($downloadReq["table"]){
-            case 'dgAccounts':
-                $table = 'sampling_records_accounts';
+            case 'dgsampling_records_abnormalevent':
+                $table = 'sampling_records_abnormalevent';
                 break;
-            case 'dgGroups':
-                $table = 'sampling_records_groups';
-                break;
-            case 'dgPermissions':
-                $table = 'sampling_records_permissions';
-                break;
-         
         }
 
         $_search = $downloadReq["postData"]["_search"];  
@@ -256,21 +238,15 @@ class AbnormalEventController extends Controller
 
         $table = '';
         switch ($uploadData["table"]){
-            case 'dgAccounts':
-                $table = 'sampling_records_accounts';
+      
+            case 'dgsampling_records_abnormalevent':
+                $table = 'sampling_records_abnormalevent';
                 break;
-            case 'dgGroups':
-                $table = 'sampling_records_groups';
-                break;
-            case 'dgPermissions':
-                $table = 'sampling_records_permissions';
-                break;
-           
         } 
         $uploadData["UploadData"]["created_at"] = date('Y-m-d H:i:s');
         $uploadData["UploadData"]["updated_at"] = date('Y-m-d H:i:s');
 
-      
+        // $updateData = ProductSPEC::find($uploadData["UploadData"]["id"]);
         $updateData = DB::table($table)->where("id", $uploadData["UploadData"]["id"]);
         $isExist = DB::table($table)->where("id", $uploadData["UploadData"]["id"])->first();
 
@@ -296,14 +272,8 @@ class AbnormalEventController extends Controller
         // dd($Parameter);
         $table = '';
         switch ($Parameter["table"]){
-            case 'dgAccounts':
-                $table = 'sampling_records_accounts';
-                break;
-            case 'dgGroups':
-                $table = 'sampling_records_groups';
-                break;
-            case 'dgPermissions':
-                $table = 'sampling_records_permissions';
+            case 'dgsampling_records_abnormalevent':
+                $table = 'sampling_records_abnormalevent';
                 break;
         }
       
@@ -321,17 +291,10 @@ class AbnormalEventController extends Controller
     {      
         $AddParameter = $request->all();
         
-
         $table = '';
         switch ($AddParameter["table"]){
-            case 'dgAccounts':
-                $table = 'sampling_records_accounts';
-                break;
-            case 'dgGroups':
-                $table = 'sampling_records_groups';
-                break;
-            case 'dgPermissions':
-                $table = 'sampling_records_permissions';
+            case 'dgsampling_records_abnormalevent':
+                $table = 'sampling_records_abnormalevent';
                 break;
         }
         
@@ -340,7 +303,8 @@ class AbnormalEventController extends Controller
         //dd($AddParameter["urgent"]);      
         if ($request->oper =='add')
         {   unset($AddParameter["oper"]);
-            unset($AddParameter["table"]);  
+            unset($AddParameter["table"]);
+            unset($AddParameter["caption"]);  
             $this->CreateRowData($AddParameter, $table);             
             return response()->json([
                 'success' => 'Record add successfully!'
@@ -351,6 +315,7 @@ class AbnormalEventController extends Controller
             unset($AddParameter["oper"]);
             unset($AddParameter["table"]);
             unset($AddParameter["created_at"]);
+            unset($AddParameter["caption"]);
             $updateData = DB::table($table)->where('id', $request->id);
             $updateData->update($AddParameter);
             return response()->json([
@@ -360,16 +325,27 @@ class AbnormalEventController extends Controller
         }
     }
 
-     //獲得Authority Groups
-     public function GetAuthorityGroup(Request $request)
-     {    
-        //dd($request);    
-        $group_name = DB::table('sampling_records_groups')->select('Group_Name')->distinct()->get();
+    //Get Table
+    public function GetTable( Request $request )
+    {    
+        $table = '';
+            
+        switch ($_SERVER["REDIRECT_URL"])
+        {
+            case "/ProductSPEC/GetTable/sampling_records_abnormalevent":
+                $table = 'sampling_records_abnormalevent';
+                break;
+        }
+        
+        $product_SPEC= DB::table($table)->get();
+    
       
         return response()->json([
-            'Group_Name' => $group_name ,
-        ]);     
-     }
+            'sampling_records_abnormalevent' => $sampling_records_abnormalevent,
+
+        ]);  
+    }
+
 
     //回填方法
     public function BackFill($id)

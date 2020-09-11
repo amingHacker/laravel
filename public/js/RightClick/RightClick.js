@@ -97,7 +97,7 @@ function showSelectSPEC()
             });
                
             $("#confirmDialog").dialog({
-                width:'auto', height:'auto', autoResize:true, modal:false, closeText:"關閉", 
+                width:'auto', height:'auto', autoResize:true, modal:true, closeText:"關閉", 
                 resizable:true, closeOnEscape:true, dialogClass:'top-dialog',position:['center',168],
                 show:{effect: "fade", duration: 140},
                 hide:{effect: "clip", duration: 140},
@@ -136,14 +136,14 @@ function showSelectSPEC()
             $('#jqxcombobox_SPEC').bind('select', function (event) {
                 var args = event.args;
                 var item = $('#jqxcombobox_SPEC').jqxComboBox('getItem', args.index);
-                ShowTableDynamic(dictionary[item.label]);  
+                ShowTableDynamic(dictionary[item.label], 'true');  
             });  
         }                                   
     });  
 }
 
 
-function ShowTableDynamic(label)
+function ShowTableDynamic(label, IsCompare)
 {
     var _todoP = label;
     $.ajax({
@@ -164,12 +164,12 @@ function ShowTableDynamic(label)
                 }
             }
             sessionStorage.setItem('CustomerSPEC' , JSON.stringify(DownLoadValue.product_SPEC));
-            CreateToolBar(source);
+            CreateToolBar(source, IsCompare);
         }                                   
     });  
 }
 
-function CreateToolBar(source)
+function CreateToolBar(source, IsCompare)
 {
     $("#jqxToolBar_SPEC").jqxToolBar("destroyTool", 1 );
     $("#jqxToolBar_SPEC").jqxToolBar('render');
@@ -206,6 +206,7 @@ function CreateToolBar(source)
             sessionStorage.setItem('judge_result', "");          
             var args = event.args;
                 if (args) {
+                    sessionStorage.setItem('CustomerSPEC_table_col_name' , args.item["label"]); 
                     var label = args.item["label"]
                     var data =  JSON.parse(sessionStorage.getItem('CustomerSPEC'));
                     var _compare = [] ;  //獲得SPEC資料
@@ -216,74 +217,83 @@ function CreateToolBar(source)
                             SPEC : data[i][label],
                         }
                         _compare.push (tmp)
-
                     }
 
-                    CompareItemWithSPEC(_compare, label);
-                    if (sessionStorage.getItem('judge_result') == "Fail")
-                    {
-                        document.getElementById('judge_result').innerText='判定: Fail';
-                        document.getElementById('judge_result').style.color='red';
+                    CompareItemWithSPEC(_compare, label, IsCompare);
+                    if (document.getElementById('judge_result') != null)
+                    {       
+                        if (sessionStorage.getItem('judge_result') == "Fail")
+                        {
+                            document.getElementById('judge_result').innerText='判定: Fail';
+                            document.getElementById('judge_result').style.color='red';            
+                        }
+                        else
+                        {
+                            document.getElementById('judge_result').innerText='判定: Pass';
+                            document.getElementById('judge_result').style.color='green';               
+                        }
                     }
-                    else
-                    {
-                        document.getElementById('judge_result').innerText='判定: Pass';
-                        document.getElementById('judge_result').style.color='green';
-                    }
+                    
                 }
             });
     
     });   
 }
 
-function CompareItemWithSPEC(_compare, label) 
+function CompareItemWithSPEC(_compare, label, IsCompare) 
 {
     sessionStorage.setItem('_CompareSource', JSON.stringify(_compare));
     var data =  JSON.parse(sessionStorage.getItem('CustomerItem'));
-    var table = "import_preview";
-    var colNames = [];
-    var colModel = [];
-    
-    $("#import_preview").jqGrid('GridUnload');
+   
     $("#ProductSPEC").jqGrid('GridUnload'); 
 
-    for ( var colName in data[0])
+    if (IsCompare == 'true')
     {
-        colNames.push(getColumnNameFromDatabaseToChinese(colName));
-    }
+        var table = "import_preview";
+        var colNames = [];
+        var colModel = [];
+        
+        $("#import_preview").jqGrid('GridUnload');
 
-    for ( var colName in data[0])
-    {           
-        if (colName === 'id')
+        for ( var colName in data[0])
         {
-            colModel.push({name:colName, index:colName, align:"center", width:84, frozen:true, sortable:true, sorttype:"int"});
+            colNames.push(getColumnNameFromDatabaseToChinese(colName));  //getColumnNameFromDatabaseToChinese  path:SamplingRecord/blade
         }
-        else
-        {
-            colModel.push({name:colName, index:colName, align:"center", width:112, cellattr: compareCellAttr});
-        }
-    }
     
-    $("#" + table).jqGrid({      
-        datatype: "local",
-        data:data,
-        colNames: colNames,
-        colModel: colModel,
-        width: 896,
-        height: 'auto',
-        sortname: 'id',
-        sortorder: "asc",
-        hidegrid: false,
-        cmTemplate: { title: false },   // Hide Tooltip
-        gridview: true,
-        shrinkToFit: false,
-        rowNum:10,
-        rowList:[10,20,50],
-        pager: '#import_previewPager',
-        caption: "Product", 
-        loadComplete: function (){ fixPositionsOfFrozenDivs.call(this); }, // Fix column's height are different after enable frozen column feature 
-        gridComplete: function() { $("#" + table).jqGrid('setFrozenColumns');}
-    });
+        for ( var colName in data[0])
+        {           
+            if (colName === 'id')
+            {
+                colModel.push({name:colName, index:colName, align:"center", width:84, frozen:true, sortable:true, sorttype:"int"});
+            }
+            else
+            {
+                colModel.push({name:colName, index:colName, align:"center", width:112, cellattr: compareCellAttr});
+            }
+        }
+        
+        $("#" + table).jqGrid({      
+            datatype: "local",
+            data:data,
+            colNames: colNames,
+            colModel: colModel,
+            width: 896,
+            height: 'auto',
+            sortname: 'id',
+            sortorder: "asc",
+            hidegrid: false,
+            cmTemplate: { title: false },   // Hide Tooltip
+            gridview: true,
+            shrinkToFit: false,
+            rowNum:10,
+            rowList:[10,20,50],
+            pager: '#import_previewPager',
+            caption: "Product", 
+            loadComplete: function (){ fixPositionsOfFrozenDivs.call(this); }, // Fix column's height are different after enable frozen column feature 
+            gridComplete: function() { $("#" + table).jqGrid('setFrozenColumns');}
+        });
+    }
+   
 
     var LineData = [];
     var LineKey = [];
@@ -345,7 +355,7 @@ function CompareItemWithSPEC(_compare, label)
 function compareCellAttr(rowId, val, rawObject, cm, rdata)
 {
     var data = JSON.parse(sessionStorage.getItem('_CompareSource'));
-    var cloumnName = getColumnNameFromDatabaseToChinese(cm["name"]);
+    var cloumnName = getColumnNameFromDatabaseToChinese(cm["name"]);  // //getColumnNameFromDatabaseToChinese  path:SamplingRecord/blade
     var sty = "style='font-size:14px'";
 
     var value = val.split("<");

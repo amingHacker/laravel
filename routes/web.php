@@ -169,6 +169,7 @@ Route::delete('/Authority/delete/{todo}', 'AuthorityController@destroy')->name('
 Route::get('/AbnormalEvent', 'AbnormalEventController@index');
 Route::get('/AbnormalEvent/show/{todo}', 'AbnormalEventController@show');
 Route::post('/AbnormalEvent/export', 'AbnormalEventController@export');
+Route::get('/AbnormalEvent/GetTable/{todo}', 'AbnormalEventController@GetTable');
 
 
 

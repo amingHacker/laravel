@@ -321,6 +321,11 @@ class SamplingRecordController extends Controller
         {
             $updateData = SamplingRecord::find($request->id);
             $updateData->update($AddParameter);
+
+            //產生異常處理事件表
+            if ($AddParameter["tProductSPEC"] != ''){
+                $this->CreateAbnormalEvent($request->id, $AddParameter["tProductSPEC"]);
+            }
             return response()->json([
                 'success' => 'Record update successfully!'
             ]);
@@ -897,5 +902,20 @@ class SamplingRecordController extends Controller
         {
             return $col;
         }   
+    }
+
+    //新增記錄到異常處理表
+    public function CreateAbnormalEvent($id, $SapmlingRecordSPEC)
+    {
+        $Result = DB::table('sampling_records_accounts')->
+        where('User_Account', '=', $RowData["user"])->first();
+
+        if ($Result != '')
+        {
+            $RowData["user"] = $RowData["user"] . '(' . $Result->User_Name .')';
+        }
+        $todo = DB::table("sampling_records_operlog")->insert(
+            $RowData 
+        );
     }
 }
