@@ -34,7 +34,7 @@ class AbnormalEventController extends Controller
         
         switch ($_SERVER["REDIRECT_URL"])
         {
-            case "/ProductSPEC/show/sampling_records_abnormalevent":
+            case "/AbnormalEvent/show/sampling_records_abnormalevent":
                 $table = 'sampling_records_abnormalevent';
                 break;
         }
@@ -332,7 +332,7 @@ class AbnormalEventController extends Controller
             
         switch ($_SERVER["REDIRECT_URL"])
         {
-            case "/ProductSPEC/GetTable/sampling_records_abnormalevent":
+            case "/AbnormalEvent/GetTable/sampling_records_abnormalevent":
                 $table = 'sampling_records_abnormalevent';
                 break;
         }

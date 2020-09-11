@@ -171,7 +171,7 @@
             sortname: 'id',
             viewrecords: true,
             gridview: false,
-            sortorder: "asc",
+            sortorder: "desc",
             caption: _todoP,
             shrinkToFit :false,
             loadonce: false,          
@@ -367,7 +367,7 @@
             sortname: 'id',
             viewrecords: true,
             gridview: false,
-            sortorder: "asc",
+            sortorder: "desc",
             caption: _todoP,
             shrinkToFit :false,
             loadonce: false,          
@@ -431,13 +431,13 @@
 <meta name="csrf-token" content="{{ csrf_token() }}"> 
     <h1 class="my-2"></h1>
     <div style = "margin:0px auto;"  >
-        <img class=" img-responsive" src="img/Logo_ProductSPEC.png" >   
+        <img class=" img-responsive" src="img/Logo_AbnormalEvent.png" >   
     </div>  
 
     <div align="center">
         <div id="tabs"  >
             <ul class = "row justify-content-center">
-              <li><a href="#tabs-1">TMAL</a></li>      
+              <li><a href="#tabs-1">sampling_records_abnormalevent</a></li>      
             </ul>
             <div id = "tabs-1" >
                 <div class = "row justify-content-center">
@@ -538,7 +538,7 @@
         {     
             saveparameters = {
                         "successfunc" : null,
-                        "url" : 'ProductSPEC/AddandUpdate/'+0,
+                        "url" : 'AbnormalEvent/AddandUpdate/'+0,
                         "extraparam" : {
                             "oper": oper,
                             "table": table,
@@ -628,7 +628,7 @@
                                 $(this).dialog("close");
                                 saveparameters = {
                                 "successfunc" : null,
-                                "url" : 'ProductSPEC/AddandUpdate/'+ret.id,
+                                "url" : 'AbnormalEvent/AddandUpdate/'+ret.id,
                                 "extraparam" : {                                   
                                     "id" : ret.id,
                                     "oper" : oper,
@@ -684,7 +684,7 @@
              if (answer)
              {
                 $.ajax({
-                    url: "ProductSPEC/delete/" + ret.id ,//路徑
+                    url: "AbnormalEvent/delete/" + ret.id ,//路徑
                     type: "DELETE",           
                     data:{
                         "id": ret.id,
@@ -783,7 +783,7 @@
 
         $.ajax({
                 async:false,
-                url: "ProductSPEC/export" ,//路徑
+                url: "AbnormalEvent/export" ,//路徑
                 type: "POST",           
                 data:{
                     "postData": postData,
@@ -811,7 +811,7 @@
                     var myDate = new Date().toISOString().slice(0,10); 
 
                     //檔名
-                    var filename = myDate + '-' + $("#tabs .ui-tabs-active").text()+ '-'+ 'ProductSPEC.xlsx';
+                    var filename = myDate + '-' + $("#tabs .ui-tabs-active").text()+ '-'+ 'AbnormalEventSPEC.xlsx';
 
                     //表名
                     var sheetname = 'Sheet';
@@ -938,7 +938,7 @@
                                     return function () {                                                                       
 
                                         $.ajax({
-                                            url: 'ProductSPEC/FileUpload/' + data[i].id,
+                                            url: 'AbnormalEvent/FileUpload/' + data[i].id,
                                             method: 'post',
                                             async: false,//同步請求資料
                                             //datatype:"json",
