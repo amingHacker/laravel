@@ -208,69 +208,135 @@ function addCellAttr(rowId, val, rawObject, cm, rdata)
 }
 
 
-function judgeFailEvent(rowid){
+function judgeFailEvent(rowID){
     return new Promise( function(resolve) 
     {
-        sessionStorage.setItem('RightClickID', rowid);
+        //sessionStorage.setItem('RightClickID', rowid);
 
-		var pcontent = '<span style="font-weight:bold; color:#2e6e9e;">《 產品規格 ProductSPEC 》</span><br /><br />'
-        + '<div id="jqxcombobox_SPEC" ></div>' 
-        + '<div id="jqxToolBar_SPEC" style = margin:0px auto; text-align:justify ></div>'
-        + '</br>'
-        + '<table id= "ProductSPEC"></table>'
-        + '</br>'
-        +'</br>'
+        var item_data = [];
+        item_data.push(rowID);
+        $.ajax({
+            async:false,
+            url: "SamplingRecord/GetDataFromID" ,//路徑
+            type: "POST",           
+            data:{
+                "postData": item_data,
+            },
+            success: function (DownLoadValue){
+                var data = DownLoadValue.success;
+                sessionStorage.setItem('CustomerItem' , JSON.stringify(DownLoadValue.success));
+                
+                var table = "import_preview";
+                var pcontent = '<span style="font-weight:bold; color:#2e6e9e;">《 產品規格 ProductSPEC 》</span><br /><br />'
+                + '<div id="jqxcombobox_SPEC" ></div>' 
+                + '<div id="jqxToolBar_SPEC" style = margin:0px auto; text-align:justify ></div>'
+                + '</br>'
+                + '<table id= "ProductSPEC"></table>'
+                + '</br>'
+                + '<table id= '+ table + '></table>'
+                +'</br>'
+                + '<div id="judge_result" >判定: </div>' 
+                + '</br></br>';     
+                
+                //建立動態表格
+                $("#confirmDialog").html(pcontent);
+            
+                var colNames = [];
+                var colModel = [];
+                
+                for ( var colName in data[0])
+                {
+                    colNames.push(getColumnNameFromDatabaseToChinese(colName));
+                }
     
-        //建立動態表格
-        $("#confirmDialog").html(pcontent);
-        $("#confirmDialog").dialog({
-            width:'auto', height:'auto', autoResize:true, modal:true, closeText:"關閉", 
-            resizable:true, closeOnEscape:true, dialogClass:'top-dialog',position:['center',168],
-            show:{effect: "fade", duration: 140},
-            hide:{effect: "clip", duration: 140},
-            focus: function() { $(".ui-dialog").focus(); }, // Unfocus the default focus elem
-            buttons : {
-                "確定" : function() {
-                     var tSPEC = 
-                         sessionStorage.getItem('CustomerSPEC_table_name') + ',' +
-                         sessionStorage.getItem('CustomerSPEC_table_col_name');
-                                   
-                    $(this).dialog("close");
-                    resolve(  tSPEC );                                                         
-                },          
-            }
-        });
-
-        var sourceSPEC = [
-            "TMAL",
-            "TMALEG",
-            "TMALTW",
-            "TMALUM",
-            "MO",
-            "PDMAT",
-            "CCTBA",
-            "ALEXA",  
-        ]
-        var dictionary ={
-            "TMALEG": "TMAL_EG",
-            "TMALTW": "TMAL_TW",
-            "TMALUM": "TMAL_UM",
-            "TMAL": "TMAL",
-            "MO":"MO",
-            "PDMAT":"PDMAT",
-            "CCTBA":"CCTBA",       
-            "ALEXA":"ALEXA", 
-        };
-
-        $("#jqxcombobox_SPEC").jqxComboBox({ source: sourceSPEC, selectedIndex: -1, width: '200px', height: '25' });
-
-        $('#jqxcombobox_SPEC').bind('select', function (event) {
-            var args = event.args;
-            var item = $('#jqxcombobox_SPEC').jqxComboBox('getItem', args.index);
-            sessionStorage.setItem('CustomerSPEC_table_name' , dictionary[item.label]);    
-            ShowTableDynamic(dictionary[item.label], 'false');  // //ShowTableDynamic  path:RightClick/RightClick.js
-        });	
-           
+                for ( var colName in data[0])
+                {           
+                    if (colName === 'id')
+                    {
+                        colModel.push({name:colName, index:colName, align:"center", width:84, frozen:true, sortable:true, sorttype:"int"});
+                    }
+                    else
+                    {
+                        colModel.push({name:colName, index:colName, align:"center", width:112});
+                    }
+                }
+                
+                $("#" + table).jqGrid({      
+                    datatype: "local",
+                    data:data,
+                    colNames: colNames,
+                    colModel: colModel,
+                    width: 896,
+                    height: 'auto',
+                    sortname: 'id',
+                    sortorder: "asc",
+                    hidegrid: false,
+                    cmTemplate: { title: false },   // Hide Tooltip
+                    gridview: true,
+                    shrinkToFit: false,
+                    rowNum:10,
+                    rowList:[10,20,50],
+                    pager: '#import_previewPager',
+                    caption: "Product", 
+                    loadComplete: function (){ fixPositionsOfFrozenDivs.call(this); }, // Fix column's height are different after enable frozen column feature 
+                    gridComplete: function() { $("#" + table).jqGrid('setFrozenColumns');}
+                });
+                   
+                $("#confirmDialog").dialog({
+                    width:'auto', height:'auto', autoResize:true, modal:true, closeText:"關閉", 
+                    resizable:true, closeOnEscape:true, dialogClass:'top-dialog',position:['center',168],
+                    show:{effect: "fade", duration: 140},
+                    hide:{effect: "clip", duration: 140},
+                    focus: function() { $(".ui-dialog").focus(); }, // Unfocus the default focus elem
+                    buttons : {
+                        "確定" : function() {
+                            if (sessionStorage.getItem('CustomerSPEC_table_col_name') == '')
+                            {
+                                alert("尚未選擇規格!!");
+                                return;
+                            };
+                            $(this).dialog("close");
+                         
+                            var tjudgeComment = sessionStorage.getItem('judgeComment');
+                            if (tjudgeComment!=null){
+                                tjudgeComment = tjudgeComment.slice(0,-1);
+                            }
+                            resolve(tjudgeComment);                                                 
+                        },          
+                    }
+                });
+    
+                var sourceSPEC = [
+                    "TMAL",
+                    "TMALEG",
+                    "TMALTW",
+                    "TMALUM",
+                    "MO",
+                    "PDMAT",
+                    "CCTBA",
+                    "ALEXA",  
+                ]
+                var dictionary ={
+                    "TMALEG": "TMAL_EG",
+                    "TMALTW": "TMAL_TW",
+                    "TMALUM": "TMAL_UM",
+                    "TMAL": "TMAL",
+                    "MO":"MO",
+                    "PDMAT":"PDMAT",
+                    "CCTBA":"CCTBA",       
+                    "ALEXA":"ALEXA", 
+                };
+    
+                $("#jqxcombobox_SPEC").jqxComboBox({ source: sourceSPEC, selectedIndex: -1, width: '200px', height: '25' });
+            
+                $('#jqxcombobox_SPEC').bind('select', function (event) {
+                    var args = event.args;
+                    var item = $('#jqxcombobox_SPEC').jqxComboBox('getItem', args.index);
+                    sessionStorage.setItem('CustomerSPEC_table_name' , dictionary[item.label]); 
+                    ShowTableDynamic(dictionary[item.label], 'true');  
+                });  
+            }                                   
+        });    
     });
     
 }

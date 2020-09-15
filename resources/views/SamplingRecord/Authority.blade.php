@@ -182,6 +182,10 @@
             {
                 colModel.push({name:colName, index:colName, width:150, align:"center", editable:false, cellattr: addCellAttr});
             }
+            else if (colName === 'User_Email')
+            {
+                colModel.push({name:colName, index:colName, align:"left", width:250, editable:true, cellattr: addCellAttr});
+            }
             else
             {
                 colModel.push({name:colName, index:colName, align:"center", width:120, editable:true, cellattr: addCellAttr});

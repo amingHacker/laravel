@@ -346,6 +346,21 @@ class AbnormalEventController extends Controller
         ]);  
     }
 
+    public function GetComboboxItem(Request $request)
+    {    
+        //dd($request);    
+        $Status = DB::table('sampling_records_abnormalevent')->select('Status')->distinct()->get();
+        $QC_USER = DB::table('sampling_records_abnormalevent')->select('QC_USER')->distinct()->get();
+        $PD_USER = DB::table('sampling_records_abnormalevent')->select('PD_USER')->distinct()->get();
+        
+      
+        return response()->json([
+            'Status' => $Status,
+            'QC_USER' => $QC_USER,
+            'PD_USER' => $PD_USER,
+        ]);     
+    }
+
 
     //回填方法
     public function BackFill($id)

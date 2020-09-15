@@ -629,6 +629,9 @@
                 if (Authority["View_Log"] == '1'){ 
                     document.getElementById("ViewLog").style.display="";
                 }
+                if (Authority["ProductSPEC"] == '1'){
+                    sessionStorage.setItem('QC_USER' , "true"); 
+                }
             }
         });
     }
@@ -782,7 +785,7 @@
      $("#Save").click( function(){
         var rowIds = $('#dg').jqGrid('getDataIDs');
         var oper = "edit";
-        var tProductSPEC = '';
+        var tJudgeComment = '';
         var tJudgeIncludeFail = 'false';
         //判斷目前是新增或是修改
         for(idIndex = 0; idIndex < rowIds.length; ++idIndex){
@@ -866,6 +869,8 @@
             var cellvalue='';
             var empty_result = true;
             var edit_statement = '';
+            sessionStorage.setItem('CustomerSPEC_table_name', '');
+            sessionStorage.setItem('CustomerSPEC_table_col_name', '');
           
             for(var key in selectRowData )
             {
@@ -914,25 +919,28 @@
             }     
             else
             {
-                if (tJudgeIncludeFail == 'true')
+                if (tJudgeIncludeFail == 'true' && sessionStorage.getItem('QC_USER') == 'true')
                 {
-                    var tProductSPEC = judgeFailEvent(ret.id);
+                    var tmp = judgeFailEvent(ret.id); // JudgeColor/JudgeColor.js
+                    sessionStorage.setItem('judgeComment', '');  //初始這些Session
+                    sessionStorage.setItem('CustomerSPEC_table_name' ,''); //初始這些Session
+                    sessionStorage.setItem('CustomerSPEC_table_col_name' , ''); //初始這些Session
                     var dataImport; //用來承接promise方法的回傳參數
-                    tProductSPEC.then(function (dataImport) 
+                    tmp.then(function (dataImport) 
                     {   
-                        var _upLoadData = dataImport;
-                        SamplingRecord_ReadyToDataBase(result, edit_statement, dataImport, target_id, ret, oper);                                         
+                        tJudgeComment = dataImport;
+                        SamplingRecord_ReadyToDataBase(result, edit_statement, tJudgeComment, target_id, ret, oper);                                         
                     })           
                 }
                 else
                 {
-                    SamplingRecord_ReadyToDataBase(result, edit_statement, tProductSPEC, target_id, ret, oper);
+                    SamplingRecord_ReadyToDataBase(result, edit_statement, tJudgeComment, target_id, ret, oper);
                 }
             }                                     
         }
      });
 
-     function SamplingRecord_ReadyToDataBase(result, edit_statement, tProductSPEC, target_id, ret, oper){
+     function SamplingRecord_ReadyToDataBase(result, edit_statement, tJudgeComment, target_id, ret, oper){
         var htmlStr = "<br />您變更的值如下：<br /><br />";     
         var addstring = "";    
         // Display changed title:value in confirm dialog
@@ -954,9 +962,9 @@
         edit_statement = '[ ' + '編號' + '：' + target_id + ' ] ' + edit_statement;
         edit_statement = edit_statement.slice(0, -2);
         htmlStr += "<br />確定要修改所選的資料嗎?<br /><br />";
-        if (tProductSPEC != '')
-        {
-            htmlStr += "SPEC:" + tProductSPEC;
+        if (tJudgeComment != '')
+        {     
+            htmlStr += "異常事件:" + tJudgeComment;
         }
         
 
@@ -968,23 +976,39 @@
             focus: function() { $(".ui-dialog").focus(); }, // Unfocus the default focus elem
             buttons : {
                 "確認" : function() {
-                            $(this).dialog("close");
-                            saveparameters = {
+                        $(this).dialog("close");
+                        saveparameters = 
+                        {
                             "successfunc" : null,
                             "url" : 'SamplingRecord/AddandUpdate/'+ret.id,
                             "extraparam" : {                                   
                                 "id" : ret.id,
                                 "oper" : oper,
                                 "oper_log": edit_statement,
-                                "tProductSPEC":tProductSPEC,                              
-                            },
+                                "JudgeComment":tJudgeComment,
+                                "ProductSPEC_Table" : sessionStorage.getItem('CustomerSPEC_table_name'),
+                                "ProductSPEC_Table_Col": sessionStorage.getItem('CustomerSPEC_table_col_name'),                             
+                                },
                             "aftersavefunc" : function( response ) {
-                                            },
+                                            if (tJudgeComment!='')
+                                            {
+                                                $.ajax({
+                                                    url: "/AbnormalEventMail",//路徑
+                                                    type: "post",           
+                                                    data:{
+                                                        "id": ret.id,
+                                                        "JudgeComment": tJudgeComment,
+                                                    },
+                                                    success: function (){
+                                                    }                               
+                                                }); 
+                                            }
+                                        },
                             "errorfunc": null,
                             "afterrestorefunc" : null,
                             "restoreAfterError" : true,
                             "mtype" : "POST"
-                    }
+                        }
                     $("#dg").jqGrid('saveRow',target_id, saveparameters);
                     target_id = 'none';
                     $("#dg").jqGrid('resetSelection');

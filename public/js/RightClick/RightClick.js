@@ -171,6 +171,7 @@ function ShowTableDynamic(label, IsCompare)
 
 function CreateToolBar(source, IsCompare)
 {
+    sessionStorage.setItem('judgeComment', "");  //清空judgeComment的值
     $("#jqxToolBar_SPEC").jqxToolBar("destroyTool", 1 );
     $("#jqxToolBar_SPEC").jqxToolBar('render');
     
@@ -357,7 +358,7 @@ function compareCellAttr(rowId, val, rawObject, cm, rdata)
     var data = JSON.parse(sessionStorage.getItem('_CompareSource'));
     var cloumnName = getColumnNameFromDatabaseToChinese(cm["name"]);  // //getColumnNameFromDatabaseToChinese  path:SamplingRecord/blade
     var sty = "style='font-size:14px'";
-
+    var judgeComment = sessionStorage.getItem('judgeComment');
     var value = val.split("<");
             
     val = value[value.length - 1];
@@ -375,6 +376,8 @@ function compareCellAttr(rowId, val, rawObject, cm, rdata)
                 {
                     sty = "style='font-size:14px; color:red; background-color:#9dbcfa'" ;
                     sessionStorage.setItem('judge_result', "Fail");
+                    judgeComment += data[j]["ELEMENT"] +':' + parseFloat(val) + ',';
+                    sessionStorage.setItem('judgeComment', judgeComment);
                 }
             }
             //其他大於SPEC就是異常
@@ -384,11 +387,19 @@ function compareCellAttr(rowId, val, rawObject, cm, rdata)
                 {
                     sty = "style='font-size:14px; color:red; background-color:#9dbcfa'" ;
                     sessionStorage.setItem('judge_result', "Fail");
+                    judgeComment += data[j]["ELEMENT"] +':' + parseFloat(val) + ',';
+                    sessionStorage.setItem('judgeComment', judgeComment);
                 }
             }
         }
     }
 
+    // if (judgeComment != '')
+    // {
+    //     judgeComment = judgeComment.slice(0,-2);   
+    // }
+
+    
     return sty;
 
 }

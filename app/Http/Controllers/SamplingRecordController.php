@@ -251,9 +251,7 @@ class SamplingRecordController extends Controller
             if (array_key_exists("completion_date", $uploadData["UploadData"])) {
                 if ($uploadData["UploadData"]["completion_date"] ==''){$uploadData["UploadData"]["completion_date"] = NULL;}
             }
-            
-           
-            
+                  
             if(!$updateData)
             {   
                 $this-> CreateOperLogWithUpload( 'add', $uploadData["UploadData"], null);                          
@@ -323,8 +321,8 @@ class SamplingRecordController extends Controller
             $updateData->update($AddParameter);
 
             //產生異常處理事件表
-            if ($AddParameter["tProductSPEC"] != ''){
-                $this->CreateAbnormalEvent($request->id, $AddParameter["tProductSPEC"]);
+            if ($AddParameter["ProductSPEC_Table"] != ''){
+                $this->CreateAbnormalEvent($request->id, $AddParameter["JudgeComment"], $AddParameter["ProductSPEC_Table"], $AddParameter["ProductSPEC_Table_Col"]);
             }
             return response()->json([
                 'success' => 'Record update successfully!'
@@ -712,7 +710,6 @@ class SamplingRecordController extends Controller
             'product_alexa' => $product_alexa,
         ]);     
     }
-
     public function GetAuthority(Request $request)
     {    
         $User = $request->all();    
@@ -905,17 +902,47 @@ class SamplingRecordController extends Controller
     }
 
     //新增記錄到異常處理表
-    public function CreateAbnormalEvent($id, $SapmlingRecordSPEC)
+    public function CreateAbnormalEvent($id, $JudgeComment, $ProductSPEC_Table, $ProductSPEC_Table_Col)
     {
-        $Result = DB::table('sampling_records_accounts')->
-        where('User_Account', '=', $RowData["user"])->first();
+        $record = DB::table('sampling_records')->where('id', '=', $id)->first();
+       
+        $AbnormalEvent = DB::table('sampling_records_abnormalevent')->where('SamplingRecords_ID', '=', $id)->first();
 
-        if ($Result != '')
+        if(!$AbnormalEvent)
         {
-            $RowData["user"] = $RowData["user"] . '(' . $Result->User_Name .')';
+            $RowData["Happened_time"] = $record->updated_at;
+            $RowData["Status"] = "待解決";
+            $RowData["SamplingRecords_ID"] = $id;
+            $RowData["Product_SPEC"] = $ProductSPEC_Table.','.$ProductSPEC_Table_Col;
+            $RowData["Abnormal_Event"] = $JudgeComment;
+            $RowData["QC_USER"] = $record ->analyst;
+            $RowData["QC_Comment"] = $record ->remarks;
+            $RowData["PD_USER"] = "";
+            $RowData["PD_Comment"] = "";
+            $RowData["created_at"] = $record->updated_at;
+            $RowData["updated_at"] = $record->updated_at;
+    
+            $todo = DB::table("sampling_records_abnormalevent")->insert(
+                $RowData 
+            );                           
         }
-        $todo = DB::table("sampling_records_operlog")->insert(
-            $RowData 
-        );
+        else
+        {
+            $RowData["Happened_time"] = $record->updated_at;
+            $RowData["Status"] = $AbnormalEvent->Status;
+            $RowData["SamplingRecords_ID"] = $id;
+            $RowData["Product_SPEC"] = $ProductSPEC_Table.','.$ProductSPEC_Table_Col;
+            $RowData["Abnormal_Event"] = $JudgeComment;
+            $RowData["QC_USER"] = $record ->analyst;
+            $RowData["QC_Comment"] = $record ->remarks;
+            $RowData["PD_USER"] = "";
+            $RowData["PD_Comment"] = "";
+            $RowData["created_at"] = $AbnormalEvent->created_at;
+            $RowData["updated_at"] = $record->updated_at;
+
+            $todo = DB::table('sampling_records_abnormalevent')->where('SamplingRecords_ID', '=', $id)->update(
+                $RowData 
+            );
+        }
     }
 }

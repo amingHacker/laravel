@@ -80,6 +80,7 @@
 <script type="text/javascript">
     
     var todosampling_records_abnormalevent = @json($sampling_records_abnormalevent);
+    var combobox_items = [];
    
     var _todoList = {
             sampling_records_abnormalevent: todosampling_records_abnormalevent
@@ -92,7 +93,8 @@
         }
         setTimeout(Showtab,1000);
         getAuthority();
-        // CreatejqxCombobox();       
+        //獲得combobox的內容
+        combobox_items = getComboboxItem();         
     });
     
     /*****修改GridView欄位字體顏色*****/
@@ -124,109 +126,200 @@
 
     function ShowTable(_todoP, i){
         setTimeout(function(){
-        var colNames = [];
-        var colModel = [];
-        for ( var colName in _todoList[_todoP])
-        {
-            colNames.push(colName);
-        }
-    
-        for ( var colName in _todoList[_todoP])
-        {           
-            if (colName === 'id')
-            {           
-                colModel.push(
-                        {name:colName, index:colName, width:80, align:"center",sortable:true, sorttype:"int", frozen: true, editable:false, cellattr: addCellAttrID}
-                    );
-            }
-            else if (colName === 'Status')
+            var colNames = [];
+            var colModel = [];
+            for ( var colName in _todoList[_todoP])
             {
-                colModel.push({name:colName, index:colName, width:100, align:"center", editable:true, cellattr: addCellAttrUrgent, frozen: false});
+                colNames.push(colName);
             }
         
-            else if (colName === 'created_at' || colName === 'updated_at')
-            {
-                colModel.push({name:colName, index:colName, width:150, align:"center", editable:false, cellattr: addCellAttr});
-            }
-            else
-            {
-                colModel.push({name:colName, index:colName, align:"center", width:200, editable:true, cellattr: addCellAttr});
-            }
-        }
-        var table = "dg" + _todoP ;
-        var jqgridWidth = parseInt($(window).width()) * 0.7;
-        // 準備資料           
-        $("#" + table).jqGrid({
-            url:"AbnormalEvent/show/"+_todoP,
-            datatype: "json",        
-            altrows:false,
-            width: jqgridWidth,
-            height:'100%',
-            colNames:colNames,
-            colModel:colModel,
-            multiselect:false,
-            rowNum:10,
-            rowList:[10,20,50],
-            pager: '#' + table + "pager",
-            sortname: 'id',
-            viewrecords: true,
-            gridview: false,
-            sortorder: "desc",
-            caption: _todoP,
-            shrinkToFit :false,
-            loadonce: false,          
-            jsonReader : {
-                            root: "dataList",
-                            page: "currPage",
-                            total: "totalPages",
-                            records: "totalCount"                     
-                        },
-            prmNames : {
-                            page:"pageNum", 
-                            rows:"limit", 
-                            order: "order",
-                        },
-
-            loadComplete: function (){ 
-                fixPositionsOfFrozenDivs.call(this);
-                
-            }, // Fix column's height are different after enable frozen column feature
-            gridComplete: function(){
-                //根據瀏覽器寬度動態改變
-                $(window).resize(function(){ 
-                    var winwidth= parseInt($(window).width()) * 0.7;     
-                    $("#" + table).jqGrid('setGridWidth', winwidth);
-                });
-            },                                                           
-        }).jqGrid('setFrozenColumns'); 
-
-
-        //增加Tool bar        
-        $("#" + table).jqGrid('navGrid','#' + table + "pager", { search:true, edit:false, add:false, del:false, refresh:true } );
-                
-        //增加更多的搜尋條件
-        $.extend($.jgrid.search, {
-                    multipleSearch: true,
-                    recreateFilter: true,
-                    closeOnEscape: true,
-                    searchOnEnter: true,
-                    overlay: 1,
-                    closeAfterSearch:true
-                });
-        //表格排序或隱藏       
-        $("#" + table).jqGrid('navButtonAdd','#' + table + "pager",{
-                caption: "",
-                title: "表格排序",
-                onClickButton : function (){
-                $("#" + table).jqGrid('columnChooser');
+            for ( var colName in _todoList[_todoP])
+            {           
+                if (colName === 'id')
+                {           
+                    colModel.push(
+                            {name:colName, index:colName, width:80, align:"center",sortable:true, sorttype:"int", frozen: true, editable:false, cellattr: addCellAttrID}
+                        );
                 }
-            });     
-        //重新整理功能
-        $('.ui-icon-refresh').click(function(){
-            lastSearchData = null;
-            $("#load_" + table).show();
-        });
-        },i * 20);  
+                else if (colName === 'Status')
+                {
+                    colModel.push(
+                        {
+                            name:colName, index:colName, width:100, align:"center",sortable:true, editable:true, cellattr: addCellAttrUrgent,
+                            stype:'text',
+                            edittype:'custom', editoptions:
+                            {
+                                custom_element: combobox_elem, custom_value:combobox_value
+                            },    
+                            stype:'custom', searchoptions:
+                            {
+                                custom_element: combobox_elem, custom_value:combobox_value                   
+                            },
+                        }
+                    );
+                }
+                
+                else if (colName === 'Happened_time')
+                {
+                    colModel.push(
+                        {
+                            name:colName, index:colName, width: 150, align:"center",sortable:true, editable:true, cellattr: addCellAttr,
+                            sorttype: "date", edittype:'text', 
+                            editoptions: 
+                            {                       
+                                dataInit: function (elem) 
+                                {                                                                 
+                                    $(elem).datetimepicker(
+                                        {
+                                            autoclose:true,
+                                            dateFormat: 'yy-mm-dd', 
+                                            timeFormat: 'HH:mm:ss',                         
+                                        }                             
+                                    );
+                                },      
+                            },
+                            search:true,
+                            searchoptions: {
+                                sopt: ['eq','le','ge'],
+                                dataInit : function (elem) 
+                                {
+                                    var self = this;
+                                    $(elem).datepicker({
+                                        dateFormat: 'yy-mm-dd',                                 
+                                        changeYear: true,
+                                        changeMonth: true,
+                                        showOn: 'focus',
+                                        autoclose:1
+                                    });
+                                }
+                            },                                   
+                        }
+                    );
+                }
+                else if (colName === 'QC_USER'|| colName === 'PD_USER') 
+                {
+                    colModel.push(
+                        {
+                            name:colName, index:colName, width:100, align:"center",sortable:true, editable:true, cellattr: addCellAttr,
+                            stype:'text',
+                            edittype:'custom', editoptions:
+                            {
+                                custom_element: combobox_elem, custom_value:combobox_value
+                            },    
+                            stype:'custom', searchoptions:
+                            {
+                                custom_element: combobox_elem, custom_value:combobox_value                   
+                            },
+                        }
+                    );
+                }
+                else if (colName === 'created_at' || colName === 'updated_at')
+                {
+                    colModel.push(
+                        {
+                            name:colName, index:colName, width: 150, align:"center",sortable:true, editable:false, cellattr: addCellAttr,
+                            sorttype: "date",
+                            search:true,
+                            searchoptions: {
+                                sopt: ['eq','le','ge'],
+                                dataInit : function (elem) 
+                                {
+                                    var self = this;
+                                    $(elem).datepicker({
+                                        dateFormat: 'yy-mm-dd',                                 
+                                        changeYear: true,
+                                        changeMonth: true,
+                                        showOn: 'focus',
+                                        autoclose:1
+                                    });
+                                }
+                            },                                   
+                        }
+                    );
+                }
+                else if (colName === 'SamplingRecords_ID')
+                {
+                    colModel.push({name:colName, index:colName, align:"center", width:128, editable:true, cellattr: addCellAttr});
+                }
+                else
+                {
+                    colModel.push({name:colName, index:colName, align:"left", width:200, editable:true, cellattr: addCellAttr});
+                }
+            }
+            var table = "dg" + _todoP ;
+            var jqgridWidth = parseInt($(window).width()) * 0.7;
+            // 準備資料           
+            $("#" + table).jqGrid({
+                url:"AbnormalEvent/show/"+_todoP,
+                datatype: "json",        
+                altrows:false,
+                width: jqgridWidth,
+                height:'100%',
+                colNames:colNames,
+                colModel:colModel,
+                multiselect:false,
+                rowNum:10,
+                rowList:[10,20,50],
+                pager: '#' + table + "pager",
+                sortname: 'id',
+                viewrecords: true,
+                gridview: false,
+                sortorder: "desc",
+                caption: _todoP,
+                shrinkToFit :false,
+                loadonce: false,          
+                jsonReader : {
+                                root: "dataList",
+                                page: "currPage",
+                                total: "totalPages",
+                                records: "totalCount"                     
+                            },
+                prmNames : {
+                                page:"pageNum", 
+                                rows:"limit", 
+                                order: "order",
+                            },
+
+                loadComplete: function (){ 
+                    fixPositionsOfFrozenDivs.call(this);
+                    
+                }, // Fix column's height are different after enable frozen column feature
+                gridComplete: function(){
+                    //根據瀏覽器寬度動態改變
+                    $(window).resize(function(){ 
+                        var winwidth= parseInt($(window).width()) * 0.7;     
+                        $("#" + table).jqGrid('setGridWidth', winwidth);
+                    });
+                },                                                           
+            }).jqGrid('setFrozenColumns'); 
+
+
+            //增加Tool bar        
+            $("#" + table).jqGrid('navGrid','#' + table + "pager", { search:true, edit:false, add:false, del:false, refresh:true } );
+                    
+            //增加更多的搜尋條件
+            $.extend($.jgrid.search, {
+                        multipleSearch: true,
+                        recreateFilter: true,
+                        closeOnEscape: true,
+                        searchOnEnter: true,
+                        overlay: 1,
+                        closeAfterSearch:true
+                    });
+            //表格排序或隱藏       
+            $("#" + table).jqGrid('navButtonAdd','#' + table + "pager",{
+                    caption: "",
+                    title: "表格排序",
+                    onClickButton : function (){
+                    $("#" + table).jqGrid('columnChooser');
+                    }
+                });     
+            //重新整理功能
+            $('.ui-icon-refresh').click(function(){
+                lastSearchData = null;
+                $("#load_" + table).show();
+            });
+        },i * 20);
     }
 
     function getAuthority(){
@@ -248,6 +341,15 @@
             }
             else
             {
+                if (Authority["Add"] == 1)
+                {     
+                    document.getElementById("New").style.display="";
+                    document.getElementById("Save").style.display="";
+                    document.getElementById("Cancel").style.display="";        
+                    document.getElementById("Edit").style.display=""; 
+                    document.getElementById("Import").style.display="";
+                    document.getElementById("ExportExcel").style.display="";
+                }
                 if (Authority["ProductSPEC"] == 1)
                 {     
                     document.getElementById("New").style.display="";
@@ -262,167 +364,241 @@
         });
     }
 
-    function CreatejqxCombobox()
-    {
-        var source_TMAL = [
-            "TMAL",
-            "TMALEG",
-            "TMALTW",
-            "TMALUM",
-                ];
-        var source_CCTBA = [
-            "CCTBA",
-        ];
-        var source_ALEXA = [
-            "ALEXA",
-        ];
-        var dictionary ={
-            "TMALEG": "TMAL_EG",
-            "TMALTW": "TMAL_TW",
-            "TMALUM": "TMAL_UM",
-            "TMAL": "TMAL",
-            "CCTBA":"CCTBA",
-            "ALEXA":"ALEXA",
-        };
-        // Create a jqxComboBox
-        $("#jqxcombobox_TMAL").jqxComboBox({ source: source_TMAL, selectedIndex: 0, width: '200px', height: '25' });
+    // function CreatejqxCombobox()
+    // {
+    //     var source_TMAL = [
+    //         "TMAL",
+    //         "TMALEG",
+    //         "TMALTW",
+    //         "TMALUM",
+    //             ];
+    //     var source_CCTBA = [
+    //         "CCTBA",
+    //     ];
+    //     var source_ALEXA = [
+    //         "ALEXA",
+    //     ];
+    //     var dictionary ={
+    //         "TMALEG": "TMAL_EG",
+    //         "TMALTW": "TMAL_TW",
+    //         "TMALUM": "TMAL_UM",
+    //         "TMAL": "TMAL",
+    //         "CCTBA":"CCTBA",
+    //         "ALEXA":"ALEXA",
+    //     };
+    //     // Create a jqxComboBox
+    //     $("#jqxcombobox_TMAL").jqxComboBox({ source: source_TMAL, selectedIndex: 0, width: '200px', height: '25' });
        
-        $("#jqxcombobox_CCTBA").jqxComboBox({ source: source_CCTBA, selectedIndex: 0, width: '200px', height: '25' });
+    //     $("#jqxcombobox_CCTBA").jqxComboBox({ source: source_CCTBA, selectedIndex: 0, width: '200px', height: '25' });
 
-        $("#jqxcombobox_ALEXA").jqxComboBox({ source: source_ALEXA, selectedIndex: 0, width: '200px', height: '25' });
+    //     $("#jqxcombobox_ALEXA").jqxComboBox({ source: source_ALEXA, selectedIndex: 0, width: '200px', height: '25' });
 
-        // bind to 'select' event.
-        $('#jqxcombobox_TMAL').bind('select', function (event) {
-            var args = event.args;
-            var item = $('#jqxcombobox_TMAL').jqxComboBox('getItem', args.index);
-            //alert('Selected: ' + item.label);
-            ShowTableDynamic(dictionary[item.label],"dgTMAL");  
+    //     // bind to 'select' event.
+    //     $('#jqxcombobox_TMAL').bind('select', function (event) {
+    //         var args = event.args;
+    //         var item = $('#jqxcombobox_TMAL').jqxComboBox('getItem', args.index);
+    //         //alert('Selected: ' + item.label);
+    //         ShowTableDynamic(dictionary[item.label],"dgTMAL");  
+    //     });
+
+    //      // bind to 'select' event.
+    //     $('#jqxcombobox_CCTBA').bind('select', function (event) {
+    //         var args = event.args;
+    //         var item = $('#jqxcombobox_CCTBA').jqxComboBox('getItem', args.index);
+    //         //alert('Selected: ' + item.label);
+    //         ShowTableDynamic(dictionary[item.label], "dgCCTBA");  
+    //     });
+
+    //     // bind to 'select' event.
+    //     $('#jqxcombobox_ALEXA').bind('select', function (event) {
+    //         var args = event.args;
+    //         var item = $('#jqxcombobox_ALEXA').jqxComboBox('getItem', args.index);
+    //         //alert('Selected: ' + item.label);
+    //         ShowTableDynamic(dictionary[item.label], "dgALEXA");  
+    //     });
+    // }
+
+    // function ShowTableDynamic(_todoP, productKind)
+    // {
+    //     $('#'+ productKind).jqGrid('GridUnload');  
+    //     var colNames = [];
+    //     var colModel = [];
+    //     for ( var colName in _todoList[_todoP])
+    //     {
+    //         colNames.push(colName);
+    //     }
+    
+    //     for ( var colName in _todoList[_todoP])
+    //     {           
+    //         if (colName === 'id')
+    //         {           
+    //             colModel.push(
+    //                     {name:colName, index:colName, width:80, align:"center",sortable:true, sorttype:"int", frozen: true, editable:false, cellattr: addCellAttrID}
+    //                 );
+    //         }
+    //         else if (colName === 'ELEMENT')
+    //         {
+    //             colModel.push({name:colName, index:colName, width:120, align:"center", editable:true, cellattr: addCellAttr, frozen: true});
+    //         }
+        
+    //         else if (colName === 'created_at' || colName === 'updated_at')
+    //         {
+    //             colModel.push({name:colName, index:colName, width:150, align:"center", editable:false, cellattr: addCellAttr});
+    //         }
+    //         else
+    //         {
+    //             colModel.push({name:colName, index:colName, align:"center", width:120, editable:true, cellattr: addCellAttr});
+    //         }
+    //     }
+    //     var table = productKind ;
+    //     var jqgridWidth = parseInt($(window).width()) * 0.7;
+    //     // 準備資料           
+    //     $("#" + table).jqGrid({
+    //         //url:"ProductSPEC/show/"+_todoP,
+    //         url:"AbnormalEvent/show/"+_todoP,
+    //         datatype: "json",        
+    //         altrows:false,
+    //         width: jqgridWidth,
+    //         height:'100%',
+    //         colNames:colNames,
+    //         colModel:colModel,
+    //         multiselect:false,
+    //         rowNum:10,
+    //         rowList:[10,20,50],
+    //         pager: '#' + table + "pager",
+    //         sortname: 'id',
+    //         viewrecords: true,
+    //         gridview: false,
+    //         sortorder: "desc",
+    //         caption: _todoP,
+    //         shrinkToFit :false,
+    //         loadonce: false,          
+    //         jsonReader : {
+    //                         root: "dataList",
+    //                         page: "currPage",
+    //                         total: "totalPages",
+    //                         records: "totalCount"                     
+    //                     },
+    //         prmNames : {
+    //                         page:"pageNum", 
+    //                         rows:"limit", 
+    //                         order: "order",
+    //                     },
+
+    //         loadComplete: function (){ 
+    //             fixPositionsOfFrozenDivs.call(this);
+                
+    //         }, // Fix column's height are different after enable frozen column feature
+    //         gridComplete: function(){
+    //             //根據瀏覽器寬度動態改變
+    //             $(window).resize(function(){ 
+    //                 var winwidth= parseInt($(window).width()) * 0.7;     
+    //                 $("#" + table).jqGrid('setGridWidth', winwidth);
+    //             });
+    //         },
+    //         rowattr: function (rd){if (rd.determination === 'Fail'){ return {"class": "failRow"};}}                                                            
+    //     }).jqGrid('setFrozenColumns'); 
+
+
+    //     //增加Tool bar        
+    //     $("#" + table).jqGrid('navGrid','#' + table + "pager", { search:true, edit:false, add:false, del:false, refresh:true } );
+                
+    //     //增加更多的搜尋條件
+    //     $.extend($.jgrid.search, {
+    //                 multipleSearch: true,
+    //                 recreateFilter: true,
+    //                 closeOnEscape: true,
+    //                 searchOnEnter: true,
+    //                 overlay: 1,
+    //                 closeAfterSearch:true
+    //             });
+    //     //表格排序或隱藏       
+    //     $("#" + table).jqGrid('navButtonAdd','#' + table + "pager",{
+    //             caption: "",
+    //             title: "表格排序",
+    //             onClickButton : function (){
+    //             $("#" + table).jqGrid('columnChooser');
+    //             }
+    //         });     
+    //     //重新整理功能
+    //     $('.ui-icon-refresh').click(function(){
+    //         lastSearchData = null;
+    //         $("#load_" + table).show();
+    //     });
+    // }
+
+    /*獲得item內容包含的方法*/
+    var selectItemJson; //用來存放item包含的值
+    function getComboboxItem(){     
+        $.ajax({
+            async:false,
+            url: "AbnormalEvent/GetComboboxItem",//路徑
+            type: "Get",
+        }).done(function(data){
+            selectItemJson = data;
         });
-
-         // bind to 'select' event.
-        $('#jqxcombobox_CCTBA').bind('select', function (event) {
-            var args = event.args;
-            var item = $('#jqxcombobox_CCTBA').jqxComboBox('getItem', args.index);
-            //alert('Selected: ' + item.label);
-            ShowTableDynamic(dictionary[item.label], "dgCCTBA");  
-        });
-
-        // bind to 'select' event.
-        $('#jqxcombobox_ALEXA').bind('select', function (event) {
-            var args = event.args;
-            var item = $('#jqxcombobox_ALEXA').jqxComboBox('getItem', args.index);
-            //alert('Selected: ' + item.label);
-            ShowTableDynamic(dictionary[item.label], "dgALEXA");  
-        });
+        return selectItemJson;
     }
 
-    function ShowTableDynamic(_todoP, productKind)
-    {
-        $('#'+ productKind).jqGrid('GridUnload');  
-        var colNames = [];
-        var colModel = [];
-        for ( var colName in _todoList[_todoP])
-        {
-            colNames.push(colName);
-        }
-    
-        for ( var colName in _todoList[_todoP])
-        {           
-            if (colName === 'id')
-            {           
-                colModel.push(
-                        {name:colName, index:colName, width:80, align:"center",sortable:true, sorttype:"int", frozen: true, editable:false, cellattr: addCellAttrID}
-                    );
-            }
-            else if (colName === 'ELEMENT')
-            {
-                colModel.push({name:colName, index:colName, width:120, align:"center", editable:true, cellattr: addCellAttr, frozen: true});
-            }
+    /*設定欄位為combobox的方法*/
+    function combobox_elem(value, options)
+    {   
+        //value :目前cell裡的值
+        //options : 此column的資訊
         
-            else if (colName === 'created_at' || colName === 'updated_at')
+        // Create JQWidgets combobox
+        var elem = $('<div id="' + (options.id) + '"></div>');
+        
+        // Calculate the "rowid" string length and remove "rowid" and "_" to get name
+        //var name = options.id.substr(options.id.split("_")[0].length + 1);
+        
+        var name = options.name; //獲得column name
+
+        if (name == undefined){name = options.searchColName;}
+        
+        // Get column width value and calculate for JQWidgets combobox
+        var width = $("#dg_" + name).width() - 2;       
+        
+        // Get column width value and calculate for JQWidgets combobox
+        var height = $("#dg_" + name).height() - 2;       
+
+        if (width < 0 ){width = 90;}
+
+        // Get items from combobox_items array 
+        //獲得預選值的陣列
+        var items = [];
+        for (var i in combobox_items)
+        {
+            if(i == name)
+            for(var j in combobox_items[i])
             {
-                colModel.push({name:colName, index:colName, width:150, align:"center", editable:false, cellattr: addCellAttr});
-            }
-            else
-            {
-                colModel.push({name:colName, index:colName, align:"center", width:120, editable:true, cellattr: addCellAttr});
+                items.push(combobox_items[i][j][i])
             }
         }
-        var table = productKind ;
-        var jqgridWidth = parseInt($(window).width()) * 0.7;
-        // 準備資料           
-        $("#" + table).jqGrid({
-            //url:"ProductSPEC/show/"+_todoP,
-            url:"AbnormalEvent/show/"+_todoP,
-            datatype: "json",        
-            altrows:false,
-            width: jqgridWidth,
-            height:'100%',
-            colNames:colNames,
-            colModel:colModel,
-            multiselect:false,
-            rowNum:10,
-            rowList:[10,20,50],
-            pager: '#' + table + "pager",
-            sortname: 'id',
-            viewrecords: true,
-            gridview: false,
-            sortorder: "desc",
-            caption: _todoP,
-            shrinkToFit :false,
-            loadonce: false,          
-            jsonReader : {
-                            root: "dataList",
-                            page: "currPage",
-                            total: "totalPages",
-                            records: "totalCount"                     
-                        },
-            prmNames : {
-                            page:"pageNum", 
-                            rows:"limit", 
-                            order: "order",
-                        },
+        // Get items amount to decide dropdown height to avoid autoDropDownHeight making list too long
+        if (items.length > 7)
+        {
+            elem.jqxComboBox({source:items, searchMode: 'containsignorecase', width:width, height:20, theme:"energyblue", autoOpen:false, dropDownWidth:width, 
+                dropDownHeight:210, autoComplete: true, openDelay:210, closeDelay:140});
+        }
+        else
+        {     
+            elem.jqxComboBox({source:items, searchMode: 'containsignorecase', width:width, height:20, theme:"energyblue", autoOpen:false, dropDownWidth:width, 
+                autoDropDownHeight:true, autoComplete: true, openDelay:210, closeDelay:140});
+        }  
+        
+        // Set initial value as original value
+        elem.jqxComboBox('val', value);
+        
+        return elem;
+    }
 
-            loadComplete: function (){ 
-                fixPositionsOfFrozenDivs.call(this);
-                
-            }, // Fix column's height are different after enable frozen column feature
-            gridComplete: function(){
-                //根據瀏覽器寬度動態改變
-                $(window).resize(function(){ 
-                    var winwidth= parseInt($(window).width()) * 0.7;     
-                    $("#" + table).jqGrid('setGridWidth', winwidth);
-                });
-            },
-            rowattr: function (rd){if (rd.determination === 'Fail'){ return {"class": "failRow"};}}                                                            
-        }).jqGrid('setFrozenColumns'); 
-
-
-        //增加Tool bar        
-        $("#" + table).jqGrid('navGrid','#' + table + "pager", { search:true, edit:false, add:false, del:false, refresh:true } );
-                
-        //增加更多的搜尋條件
-        $.extend($.jgrid.search, {
-                    multipleSearch: true,
-                    recreateFilter: true,
-                    closeOnEscape: true,
-                    searchOnEnter: true,
-                    overlay: 1,
-                    closeAfterSearch:true
-                });
-        //表格排序或隱藏       
-        $("#" + table).jqGrid('navButtonAdd','#' + table + "pager",{
-                caption: "",
-                title: "表格排序",
-                onClickButton : function (){
-                $("#" + table).jqGrid('columnChooser');
-                }
-            });     
-        //重新整理功能
-        $('.ui-icon-refresh').click(function(){
-            lastSearchData = null;
-            $("#load_" + table).show();
-        });
+    // jqGrid custom edit function to get Flexbox combobox value
+    function combobox_value(elem)
+    {
+        // Check if elem is jqxComboBox and get value from input inside div
+        // Because if jqxComboBox autoComplete set to true, it will not fill Null when input value wiped after selected items (forced to select first item)    
+        return elem.find("input").val();
     }
 </script>
 

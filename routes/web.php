@@ -23,6 +23,8 @@
 //     return view('mainlayout.index', ['name' => 'AAAA']);
 // });
 
+//寄Mail
+Route::any('/AbnormalEventMail', 'AbnormalEventMailController@send');
 
 Route::get('/', function () {
     return view('mainlayout.layouts.index');
@@ -166,11 +168,12 @@ Route::delete('/Authority/delete/{todo}', 'AuthorityController@destroy')->name('
 
 /*************************** AbnormalEvent *****************************/
 //資料呈現
+
 Route::get('/AbnormalEvent', 'AbnormalEventController@index');
 Route::get('/AbnormalEvent/show/{todo}', 'AbnormalEventController@show');
 Route::post('/AbnormalEvent/export', 'AbnormalEventController@export');
 Route::get('/AbnormalEvent/GetTable/{todo}', 'AbnormalEventController@GetTable');
-
+Route::get('/AbnormalEvent/GetComboboxItem', 'AbnormalEventController@GetComboboxItem');
 
 
 //File 大量新增和修改
