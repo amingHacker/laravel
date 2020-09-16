@@ -990,19 +990,20 @@
                                 "ProductSPEC_Table_Col": sessionStorage.getItem('CustomerSPEC_table_col_name'),                             
                                 },
                             "aftersavefunc" : function( response ) {
-                                            if (tJudgeComment!='')
-                                            {
-                                                $.ajax({
-                                                    url: "/AbnormalEventMail",//路徑
-                                                    type: "post",           
-                                                    data:{
-                                                        "id": ret.id,
-                                                        "JudgeComment": tJudgeComment,
-                                                    },
-                                                    success: function (){
-                                                    }                               
-                                                }); 
-                                            }
+                                            //aming
+                                            // if (tJudgeComment!='')
+                                            // {
+                                            //     $.ajax({
+                                            //         url: "/AbnormalEventMail",//路徑
+                                            //         type: "post",           
+                                            //         data:{
+                                            //             "id": ret.id,
+                                            //             "JudgeComment": tJudgeComment,
+                                            //         },
+                                            //         success: function (){
+                                            //         }                               
+                                            //     }); 
+                                            // }
                                         },
                             "errorfunc": null,
                             "afterrestorefunc" : null,
