@@ -22,7 +22,13 @@ class AbnormalEventMailController extends Controller
  
         // 提供給模板的參數
         $params = [
-            'say' => "SamplingRecordsID:".$Parameter["id"].", "."AbnormalEvent:".$Parameter["JudgeComment"]
+            // 'say' => "SamplingRecordsID:".$Parameter["id"].", "."AbnormalEvent:".$Parameter["JudgeComment"]
+            "id" => $Parameter["id"],
+            "product_name" => $Parameter["product_name"],
+            "level" => $Parameter["level"],
+            "batch_number" => $Parameter["batch_number"],
+            "equipment_name" => $Parameter["equipment_name"],
+            "JudgeComment"=> $Parameter["JudgeComment"],
         ];
  
         // 若要直接檢視模板

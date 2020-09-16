@@ -325,7 +325,7 @@ class SamplingRecordController extends Controller
                 $this->CreateAbnormalEvent($request->id, $AddParameter["JudgeComment"], $AddParameter["ProductSPEC_Table"], $AddParameter["ProductSPEC_Table_Col"]);
             }
             return response()->json([
-                'success' => 'Record update successfully!'
+                'success' => $AddParameter
             ]);
       
         }

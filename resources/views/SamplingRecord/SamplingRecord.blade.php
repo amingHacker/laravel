@@ -921,17 +921,17 @@
             {
                 if (tJudgeIncludeFail == 'true' && sessionStorage.getItem('QC_USER') == 'true')
                 {
-                    SamplingRecord_ReadyToDataBase(result, edit_statement, tJudgeComment, target_id, ret, oper);
-                    // var tmp = judgeFailEvent(ret.id); // JudgeColor/JudgeColor.js
-                    // sessionStorage.setItem('judgeComment', '');  //初始這些Session
-                    // sessionStorage.setItem('CustomerSPEC_table_name' ,''); //初始這些Session
-                    // sessionStorage.setItem('CustomerSPEC_table_col_name' , ''); //初始這些Session
-                    // var dataImport; //用來承接promise方法的回傳參數
-                    // tmp.then(function (dataImport) 
-                    // {   
-                    //     tJudgeComment = dataImport;
-                    //     SamplingRecord_ReadyToDataBase(result, edit_statement, tJudgeComment, target_id, ret, oper);                                         
-                    // })           
+                    //SamplingRecord_ReadyToDataBase(result, edit_statement, tJudgeComment, target_id, ret, oper);
+                    var tmp = judgeFailEvent(ret.id); // JudgeColor/JudgeColor.js
+                    sessionStorage.setItem('judgeComment', '');  //初始這些Session
+                    sessionStorage.setItem('CustomerSPEC_table_name' ,''); //初始這些Session
+                    sessionStorage.setItem('CustomerSPEC_table_col_name' , ''); //初始這些Session
+                    var dataImport; //用來承接promise方法的回傳參數
+                    tmp.then(function (dataImport) 
+                    {   
+                        tJudgeComment = dataImport;
+                        SamplingRecord_ReadyToDataBase(result, edit_statement, tJudgeComment, target_id, ret, oper);                                         
+                    })           
                 }
                 else
                 {
@@ -980,7 +980,26 @@
                         $(this).dialog("close");
                         saveparameters = 
                         {
-                            "successfunc" : null,
+                            "successfunc" : function( response ) {
+                                            $('#dg').trigger( 'reloadGrid' );
+                                            if (response["responseJSON"]["success"]["JudgeComment"]!='')
+                                            {
+                                                $.ajax({
+                                                    url: "/AbnormalEventMail",//路徑
+                                                    type: "post",           
+                                                    data:{
+                                                        "id": response["responseJSON"]["success"]["id"],
+                                                        "product_name": response["responseJSON"]["success"]["product_name"],
+                                                        "level": response["responseJSON"]["success"]["level"],
+                                                        "batch_number": response["responseJSON"]["success"]["batch_number"],
+                                                        "equipment_name": response["responseJSON"]["success"]["equipment_name"],
+                                                        "JudgeComment": response["responseJSON"]["success"]["JudgeComment"],
+                                                    },
+                                                    success: function (){
+                                                    }                               
+                                                }); 
+                                            }
+                                        },
                             "url" : 'SamplingRecord/AddandUpdate/'+ret.id,
                             "extraparam" : {                                   
                                 "id" : ret.id,
@@ -990,22 +1009,9 @@
                                 "ProductSPEC_Table" : sessionStorage.getItem('CustomerSPEC_table_name'),
                                 "ProductSPEC_Table_Col": sessionStorage.getItem('CustomerSPEC_table_col_name'),                             
                                 },
-                            "aftersavefunc" : function( response ) {
-                                            //aming
-                                            // if (tJudgeComment!='')
-                                            // {
-                                            //     $.ajax({
-                                            //         url: "/AbnormalEventMail",//路徑
-                                            //         type: "post",           
-                                            //         data:{
-                                            //             "id": ret.id,
-                                            //             "JudgeComment": tJudgeComment,
-                                            //         },
-                                            //         success: function (){
-                                            //         }                               
-                                            //     }); 
-                                            // }
-                                        },
+                            "aftersavefunc" :function( response ) {
+                                            
+                                        }, 
                             "errorfunc": null,
                             "afterrestorefunc" : null,
                             "restoreAfterError" : true,
