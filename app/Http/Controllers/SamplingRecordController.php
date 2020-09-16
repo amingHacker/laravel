@@ -913,7 +913,7 @@ class SamplingRecordController extends Controller
             $RowData["Happened_time"] = $record->updated_at;
             $RowData["Status"] = "待解決";
             $RowData["SamplingRecords_ID"] = $id;
-            $RowData["Product_SPEC"] = $ProductSPEC_Table.','.$ProductSPEC_Table_Col;
+            $RowData["Product_SPEC"] = $ProductSPEC_Table_Col;
             $RowData["Abnormal_Event"] = $JudgeComment;
             $RowData["QC_USER"] = $record ->analyst;
             $RowData["QC_Comment"] = $record ->remarks;
@@ -931,7 +931,7 @@ class SamplingRecordController extends Controller
             $RowData["Happened_time"] = $record->updated_at;
             $RowData["Status"] = $AbnormalEvent->Status;
             $RowData["SamplingRecords_ID"] = $id;
-            $RowData["Product_SPEC"] = $ProductSPEC_Table.','.$ProductSPEC_Table_Col;
+            $RowData["Product_SPEC"] = $ProductSPEC_Table_Col;
             $RowData["Abnormal_Event"] = $JudgeComment;
             $RowData["QC_USER"] = $record ->analyst;
             $RowData["QC_Comment"] = $record ->remarks;
