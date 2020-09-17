@@ -926,10 +926,13 @@
                     sessionStorage.setItem('judgeComment', '');  //初始這些Session
                     sessionStorage.setItem('CustomerSPEC_table_name' ,''); //初始這些Session
                     sessionStorage.setItem('CustomerSPEC_table_col_name' , ''); //初始這些Session
+                    sessionStorage.setItem('MailToMember' , ''); //初始這些Session
                     var dataImport; //用來承接promise方法的回傳參數
                     tmp.then(function (dataImport) 
                     {   
-                        tJudgeComment = dataImport;
+                        
+                        tJudgeComment = dataImport["judgeComment"];
+                        sessionStorage.setItem('MailToMember' , dataImport["MailTo"]); 
                         SamplingRecord_ReadyToDataBase(result, edit_statement, tJudgeComment, target_id, ret, oper);                                         
                     })           
                 }
@@ -994,8 +997,10 @@
                                                         "batch_number": response["responseJSON"]["success"]["batch_number"],
                                                         "equipment_name": response["responseJSON"]["success"]["equipment_name"],
                                                         "JudgeComment": response["responseJSON"]["success"]["JudgeComment"],
+                                                        "MailToMember": sessionStorage.getItem('MailToMember'), 
                                                     },
-                                                    success: function (){
+                                                    success: function (response){
+                                                        var aaa = response;
                                                     }                               
                                                 }); 
                                             }

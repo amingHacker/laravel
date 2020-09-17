@@ -146,7 +146,7 @@
                         {name:colName, index:colName, width:80, align:"center",sortable:true, sorttype:"int", frozen: true, editable:false, cellattr: addCellAttrID}
                     );
             }
-            else if (colName === 'Group_Name')
+            else if (colName === 'Group_Name' || colName === 'SPC_Group_Name')
             {
                 colModel.push({
                     name:colName, index:colName, width:150, align:"center", editable:true, cellattr: addCellAttr, frozen: true,

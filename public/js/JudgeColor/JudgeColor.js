@@ -228,7 +228,20 @@ function judgeFailEvent(rowID){
                 
                 var table = "import_preview";
                 var pcontent = '<span style="font-weight:bold; color:#2e6e9e;">《 產品規格 ProductSPEC 》</span><br /><br />'
-                + '<div id="jqxcombobox_SPEC" ></div>' 
+                + 'Mail To: '
+                + '<input type="checkbox" class="TWKH" name="TWKH_[]" value="TWKH_QA_QC">QA_QC '
+                + '<input type="checkbox" class="TWKH" name="TWKH_[]" value="TWKH_PD_P0">PD_P0 '
+                + '<input type="checkbox" class="TWKH" name="TWKH_[]" value="TWKH_PD_P1_P2">PD_P1_P2 '
+                + '<input type="checkbox" class="TWKH" name="TWKH_[]" value="TWKH_PD_P3">PD_P3 '
+                + '<input type="checkbox" class="TWKH" name="TWKH_[]" value="TWKH_PD_P4_P5">PD_P4_P5 '
+                + '<input type="checkbox" class="TWKH" name="TWKH_[]" value="TWKH_PE">PE '
+                + '</br>' 
+                + '<input type="checkbox" class="TWKH" name="TWKH_[]" value="TWKH_SCM">SCM '
+                + '<input type="checkbox" class="TWKH" name="TWKH_[]" value="TWKH_Site_Director">Site_Director '
+                + '<input type="checkbox" class="TWKH" name="TWKH_[]" value="TWKH_Test_User">Test_User '
+                + '</br></br>'
+                + '<div id="jqxcombobox_SPEC" >Table</div>'
+                + '</br>' 
                 + '<div id="jqxToolBar_SPEC" style = margin:0px auto; text-align:justify ></div>'
                 + '</br>'
                 + '<table id= "ProductSPEC"></table>'
@@ -301,7 +314,18 @@ function judgeFailEvent(rowID){
                             if (tjudgeComment!=null){
                                 tjudgeComment = tjudgeComment.slice(0,-1);
                             }
-                            resolve(tjudgeComment);                                                 
+                            var tMailTo = "";
+                            $('.TWKH:checked').each(function() {
+                                tMailTo += ($(this).val())+',';
+                            });
+
+                            var returnData = {
+                                MailTo: tMailTo,
+                                judgeComment :tjudgeComment
+
+                            }
+                            // resolve(tjudgeComment);
+                            resolve(returnData);                                                 
                         },          
                     }
                 });

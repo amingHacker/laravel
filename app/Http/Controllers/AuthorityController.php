@@ -365,9 +365,11 @@ class AuthorityController extends Controller
      {    
         //dd($request);    
         $group_name = DB::table('sampling_records_groups')->select('Group_Name')->distinct()->get();
+        $SPC_group_name = DB::table('sampling_records_accounts')->select('SPC_Group_Name')->distinct()->get();
       
         return response()->json([
-            'Group_Name' => $group_name ,
+            'Group_Name' => $group_name,
+            'SPC_Group_Name' => $SPC_group_name,
         ]);     
      }
 
