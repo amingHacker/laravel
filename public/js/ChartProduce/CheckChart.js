@@ -338,6 +338,7 @@ function DrowChart( dataLo, chartTypeGroup, dataXaxisGroup, dataYaxisGroup,
                         ctx.beginPath();
                         ctx.moveTo(70, yValue);
                         ctx.lineTo(canvas.width - 10, yValue);
+                        ctx.setLineDash([10,10]);
                         ctx.strokeStyle = style;
                         ctx.stroke();
                     }
@@ -707,6 +708,10 @@ function designScale(chartTypeGroup, dataXaxisGroup, UpandDown, horizontalLineSc
                     labelString: 'Value'+'(' + dataXaxisGroup[0] + ')'
                 },
                 position: 'bottom',
+                gridLines: {
+                    display: false,
+                    drawBorder: false,
+                },
                 ticks: {
                     stepSize: 1,
                     major: {
@@ -748,6 +753,10 @@ function designScale(chartTypeGroup, dataXaxisGroup, UpandDown, horizontalLineSc
                 scaleLabel: {
                     display: true,
                     labelString: 'Value'+'(' + dataXaxisGroup[0] + ')'
+                },
+                gridLines: {
+                    display: false,
+                    drawBorder: false,
                 },
                 ticks: {
                     major: {
@@ -784,6 +793,10 @@ function designScale(chartTypeGroup, dataXaxisGroup, UpandDown, horizontalLineSc
                     labelString: 'Value'+'(' + dataXaxisGroup[0] + ')'
                 },
                 position: 'bottom',
+                gridLines: {
+                    display: false,
+                    drawBorder: false,
+                },
                 ticks: {
                     stepSize: 1,
                     major: {
@@ -817,6 +830,10 @@ function designScale(chartTypeGroup, dataXaxisGroup, UpandDown, horizontalLineSc
                 scaleLabel: {
                     display: true,
                     labelString: 'Value'+'(' + dataXaxisGroup[0] + ')'
+                },
+                gridLines: {
+                    display: false,
+                    drawBorder: false,
                 },
                 ticks: {
                     major: {
