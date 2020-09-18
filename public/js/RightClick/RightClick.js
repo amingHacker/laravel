@@ -370,7 +370,7 @@ function compareCellAttr(rowId, val, rawObject, cm, rdata)
         if ( data[j]["ELEMENT"] == cloumnName )
         {
             // Assay, Parameter A, Component A這些值小於SPEC 就是異常
-            if (data[j]["ELEMENT"] == 'Assay (Purity)' || data[j]["ELEMENT"] == 'Component A' || data[j]["ELEMENT"] == 'Parameter A')
+            if (data[j]["ELEMENT"] == 'Assay (Purity)' || data[j]["ELEMENT"] == 'Component A' || data[j]["ELEMENT"] == 'Parameter A' || data[j]["ELEMENT"] == 'Impurity C')
             {
                 if (parseFloat(_customerSPEC) >  parseFloat(val))
                 {

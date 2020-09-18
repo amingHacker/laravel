@@ -184,7 +184,7 @@ function addCellAttr(rowId, val, rawObject, cm, rdata)
             if ( _productS["ELEMENT"] == cloumnName )
             {
                 // Assay, Parameter A, Component A這些值小於SPEC 就是異常
-                if(_productS["ELEMENT"] =='Assay (Purity)' || _productS["ELEMENT"] == 'Component A' || _productS["ELEMENT"] == 'Parameter A')
+                if(_productS["ELEMENT"] =='Assay (Purity)' || _productS["ELEMENT"] == 'Component A' || _productS["ELEMENT"] == 'Parameter A' || _productS["ELEMENT"] == 'Impurity C')
                 {
                     if(parseFloat(_productS[product_level]) >  parseFloat(val))
                     {
