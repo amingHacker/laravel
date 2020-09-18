@@ -72,6 +72,12 @@
     {
         width:72%;
     }
+    .text-break {
+        white-space: normal !important;
+        height:auto;
+        vertical-align:text-top;
+        padding-top:2px;
+    }
 </style>
 
 {{-- CSS設定 End --}}
@@ -240,6 +246,10 @@
                 else if (colName === 'SamplingRecords_ID')
                 {
                     colModel.push({name:colName, index:colName, align:"center", width:128, editable:true, cellattr: addCellAttr});
+                }
+                else if (colName === 'QC_Comment' || colName === 'PD_Comment')
+                {
+                    colModel.push({name:colName, index:colName, align:"left", width:400, editable:true, cellattr: addCellAttr});
                 }
                 else
                 {
