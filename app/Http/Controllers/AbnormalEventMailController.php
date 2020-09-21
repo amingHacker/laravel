@@ -54,6 +54,7 @@ class AbnormalEventMailController extends Controller
             "level" => $Parameter["level"],
             "batch_number" => $Parameter["batch_number"],
             "equipment_name" => $Parameter["equipment_name"],
+            "remarks" => $Parameter["remarks"],
             "JudgeComment"=> $Parameter["JudgeComment"],
         ];
  

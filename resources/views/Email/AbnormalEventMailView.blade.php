@@ -37,11 +37,12 @@
     </style>
     <table class=table7_11>
     <tr>
-        <th>編號</th><th>品名</th><th>等級</th><th>批號</th><th>設備名稱</th><th>異常事件</th>
+        <th>編號</th><th>品名</th><th>等級</th><th>批號</th><th>設備名稱</th><th>異常事件</th><th>備註</th>
     </tr>
     <tr>
         <td>{{ $params['id'] }}</td><td>{{ $params['product_name'] }}</td><td>{{ $params['level'] }}</td>
         <td>{{ $params['batch_number'] }}</td><td>{{ $params['equipment_name'] }}</td><td>{{ $params['JudgeComment'] }}</td>
+        <td>{{ $params['remarks'] }}</td>
     </tr>
     </table>
     請至<a href="http://twka1w0002.ap.merckgroup.com:8080/AbnormalEvent">Merck KH | SPC System</a> 

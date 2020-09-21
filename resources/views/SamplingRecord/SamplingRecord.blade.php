@@ -985,7 +985,7 @@
                         {
                             "successfunc" : function( response ) {
                                             $('#dg').trigger( 'reloadGrid' );
-                                            if (response["responseJSON"]["success"]["JudgeComment"]!='')
+                                            if (response["responseJSON"]["success"]["determination"]=='Fail')
                                             {
                                                 $.ajax({
                                                     url: "/AbnormalEventMail",//路徑
@@ -996,6 +996,7 @@
                                                         "level": response["responseJSON"]["success"]["level"],
                                                         "batch_number": response["responseJSON"]["success"]["batch_number"],
                                                         "equipment_name": response["responseJSON"]["success"]["equipment_name"],
+                                                        "remarks": response["responseJSON"]["success"]["remarks"],
                                                         "JudgeComment": response["responseJSON"]["success"]["JudgeComment"],
                                                         "MailToMember": sessionStorage.getItem('MailToMember'), 
                                                     },
