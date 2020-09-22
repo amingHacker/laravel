@@ -111,7 +111,8 @@
           <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownPortfolio"> 
             <a class="dropdown-item" href="SamplingRecord">SamplingRecords</a>  
             <a class="dropdown-item" href="ProductSPEC">ProductSPEC</a>
-            <a class="dropdown-item" href="AbnormalEvent">AbnormalEvent</a>       
+            <a class="dropdown-item" href="AbnormalEvent">AbnormalEvent</a>
+            <a class="dropdown-item" href="MyCharts">MyFavoriteChart</a>         
           </div>
         </li> 
       
