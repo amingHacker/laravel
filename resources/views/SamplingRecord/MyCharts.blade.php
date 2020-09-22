@@ -107,7 +107,7 @@
     var combobox_items = [];  //用來儲存colName內容選項
     var productSpec = []; //用來儲存productSpec資訊
 
-    var filter = SearchCondition["filters"];
+    var filter = (SearchCondition!=null)?SearchCondition["filters"]:'';
     
     /*****建立文件的方法*****/
     $(document).ready(function () {  
