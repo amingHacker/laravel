@@ -65,6 +65,21 @@ Route::any('/SamplingRecord/AddandUpdate/{todo}', 'SamplingRecordController@Adda
 Route::any('/SamplingRecord/delete/{todo}', 'SamplingRecordController@destroy')->name('SamplingRecord.destroy');
 
 
+/*************************** Sampling Records My Chart *****************************/
+//資料呈現
+Route::get('/MyCharts', 'SamplingRecordController@MyCharts');
+Route::get('/MyCharts/show', 'SamplingRecordController@MyChartsShow');
+
+//儲存MyChart的設定
+Route::any('/MyCharts/SaveMyChartCondition', 'SamplingRecordController@SaveMyChartCondition');
+
+//重置MyChart的設定
+Route::any('/MyCharts/ResetMyChartCondition', 'SamplingRecordController@ResetMyChartCondition');
+
+//根據搜尋條件輸出資料 
+Route::post('/MyCharts/MyChartExport', 'SamplingRecordController@MyChartExport');
+
+
 /*************************** SolventRemoval *****************************/
 Route::get('/SolventRemoval/show', 'Solvent_removal_Controller@show');
 Route::post('/SolventRemoval/export', 'Solvent_removal_Controller@export');

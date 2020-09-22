@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use DB;
 use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 use App\SamplingRecord;
 use Validator;
 
@@ -23,16 +24,31 @@ class SamplingRecordController extends Controller
         ]);
     }
 
+    //This is the controller index
+    public function MyCharts( Request $request )
+    {      
+        
+        $user = $_SERVER['REMOTE_USER'];
+        // var_dump($user);  // e.g. root or www-data 
+
+        $SearchCondition = DB::table('sampling_records_myfavoritecharts')->where('MUID', '=', $user)->first();
+        $todos = DB::table('sampling_records')->orderBy('id','desc')->first();  
+        // dd($SearchCondition);
+        return view('SamplingRecord.MyCharts',[
+            'todos' => $todos,
+            'SearchCondition' => $SearchCondition,
+        ]);
+    }
+
     //This is the controller show
     public function show( Request $request )
     {      
-        //var_dump($request->all());
         $pageInf = $request->all();
         $pageNum = $pageInf["pageNum"];
         $limit = $pageInf["limit"];
         $sidx = ($pageInf["sidx"] == '')? 'id': $pageInf["sidx"];
         $order = ($pageInf["order"] == '')? 'desc': $pageInf["order"];
-        //var_dump($pageInf);
+    
         $searchGroupOp = ''; $filed = ''; $op = ''; $SearchData = '';
         $Record = '';
         $query = SamplingRecord::query();
@@ -944,5 +960,312 @@ class SamplingRecordController extends Controller
                 $RowData 
             );
         }
+    }
+
+
+    //This is the controller show
+    public function MyChartsShow( Request $request )
+    {   
+        $user =  $_SERVER['REMOTE_USER'];
+        $SearchCondition = DB::table('sampling_records_myfavoritecharts')->where('MUID', '=', $user)->first();
+
+        //var_dump($SearchCondition ->_search);
+        $pageInf = $request->all();
+        if (!$SearchCondition){
+
+        }
+        else
+        {
+            if($SearchCondition ->_search == '')
+            {
+                
+            }
+            else
+            {
+                // $pageInf["pageNum"] = $SearchCondition->pageNum;
+                $pageInf["limit"] = $SearchCondition->limit;
+                $pageInf["sidx"] =  $SearchCondition->sidx;
+                $pageInf["order"] = $SearchCondition->order;
+                $pageInf["filters"] = $SearchCondition->filters;
+                $pageInf["_search"] = $SearchCondition->_search;
+            }
+        }
+        
+        $pageNum = $pageInf["pageNum"];
+        $limit = $pageInf["limit"];
+        $sidx = ($pageInf["sidx"] == '')? 'id': $pageInf["sidx"];
+        $order = ($pageInf["order"] == '')? 'desc': $pageInf["order"];
+    
+        $searchGroupOp = ''; $filed = ''; $op = ''; $SearchData = '';
+        $Record = '';
+        $query = SamplingRecord::query();
+        
+        if ($pageInf["_search"] == 'true')
+        {
+            $tmp = get_object_vars(json_decode($pageInf["filters"])); //先把字串轉成obj,再轉成array形式運用
+            //var_dump($tmp);
+            foreach ($tmp["rules"] as $i)
+            {
+                $rules = get_object_vars($i);      
+                $searchGroupOp = $tmp["groupOp"];
+                $field = $rules["field"];
+                $op = $rules["op"];
+                $SearchData = $rules["data"];
+                
+                switch ($op){
+                    case "eq":
+                        $query = $query->where($field, $SearchData); 
+                        break;
+                    case "ne":
+                        $query = $query->where($field, '!=' ,$SearchData); 
+                        break;
+                    case "bw":
+                        $query = $query->where($field, 'like', '%'.$SearchData.'%'); 
+                        break;
+                    case "bn":
+                        $query = $query->where($field, 'not like', '%'.$SearchData.'%'); 
+                        break;
+                    case "ew":
+                        $query = $query->where($field, 'like', '%'.$SearchData.'%'); 
+                        break;
+                    case "en":
+                        $query = $query->where($field, 'not like', '%'.$SearchData.'%');
+                        break;
+                    case "cn":
+                        $query = $query->where($field, 'like', '%'.$SearchData.'%'); 
+                        break;
+                    case "nc":
+                        $query = $query->where($field, 'not like', '%'.$SearchData.'%');
+                        break;
+                    case "nu":
+                        $query = $query->whereNull($field);
+                        break;
+                    case "nn":
+                        $query = $query->whereNotNull($field);
+                        break;
+                    case "in":
+                        $query = $query->whereIn($field, $SearchData);
+                        break;
+                    case "ni":
+                        $query = $query->whereNotIn($field, $SearchData);
+                        break;
+                    case "lt":
+                        $query = $query->where($field,'<', $SearchData); 
+                        break;
+                    case "le":
+                        $query = $query->where($field,'<=', $SearchData); 
+                        break;
+                    case "gt":
+                        $query = $query->where($field,'>', $SearchData); 
+                        break;
+                    case "ge":
+                        $query = $query->where($field,'>=', $SearchData); 
+                        break;
+                }
+            }
+            $Record = $query->count();
+        }
+        
+        $todos = $query->offset(($pageNum - 1) * $limit )->limit($limit)->orderBy( $sidx, $order)->get();
+        $record = SamplingRecord::count();
+        if ($Record != ''){$record = $Record;}
+        $totalPage = ceil($record / $limit) ;         
+    
+        return response()->json([
+                'dataList'=> $todos,
+                'currPage'=> $pageNum,  
+                'totalCount'=> $record,
+                'totalPages'=> $totalPage,        
+            ]);
+    }
+
+
+    //This is the controller show
+    public function SaveMyChartCondition( Request $request )
+    {   
+        $user =  $_SERVER['REMOTE_USER'];
+        $SearchCondition = DB::table('sampling_records_myfavoritecharts')->where('MUID', '=', $user)->first();
+        $Parameter = $request->all();
+
+        $SaveToMyChart["MUID"] =  $_SERVER['REMOTE_USER'];
+        $SaveToMyChart["ChartNum"] =  "1";
+        $SaveToMyChart["_search"] =  $Parameter["postData"]["_search"];
+        $SaveToMyChart["nd"] =  $Parameter["postData"]["nd"];
+        $SaveToMyChart["limit"] =  $Parameter["postData"]["limit"];
+        $SaveToMyChart["pageNum"] =  $Parameter["postData"]["pageNum"];
+        $SaveToMyChart["sidx"] =  $Parameter["postData"]["sidx"];
+        $SaveToMyChart["order"] =  $Parameter["postData"]["order"];
+        $SaveToMyChart["filters"] =  $Parameter["postData"]["filters"];
+        $SaveToMyChart["SearchField"] =  $Parameter["postData"]["searchField"];
+        $SaveToMyChart["SearchString"] =  $Parameter["postData"]["searchString"];
+        $SaveToMyChart["SearchOper"] =  $Parameter["postData"]["searchOper"];
+        $SaveToMyChart["ChartCondition"] = "AAAAA";
+
+        if (!$SearchCondition)
+        {
+            $todo = DB::table("sampling_records_myfavoritecharts")->insert(
+                $SaveToMyChart
+            );                  
+        }
+        else
+        {
+            $todo = DB::table("sampling_records_myfavoritecharts")->update(
+                $SaveToMyChart
+            );     
+        }
+  
+        return response()->json([
+                'success'=> $SaveToMyChart,    
+            ]);
+    }
+
+    //This is the controller show
+    public function ResetMyChartCondition( Request $request )
+    {   
+        $user =  $_SERVER['REMOTE_USER'];
+        $SearchCondition = DB::table('sampling_records_myfavoritecharts')->where('MUID', '=', $user);
+
+
+        $SaveToMyChart["_search"] =  '';
+        $SaveToMyChart["nd"] =  '';
+        $SaveToMyChart["limit"] =  '';
+        $SaveToMyChart["pageNum"] =  '';
+        $SaveToMyChart["sidx"] =  '';
+        $SaveToMyChart["order"] =  '';
+        $SaveToMyChart["filters"] =  '';
+        $SaveToMyChart["SearchField"] =  '';
+        $SaveToMyChart["SearchString"] =  '';
+        $SaveToMyChart["SearchOper"] =  '';
+        $SaveToMyChart["ChartCondition"] = '';
+
+
+        $SearchCondition->update($SaveToMyChart);
+                     
+        return response()->json([
+                'success'=> $SaveToMyChart,    
+            ]);
+    }
+
+    //This is the controller Chart Export
+    public function MyChartExport(Request $request )
+    {   
+        $user =  $_SERVER['REMOTE_USER'];
+        $SearchCondition = DB::table('sampling_records_myfavoritecharts')->where('MUID', '=', $user)->first();
+
+        //var_dump($SearchCondition ->_search);
+        $downloadReq = $request->all();
+        if (!$SearchCondition){
+
+        }
+        else
+        {
+            if($SearchCondition ->_search == '')
+            {
+                
+            }
+            else
+            {
+                // $downloadReq["pageNum"] = $SearchCondition->pageNum;
+                $downloadReq["postData"]["limit"] = $SearchCondition->limit;
+                $downloadReq["postData"]["sidx"] =  $SearchCondition->sidx;
+                $downloadReq["postData"]["order"] = $SearchCondition->order;
+                $downloadReq["postData"]["filters"] = $SearchCondition->filters;
+                $downloadReq["postData"]["_search"] = $SearchCondition->_search;
+            }
+        }     
+        
+        $_search = $downloadReq["postData"]["_search"];  
+        $limit = $downloadReq["postData"]["limit"];
+        $sidx = ($downloadReq["postData"]["sidx"] == '')? 'id': $downloadReq["postData"]["sidx"];
+        $order = ($downloadReq["postData"]["order"] == '')? 'desc': $downloadReq["postData"]["order"];
+        
+        $searchGroupOp = ''; $filed = ''; $op = ''; $SearchData = '';
+        $Record = '';
+        $query = SamplingRecord::query();
+        $DownLoadValue = [];
+        
+        if ($_search == 'true')
+        {
+            $tmp = get_object_vars(json_decode($downloadReq["postData"]["filters"])); //先把字串轉成obj,再轉成array形式運用
+            
+            foreach ($tmp["rules"] as $i)
+            {                
+                $rules = get_object_vars($i);      
+                $searchGroupOp = $tmp["groupOp"];
+                $field = $rules["field"];
+                $op = $rules["op"];
+                $SearchData = $rules["data"];
+                
+                switch ($op){
+                    case "eq":
+                        $query = $query->where($field, $SearchData); 
+                        break;
+                    case "ne":
+                        $query = $query->where($field, '!=' ,$SearchData); 
+                        break;
+                    case "bw":
+                        $query = $query->where($field, 'like', '%'.$SearchData.'%'); 
+                        break;
+                    case "bn":
+                        $query = $query->where($field, 'not like', '%'.$SearchData.'%'); 
+                        break;
+                    case "ew":
+                        $query = $query->where($field, 'like', '%'.$SearchData.'%'); 
+                        break;
+                    case "en":
+                        $query = $query->where($field, 'not like', '%'.$SearchData.'%');
+                        break;
+                    case "cn":
+                        $query = $query->where($field, 'like', '%'.$SearchData.'%'); 
+                        break;
+                    case "nc":
+                        $query = $query->where($field, 'not like', '%'.$SearchData.'%');
+                        break;
+                    case "nu":
+                        $query = $query->whereNull($field);
+                        break;
+                    case "nn":
+                        $query = $query->whereNotNull($field);
+                        break;
+                    case "in":
+                        $query = $query->whereIn($field, $SearchData);
+                        break;
+                    case "ni":
+                        $query = $query->whereNotIn($field, $SearchData);
+                        break;
+                    case "lt":
+                        $query = $query->where($field,'<', $SearchData); 
+                        break;
+                    case "le":
+                        $query = $query->where($field,'<=', $SearchData); 
+                        break;
+                    case "gt":
+                        $query = $query->where($field,'>', $SearchData); 
+                        break;
+                    case "ge":
+                        $query = $query->where($field,'>=', $SearchData); 
+                        break;
+                }
+            }
+            $Record = $query->count();
+            //var_dump($Record);
+            $DownLoadValue = $query->orderBy( $sidx, 'asc')->get();           
+        } 
+    
+        else
+        {     
+            
+            //dd($Record);
+            $DownLoadValue = DB::table('sampling_records')->limit(10000)->orderBy($sidx, 'asc')->get();
+            
+        } 
+        //dd($DownLoadValue);
+        //$DownLoadValue = $query->orderBy( $sidx, $order)->get();
+        //var_dump($DownLoadValue);
+
+        return response()->json([
+            //'success' =>  $UpdateValue
+            'success' => $DownLoadValue,
+        ]); 
     }
 }

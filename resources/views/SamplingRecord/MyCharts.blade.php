@@ -102,9 +102,12 @@
 {{-- Data資料呈現 Start --}}
 <script type="text/javascript">
     
-    var _todos = @json($todos);
+    var _todos = @json($todos); 
+    var SearchCondition = @json($SearchCondition);
     var combobox_items = [];  //用來儲存colName內容選項
     var productSpec = []; //用來儲存productSpec資訊
+
+    var filter = SearchCondition["filters"];
     
     /*****建立文件的方法*****/
     $(document).ready(function () {  
@@ -245,7 +248,7 @@
         
         // 準備資料           
         $("#dg").jqGrid({
-            url:"SamplingRecord/show",
+            url:"MyCharts/show",
             datatype: "json",        
             altrows:false,
             width: jqgridWidth,
@@ -275,7 +278,9 @@
                             rows:"limit", 
                             order: "order"
                         },
-
+            postData: {
+                    filters: filter
+            }, 
             loadComplete: function (){ 
                 fixPositionsOfFrozenDivs.call(this);
                
@@ -300,6 +305,7 @@
         //增加Tool bar        
         $("#dg").jqGrid('navGrid','#dgPager', { 
                 search:true, edit:false, add:false, del:false, refresh:true,
+                
             } 
         );
                 
@@ -609,32 +615,32 @@
             }
             else
             {
-                if (Authority["Add"] == '1')
-                { 
-                    document.getElementById("New").style.display="";
-                    document.getElementById("Save").style.display="";
-                    document.getElementById("Cancel").style.display="";
-                }
-                if (Authority["Edit"] == '1'){ 
-                    document.getElementById("Edit").style.display="";
-                    document.getElementById("Save").style.display="";
-                    document.getElementById("Cancel").style.display="";
-                }
-                if (Authority["Delete"] == '1'){ 
-                    document.getElementById("Delete").style.display="";
-                }
-                if (Authority["Import"] == '1'){ 
-                    document.getElementById("Import").style.display="";
-                }
-                if (Authority["Export"] == '1'){ 
-                    document.getElementById("ExportExcel").style.display="";
-                }
-                if (Authority["View_Log"] == '1'){ 
-                    document.getElementById("ViewLog").style.display="";
-                }
-                if (Authority["ProductSPEC"] == '1'){
-                    sessionStorage.setItem('QC_USER' , "true"); 
-                }
+                // if (Authority["Add"] == '1')
+                // { 
+                //     document.getElementById("New").style.display="";
+                //     document.getElementById("Save").style.display="";
+                //     document.getElementById("Cancel").style.display="";
+                // }
+                // if (Authority["Edit"] == '1'){ 
+                //     document.getElementById("Edit").style.display="";
+                //     document.getElementById("Save").style.display="";
+                //     document.getElementById("Cancel").style.display="";
+                // }
+                // if (Authority["Delete"] == '1'){ 
+                //     document.getElementById("Delete").style.display="";
+                // }
+                // if (Authority["Import"] == '1'){ 
+                //     document.getElementById("Import").style.display="";
+                // }
+                // if (Authority["Export"] == '1'){ 
+                //     document.getElementById("ExportExcel").style.display="";
+                // }
+                // if (Authority["View_Log"] == '1'){ 
+                //     document.getElementById("ViewLog").style.display="";
+                // }
+                // if (Authority["ProductSPEC"] == '1'){
+                //     sessionStorage.setItem('QC_USER' , "true"); 
+                // }
             }
         });
     }
@@ -655,7 +661,7 @@
     <h1 class="my-2"></h1>
   
     <div style = "margin:0px auto;"  >
-        <img class=" img-responsive" src="img/Logo_SamplingRecords.png" >   
+        <img class=" img-responsive" src="img/Logo_MyCharts.png" >   
     </div>
             
     <div align="center">
@@ -664,21 +670,11 @@
     </div>                             
 
     <div align="center">
-        <input type="BUTTON" class="btn btn-outline-info btn-space" id="New" style="display: none"  value="新增" />
-        <input type="BUTTON" class="btn btn-outline-info btn-space" id="Edit" style="display: none" value="編輯" />
-        <input type="BUTTON" class="btn btn-outline-info btn-space" id="Save" style="display: none" disabled="true" value="儲存" />
-        <input type="BUTTON" class="btn btn-outline-info btn-space" id="Cancel" style="display: none" disabled="true" value="取消" />       
-        <input type="BUTTON" class="btn btn-outline-info btn-space" id="Delete" style="display: none" value="刪除" />
-        <input type="BUTTON" class="btn btn-outline-info btn-space" id="ExportExcel" style="display: none" value="下載" />
-        
-        {{-- <div> --}}
-        <input id="file" type="file" onchange="Import(this)" style="display: none" />
-        <input type="button" onclick="file.click()" class="btn btn-outline-info btn-space" id="Import" style="display: none" value="上傳" />
-        {{-- </div> --}}
-
+        <input type="BUTTON" class="btn btn-outline-info btn-space" id="ResetSetting" style="display: " value="重新設定" />   
+        <input type="BUTTON" class="btn btn-outline-info btn-space" id="SaveSetting" style="display: " value="儲存設定" />       
         <input type="BUTTON" class="btn btn-outline-info btn-space" id="ExportChart" value="圖表" />
         <input type="BUTTON" class="btn btn-outline-info btn-space" id="CloseChart" value="收合" />
-        <input type="BUTTON" class="btn btn-outline-info btn-space" id="ViewLog" style="display: none" value="紀錄" />   
+    
     
     </div>
 
@@ -742,798 +738,45 @@
     var target_id = 'none'; //紀錄目前要修改的列id
     var selectRowData = []; //紀錄選擇的目前的rowdata
 
-    /*新增列*/
-    $("#New").click( function(){
-        var ret = $("#dg").jqGrid('getRowData',1);    
-        var newparameter =  
-        {
-            ker:true,
-            rowID: "0",
-            position: "first",
-            initdata : {
-                _id:parseInt(ret.id,10)+1, 
-                _checked:false,
+    $("#SaveSetting").click( function(){
+    var o = $("#dg");
+    var postData = o.jqGrid('getGridParam', 'postData');//獲得搜尋條件
+    $.ajax({
+            async:false,
+            url: "MyCharts/SaveMyChartCondition" ,//路徑
+            type: "POST",           
+            data:{
+                "postData": postData,
             },
-            useDefValues: false,
-            useFormatter: false,
-            addRowParams: { extraparam: {} }
-        };
-        $("#dg").jqGrid('addRow', newparameter);         
-        button_Control('after_Add');
-     });
-    
-     /*修改列*/
-     $("#Edit").click( function(){
-        var s = $("#dg").jqGrid('getGridParam','selrow');
-        target_id = s;
-         if (s)	{
-            var ret = $("#dg").jqGrid('getRowData',s);
-            var i = 0;
-            var colNames = $("#dg").jqGrid('getGridParam','colNames');       
-            for (key in ret)
-            {
-                // Fill (column name, column value) from target row data into array
-                selectRowData[key] = Array(colNames[i], ret[key]);
-                i++;         
-            }
+            success: function (DownLoadValue){
+                var dataLo = DownLoadValue.success;                
+                }                               
+            });                 
 
-            $("#dg").jqGrid('editRow', s);
-            button_Control('after_Edit');    
-         }
-         else
-             alert("Please select a row...");
-     });
-
-     /*儲存列*/
-     $("#Save").click( function(){
-        var rowIds = $('#dg').jqGrid('getDataIDs');
-        var oper = "edit";
-        var tJudgeComment = '';
-        var tJudgeIncludeFail = 'false';
-        //判斷目前是新增或是修改
-        for(idIndex = 0; idIndex < rowIds.length; ++idIndex){
-           if (rowIds[idIndex] == "0"){oper = "add";}
-        }
-        //新增
-        if (oper == 'add')
-        {   
-            // Get grid's all columns title and added row data
-            var colNames = $("#dg").jqGrid('getGridParam','colNames');
-            
-            // Get grid's "name" property from colModel for data keys
-            var rowKeys = [];
-            var colModel = $("#dg").jqGrid("getGridParam", "colModel");
-            for (var count = 0; count < colModel.length; count++)
-            {
-                rowKeys.push(colModel[count]["name"]);
-            }
-            
-            // Fill added row title:data into add_statement
-            var add_statement = '';
-            var cellvalue = '';
-            
-            for (var count = 0; count < rowKeys.length; count++)
-            {
-                // Get key value from rowKeys array
-                var key = rowKeys[count];
-                
-                // Define columns elem by key
-                var elem = $("#" + 0 + "_" + key);
-                
-                // Check if elem type is Checkbox and fill value as True or False
-                if (elem.is(':checkbox'))
-                {
-                    cellvalue = elem.is(':checked') ? 'True' : 'False';
-                }
-                // Check if column data type is Select and display value as text
-                else if (elem.is('select'))
-                {
-                    cellvalue = elem.find(":selected").text();
-                }
-                else
-                {
-                    cellvalue = elem.val();
-                }
-                
-                // Skip uneditable and non-value columns
-                if (cellvalue !== undefined && cellvalue !== '')
-                {
-                    add_statement += colNames[count] + "：" + cellvalue + ", ";
-                }
-            }
-            
-            // Remove last 2 character ", "
-            add_statement = add_statement.slice(0, -2);
-            
-            saveparameters = {
-                        "successfunc" : null,
-                        "url" : 'SamplingRecord/AddandUpdate/'+0,
-                        "extraparam" : {
-                            "oper": oper,
-                            "oper_log":add_statement,
-                        },
-                        "aftersavefunc" : function( response ) { 
-                            $('#dg').trigger( 'reloadGrid' );
-                            button_Control('after_Save'); 
-                            //window.location.reload(); 
-                        }, //重新整理頁面    
-                        "errorfunc": null,
-                        "afterrestorefunc" : null,
-                        "restoreAfterError" : true,
-                        "mtype" : "POST"
-                }
-                $("#dg").jqGrid('saveRow', 0, saveparameters);
-        }
-        //修改
-        else
-        {                   
-            var result = [];               
-            var ret = $("#dg").jqGrid('getRowData',target_id);
-            var cellvalue='';
-            var empty_result = true;
-            var edit_statement = '';
-            sessionStorage.setItem('CustomerSPEC_table_name', '');
-            sessionStorage.setItem('CustomerSPEC_table_col_name', '');
-          
-            for(var key in selectRowData )
-            {
-                var elem = $("#" + target_id + "_" + key);
-                   
-                if (elem.is(':checkbox'))
-                {
-                    cellvalue = elem.is(':checked') ? 'TRUE' : 'FALSE';
-                }
-                // Check if elem type is Select and display value as text
-                else if (elem.is('select'))
-                {
-                    cellvalue = elem.find(":selected").text();
-                   
-                }
-                // Check if elem is jqxComboBox and get value from input inside div
-                // Because if jqxComboBox autoComplete set to true, it will not fill Null when input value wiped after selected items (forced to select first item)
-                else if (elem.attr('role') === 'combobox')
-                {
-                    cellvalue = elem.find("input").val();
-                    if (cellvalue == 'Fail')
-                    {   
-                        tJudgeIncludeFail = 'true';      
-                    }               
-                }
-                else
-                {
-                    cellvalue = elem.val();       
-                }
-               
-                // Check if column value is not undefined (editable input) and if value was changed by user
-                // Also use .trim() to avoid jqGrid display Null as " " and cause a mistaken compare result
-                if (cellvalue !== undefined && cellvalue !== selectRowData[key][1].trim())
-                {
-                    // Fill (column name, column original value, column changed vaue) into array
-                    result[key] = Array(selectRowData[key][0], selectRowData[key][1], cellvalue);
-                    // Set boolean to false if there are results
-                    empty_result = false;
-                }
-            }
-
-            // If nothing changed
-            if (empty_result === true)
-            {
-                $("#noChangeDialog").dialog({modal:true, focus: function() { $(".ui-dialog").focus(); }, buttons : {"返回" : function() {$(this).dialog("close");}}});
-            }     
-            else
-            {
-                if (tJudgeIncludeFail == 'true' && sessionStorage.getItem('QC_USER') == 'true')
-                {
-                    //SamplingRecord_ReadyToDataBase(result, edit_statement, tJudgeComment, target_id, ret, oper);
-                    var tmp = judgeFailEvent(ret.id); // JudgeColor/JudgeColor.js
-                    sessionStorage.setItem('judgeComment', '');  //初始這些Session
-                    sessionStorage.setItem('CustomerSPEC_table_name' ,''); //初始這些Session
-                    sessionStorage.setItem('CustomerSPEC_table_col_name' , ''); //初始這些Session
-                    sessionStorage.setItem('MailToMember' , ''); //初始這些Session
-                    var dataImport; //用來承接promise方法的回傳參數
-                    tmp.then(function (dataImport) 
-                    {   
-                        
-                        tJudgeComment = dataImport["judgeComment"];
-                        sessionStorage.setItem('MailToMember' , dataImport["MailTo"]); 
-                        SamplingRecord_ReadyToDataBase(result, edit_statement, tJudgeComment, target_id, ret, oper);                                         
-                    })           
-                }
-                else
-                {
-                    SamplingRecord_ReadyToDataBase(result, edit_statement, tJudgeComment, target_id, ret, oper);
-                }
-            }                                     
-        }
-     });
-
-     function SamplingRecord_ReadyToDataBase(result, edit_statement, tJudgeComment, target_id, ret, oper){
-        var htmlStr = "<br />您變更的值如下：<br /><br />";     
-        var addstring = "";    
-        // Display changed title:value in confirm dialog
-        for (var key in result)
-        {
-            
-            // Transform Null values to 'Empty' string for display
-            var value_before = (result[key][1] === "") ? 'Null' : result[key][1];
-            var value_after = (result[key][2] === "") ? 'Null' : result[key][2];
-            
-            // Generate log statement with changed values
-            edit_statement += result[key][0] + "：\"" + value_before + "\" to \"" + value_after + "\", ";
-            
-            // Generate dialog html to display
-            addString = "<strong>" + result[key][0] + "</strong>" + "：變更 " + "<strong>" + value_before + "</strong>" + " 為 " + "<strong>" + value_after + "</strong><br />";
-            htmlStr += addString;
-        }
-        
-        edit_statement = '[ ' + '編號' + '：' + target_id + ' ] ' + edit_statement;
-        edit_statement = edit_statement.slice(0, -2);
-        htmlStr += "<br />確定要修改所選的資料嗎?<br /><br />";
-        if (tJudgeComment != '')
-        {     
-            htmlStr += "異常事件:" + tJudgeComment;
-        }
-        
-
-        $("#confirmDialog").html(htmlStr);
-        $("#confirmDialog").dialog({
-            width:'auto', height:'auto', autoResize:true, modal:true, closeText:"關閉", resizable:false,
-            show:{effect: "fade", duration: 140},
-            hide:{effect: "clip", duration: 140},
-            focus: function() { $(".ui-dialog").focus(); }, // Unfocus the default focus elem
-            buttons : {
-                "確認" : function() {
-                        $(this).dialog("close");
-                        saveparameters = 
-                        {
-                            "successfunc" : function( response ) {
-                                            $('#dg').trigger( 'reloadGrid' );
-                                            if (response["responseJSON"]["success"]["determination"]=='Fail')
-                                            {
-                                                $.ajax({
-                                                    url: "/AbnormalEventMail",//路徑
-                                                    type: "post",           
-                                                    data:{
-                                                        "id": response["responseJSON"]["success"]["id"],
-                                                        "product_name": response["responseJSON"]["success"]["product_name"],
-                                                        "level": response["responseJSON"]["success"]["level"],
-                                                        "batch_number": response["responseJSON"]["success"]["batch_number"],
-                                                        "equipment_name": response["responseJSON"]["success"]["equipment_name"],
-                                                        "remarks": response["responseJSON"]["success"]["remarks"],
-                                                        "JudgeComment": response["responseJSON"]["success"]["JudgeComment"],
-                                                        "MailToMember": sessionStorage.getItem('MailToMember'), 
-                                                    },
-                                                    success: function (response){
-                                                        var aaa = response;
-                                                    }                               
-                                                }); 
-                                            }
-                                        },
-                            "url" : 'SamplingRecord/AddandUpdate/'+ret.id,
-                            "extraparam" : {                                   
-                                "id" : ret.id,
-                                "oper" : oper,
-                                "oper_log": edit_statement,
-                                "JudgeComment":tJudgeComment,
-                                "ProductSPEC_Table" : sessionStorage.getItem('CustomerSPEC_table_name'),
-                                "ProductSPEC_Table_Col": sessionStorage.getItem('CustomerSPEC_table_col_name'),                             
-                                },
-                            "aftersavefunc" :function( response ) {
-                                            
-                                        }, 
-                            "errorfunc": null,
-                            "afterrestorefunc" : null,
-                            "restoreAfterError" : true,
-                            "mtype" : "POST"
-                        }
-                    $("#dg").jqGrid('saveRow',target_id, saveparameters);
-                    target_id = 'none';
-                    $("#dg").jqGrid('resetSelection');
-                    button_Control('after_Save');                                            
-                },
-                "取消" : function() {
-                    $(this).dialog("close");                     
-                    target_id = 'none';
-                    var rowIds = $('#dg').jqGrid('getDataIDs'); 
-                    for(idIndex = 0; idIndex < rowIds.length; ++idIndex){
-                        $("#dg").jqGrid('restoreRow',rowIds[idIndex], true); 
-                    }
-                    button_Control('after_Cancel');
-                }
-            }
-        }); 
-     }
-
-     $("#Cancel").click( function(){
-        target_id = 'none';
-        var rowIds = $('#dg').jqGrid('getDataIDs'); 
-        for(idIndex = 0; idIndex < rowIds.length; ++idIndex){           
-            $("#dg").jqGrid('restoreRow',rowIds[idIndex], true); 
-        }
-        button_Control('after_Cancel');    
-     });
-
-      /*刪除列*/    
-      $("#Delete").click( function() { 
-         var s = $("#dg").jqGrid('getGridParam','selrow');      
-         if (s)	{
-             var ret = $("#dg").jqGrid('getRowData',s);        
-             var answer = window.confirm("確認刪除此筆資料?");
-             if (answer)
-             {
-                // Get grid's all column names (title) and selected row data for delete_statement
-                var colNames = $("#dg").jqGrid('getGridParam', 'colNames');
-                var rowData = $("#dg").jqGrid('getRowData', s);
-                    
-                // Fill added row title:data into delete_statement
-                var delete_statement = '';
-                var i = 0;
-                for (key in rowData)
-                {
-                    var cellvalue = rowData[key];
-                    
-                    // Insert [ ] charateer for id column
-                    if (key === 'id')
-                        delete_statement = '[ ' + colNames[i] + '：' + cellvalue + ' ] ' + delete_statement;
-                    else
-                        delete_statement += colNames[i] + "：" + cellvalue + ", ";
-                        
-                    i++;
-                }
-                    
-                // Remove last 2 character ", "
-                delete_statement = delete_statement.slice(0, -2);
-
-                $.ajax({
-                    url: "SamplingRecord/delete/" + ret.id ,//路徑
-                    type: "post",           
-                    data:{
-                        "id": ret.id,
-                        "oper_log": delete_statement,
-              
-                    },
-                    success: function (){
-                        $('#dg').trigger( 'reloadGrid' );
-                    }                               
-                });
-             }        
-         }
-         else        
-             alert("Please select a row...");     
-        });  
-
-    /*Buttons control function*/
-    function button_Control(state)
-    {
-        switch (state)
-        {
-            case "after_Add":          
-                $("#Save").attr("disabled",false);
-                $("#Cancel").attr("disabled",false);                   
-                $("#New").attr("disabled",true);
-                $("#Edit").attr("disabled",true);
-                $("#Delete").attr("disabled",true);
-                $("#ExportExcel").attr("disabled",true);
-                $("#Import").attr("disabled",true);
-                break;
-            case "after_Delete":               
-                $("#New").attr("disabled",false);
-                $("#Edit").attr("disabled",false);
-                $("#Save").attr("disabled",true);
-                $("#Cancel").attr("disabled",true);                                  
-                $("#Delete").attr("disabled",false);
-                $("#ExportExcel").attr("disabled",false);
-                $("#Import").attr("disabled",false);
-                break;
-            case "after_Edit":
-                $("#Save").attr("disabled",false);
-                $("#Cancel").attr("disabled",false);
-                $("#New").attr("disabled",true);
-                $("#Edit").attr("disabled",true);
-                $("#Delete").attr("disabled",true);
-                $("#ExportExcel").attr("disabled",true);
-                $("#Import").attr("disabled",true);
-                break;
-            case "after_Cancel":
-                $("#New").attr("disabled",false);
-                $("#Edit").attr("disabled",false);
-                $("#Save").attr("disabled",true);
-                $("#Cancel").attr("disabled",true);                                  
-                $("#Delete").attr("disabled",false);
-                $("#ExportExcel").attr("disabled",false);
-                $("#Import").attr("disabled",false);
-                break;
-            case "after_Save":
-                $("#New").attr("disabled",false);
-                $("#Edit").attr("disabled",false);
-                $("#Save").attr("disabled",true);
-                $("#Cancel").attr("disabled",true);                                  
-                $("#Delete").attr("disabled",false);
-                $("#ExportExcel").attr("disabled",false);
-                $("#Import").attr("disabled",false);
-                break;
-        }    
-    }
-
-    /*顯示Log紀錄*/
-    $("#ViewLog").click( function() {
-        var table = "viewLog";
-        var pcontent = '<span style="font-weight:bold; color:#2e6e9e;">《 資料處理紀錄 Data Log 》</span><br /><br />' + '<table id= '+ table + '></table><div id="viewLogPager"></div>';
-        
-        //建立動態表格
-        $("#confirmDialog").html(pcontent);
-        
-        var colNames = [];
-        var colModel = [];
-        colNames = ['時間','使用者','動作','描述'];
-        colModel = 
-        [
-            {
-                name:'added_on', index:'added_on', align:"center", width:140, frozen:false, sortable:true,
-                search:true,
-                        searchoptions: {
-                            sopt: ['eq','le','ge'],
-                            dataInit : function (elem) 
-                            {
-                                var self = this;
-                                $(elem).datepicker({
-                                    dateFormat: 'yy-mm-dd',                                 
-                                    changeYear: true,
-                                    changeMonth: true,
-                                    showOn: 'focus',
-                                    autoclose:1
-                                });
-                            }
-                        },                   
-            },
-            {name:'user', align:"center", width:120, index:'user', classes: "text-break", search:true, searchoptions:{sopt:['cn','nc','eq']}},
-            {name:'action', align:"center", width:70, index:'action', search:true, searchoptions:{sopt:['cn','nc','eq']}},
-            {name:'description', width:520, index:'description', classes: "text-break", search:true, searchoptions:{sopt:['cn','nc','eq']}}
-        ];
-        
-
-         // 準備資料           
-         $("#" + table).jqGrid({
-            url:"SamplingRecord/showOperLog",
-            mtype : "GET",
-            datatype: "json",        
-            altrows:false,
-            width: 890,
-            height:'100%',
-            colNames:colNames,
-            colModel:colModel,
-            multiselect:false,
-            rowNum:10,
-            rowList:[10,20,50],
-            pager: '#viewLogPager',
-            sortname: 'id',
-            viewrecords: true,
-            gridview: false,
-            sortorder: "desc",
-            caption:"紀錄 Log",
-            shrinkToFit :false,
-            loadonce: false,
-           
-            jsonReader : {
-                            root: "dataList",
-                            page: "currPage",
-                            total: "totalPages",
-                            records: "totalCount"                     
-                        },
-            prmNames : {
-                            page:"pageNum", 
-                            rows:"limit", 
-                            order: "order"
-                        },
-
-            loadComplete: function (){ 
-                fixPositionsOfFrozenDivs.call(this);
-            }, // Fix column's height are different after enable frozen column feature                                                           
-        }).jqGrid('setFrozenColumns'); 
-        
-        
-        $("#" + table).jqGrid('setFrozenColumns');
-        //增加Tool bar        
-        $("#" + table).jqGrid('navGrid','#viewLogPager', { search:true, edit:false, add:false, del:false, refresh:true } );
-            
-        $("#confirmDialog").dialog({
-            width:'auto', height:'600', autoResize:true, modal:true, closeText:"關閉", 
-            resizable:true, closeOnEscape:true, dialogClass:'top-dialog',position:['center',168],
-            show:{effect: "blind", duration: 300},
-            hide:{effect: "blind", duration: 300},
-           
-            focus: function() { $(".ui-dialog").focus(); }, // Unfocus the default focus elem
-            buttons : {
-                "確認" : function() {   
-                    $(this).dialog("close");        
-                },       
-            }
-        });  
     });
+
+    $("#ResetSetting").click( function(){
+   
+    $.ajax({
+            async:false,
+            url: "MyCharts/ResetMyChartCondition" ,//路徑
+            type: "POST",           
+            data:{
+                
+            },
+            success: function (DownLoadValue){
+                    $("#dg").jqGrid('setGridParam',{search:false});
+                    $('#dg').trigger( 'reloadGrid' );              
+                }                               
+            });                 
+
+    });
+
+   
 
 </script>
 {{-- 表單送出方法 inline End --}}
 
-
-{{-- 表單輸出、輸入功能 Start--}}
-<script type="text/javascript">
-    
-    /*產生Excel檔案*/
-    $("#ExportExcel").click(function(){        
-        
-        var o = $("#dg");
-        
-        var columnNames = o.jqGrid('getGridParam', 'colNames');//從grid獲得colnames
-
-        var rowNumber = o.jqGrid('getGridParam', 'records');//獲得搜尋後的紀錄筆數
-        
-        var postData = o.jqGrid('getGridParam', 'postData');//獲得搜尋條件
-
-        var getData = o.jqGrid('getGridParam', 'data');//獲得所有jqgrid的資料
-        
-        //o.jqGrid('setGridParam', { rowNum: rowNumber }).trigger('reloadGrid', [{current:true}]);//此方式可能會lag                  
-        
-        var rowData = o.jqGrid('getRowData');//獲得目前顯示在表格上的資料
-
-        if(rowNumber > 10000){
-            alert("下載筆數超過10000筆，請重新縮小範圍再進行下載。(The record is more than 10000, please smaller the range and download again.) ");
-            return;
-        }
-
-        $.ajax({
-                async:false,
-                url: "SamplingRecord/export" ,//路徑
-                type: "POST",           
-                data:{
-                    "postData": postData,
-                },
-                success: function (DownLoadValue){
-                    var dataExport = DownLoadValue.success;
-                    //產生要寫入excel的data
-                    var i = 1;
-                    var dataToExcel = [];    
-                    dataToExcel.push(columnNames);
-
-                    for(var key in dataExport)
-                    {
-                        var tmp = [];
-                        for (var p in dataExport[key])
-                        {
-                            tmp.push(dataExport[key][p]);
-                        }
-                        dataToExcel.push(tmp);
-                    }
-                    
-                    var myDate = new Date().toISOString().slice(0,10); 
-
-                    //檔名
-                    var filename = myDate + '-' + 'SamplingRecord.xlsx';
-
-                    //表名
-                    var sheetname = 'Sheet';
-
-                    //下載
-                    downloadxlsx(filename, sheetname, dataToExcel);                                     
-                    }                               
-                });    
-    });
-
-    /*上傳資料*/
-    function Import(e) {         
-        if (e.files.length  ==  0 ){return;} //檢查是否有輸入資料
-        
-        var fileType = e.files[0].name.split('.').pop();
-        var fileName = e.files[0].name;    
-        var allowdtypes = 'xls,xlsx';
-        if (allowdtypes.indexOf(fileType) < 0) 
-        {          
-            $("#warningDialog").html('<br />檔案格式錯誤！<br /><br />匯入之檔案必須為：<strong>Excel 2003 (.xls) </strong> 或 <strong>Excel 2007-2010 (.xlsx)</strong><br /><br />');
-            $("#warningDialog").dialog({
-                width:'auto', height:'auto', autoResize:true, modal:true, closeText:"關閉", 
-                resizable:false, closeOnEscape:true, dialogClass:'top-dialog',
-                show:{effect: "clip", duration: 140},
-                hide:{effect: "clip", duration: 140},
-                buttons:{
-                    "關閉 Close":function() {
-                        $(this).dialog("close");
-                    }
-                }
-            });
-            return false;
-        }
-
-        var dataFromImportf = ExcelImportf(e); //
-        var dataImport; //用來承接promise方法的回傳參數
-        
-        dataFromImportf.then(function (dataImport) 
-        {   
-            var _upLoadData = JSON.parse(dataImport);
-            var jsonKey=[];
-            for (var jsonVal in _upLoadData[0]) {
-                jsonKey.push(jsonVal);
-            }
-     
-            //舊key到新key的映射
-            var oldkey = {
-                編號: "id",
-                急件: "urgent",                
-                取樣日期: "sampling_date",
-                品名: "product_name",                
-                等級: "level",
-                瓶號: "bottle_number",
-                批號: "batch_number",
-                取樣者: "sampler",
-                樣品來源: "sample_source",
-                分析項目: "analytical_item",
-                分析者: "analyst",
-                完成日: "completion_date",
-                判定: "determination",
-                備註: "remarks",
-                "Assay (Purity)": "Assay",                
-                "Parameter A": "Parameter_A", 
-                "Impurity A": "Impurity_A",
-                "Impurity B": "Impurity_B",
-                "Impurity C": "Impurity_C",
-                "Impurity D": "Impurity_D",
-                "Impurity E": "Impurity_E",
-                "Impurity F": "Impurity_F",
-                "1H NMR": "1H_NMR",
-                "Other Metals": "Other_Metals",
-                "Parameter B": "Parameter_B",
-                "Parameter C": "Parameter_C",
-                "Parameter D": "Parameter_D",
-                "Organic impurity": "Organic_impurity",
-                "[δ0.0ppm]": "0_0ppm",
-                "[δ2.2ppm]": "2_2ppm",
-                "[δ3.8ppm]": "3_8ppm",
-                "[δ4.0ppm]": "4_0ppm",
-                "Sum[2.2+3.8+4.0]": "Sum223840",
-                "IR A": "IR_A",
-                "設備名稱": "equipment_name",
-                "標準液批號": "standard_solution", 
-                "取樣類別": "sampling_kind"
-            };
-            //新物件被刪除時，對應的物件也會一起刪掉，並產生新物件
-            for(var i = 0;i < _upLoadData.length; i++){
-                var obj =  _upLoadData[i];
-                for(var key in obj){
-                        var newKey = oldkey[key];
-                        if(newKey){
-                            obj[newKey] = obj[key];
-                            delete obj[key];
-                        }
-                    }
-            }
-
-            var data = JSON.parse(dataImport);  //解析為Json對象   
-            var table = "import_preview";
-            var pcontent = '<span style="font-weight:bold; color:#2e6e9e;">《 檔案資料預覽 File data preview 》</span><br /><br />' + '<table id= '+ table + '></table><div id="import_previewPager"></div>';
-            
-            //建立動態表格
-            $("#confirmDialog").html(pcontent);
-            var colNames = [];
-            var colModel = [];
-            
-            for ( var colName in data[0])
-            {
-                colNames.push(colName);
-            }
-
-            for ( var colName in data[0])
-            {           
-                if (colName === '編號')
-                {
-                    colModel.push({name:colName, index:colName, align:"center", width:84, frozen:true, sortable:true, sorttype:"int"});
-                }
-                else
-                {
-                    colModel.push({name:colName, index:colName, align:"center", width:112});
-                }
-            }
-            
-            $("#" + table).jqGrid({      
-                datatype: "local",
-                data:data,
-                colNames: colNames,
-                colModel: colModel,
-                width: 896,
-                height: 'auto',
-                sortname: '編號',
-                sortorder: "asc",
-                hidegrid: false,
-                cmTemplate: { title: false },   // Hide Tooltip
-                gridview: true,
-                shrinkToFit: false,
-                rowNum:10,
-                rowList:[10,20,50],
-                pager: '#import_previewPager',
-                caption: fileName, 
-                loadComplete: function (){ fixPositionsOfFrozenDivs.call(this); }, // Fix column's height are different after enable frozen column feature 
-                gridComplete: function() { $("#" + table).jqGrid('setFrozenColumns');}
-            });
-            
-            //增加Tool bar        
-            $("#" + table).jqGrid('navGrid','#import_previewPager', { search:true, edit:false, add:false, del:false, refresh:true } );
-        
-            $("#confirmDialog").dialog({
-                width:'auto', height:'auto', autoResize:true, modal:true, closeText:"關閉", 
-                resizable:true, closeOnEscape:true, dialogClass:'top-dialog',position:['center',168],
-                show:{effect: "fade", duration: 140},
-                hide:{effect: "clip", duration: 140},
-                focus: function() { $(".ui-dialog").focus(); }, // Unfocus the default focus elem
-                buttons : [
-                    {
-                        id:"button-OK",
-                        text:"確認",
-                        click:function() 
-                        {
-                            $("#confirmDialog").html('<span style="font-weight:bold; color:#2e6e9e;">《 上傳進度 》</span><br /><br /><div id="progressbar"></div>');                                                                                                        
-                            $("#confirmDialog").next(".ui-dialog-buttonpane button:contains('確定')").attr("disabled", true);
-                            $("#button-OK").button("disable");
-                            $("#button-cancel").button("disable");
-                            for (var i = 0; i < data.length; i++) 
-                            {                              
-                                setTimeout((function (i) {                      
-                                    return function () {                                                                       
-
-                                        $.ajax({
-                                            url: 'SamplingRecord/FileUpload/' + data[i].編號,
-                                            method: 'post',
-                                            async: false,//同步請求資料
-                                            data: {
-                                                UploadData:_upLoadData[i],
-                                                count:i                               
-                                            },
-                                            success: function (response) {                                                   
-                                                if (response.message != undefined && i == 0)
-                                                {   
-                                                    alert("Upload Fail!! Please check file: " + response.message);
-                                                    
-                                                    for(var j = 0; j < data.length; j++)
-                                                    {
-                                                        clearTimeout(j);
-                                                    }                                           
-                                                    window.location.reload();                                     
-                                                }
-                                                else
-                                                {                
-                                                    if(response.message == undefined ) 
-                                                    {                                                                         
-                                                        $(function() 
-                                                            {
-                                                                $( "#progressbar" ).progressbar
-                                                                ({
-                                                                    value: (i/data.length) * 100
-                                                                });
-                                                            });      
-                                                        if (response.count == data.length - 1)
-                                                        {                                                                                                                    //window.location.reload();
-                                                            $(confirmDialog).dialog("close");
-                                                            $("#progressbar").remove();
-                                                            $('#dg').trigger( 'reloadGrid' );
-                                                        }
-                                                    }
-                                                }                             
-                                            },                                       
-                                        });
-                                    }
-                                })(i), 10);
-                            }
-                        }                                                       
-                    },
-                    {
-                        id: "button-cancel",
-                        text: "取消",
-                        click: function() {
-                            $(this).dialog("close");
-                        }
-                    }
-                ]
-            });                                       
-        })
-    }
-</script>
-{{-- 表單輸出、輸入功能 End--}}
 
 {{-- Chart.js Start --}}
 <script>
@@ -1621,11 +864,13 @@
 
         var rowNumber = o.jqGrid('getGridParam', 'records');//獲得搜尋後的紀錄筆數
 
+        // var SearchCondition = @json($SearchCondition);
+
         var postData = o.jqGrid('getGridParam', 'postData');//獲得搜尋條件
 
         $.ajax({
                 async:false,
-                url: "SamplingRecord/export" ,//路徑
+                url: "MyCharts/MyChartExport" ,//路徑
                 type: "POST",           
                 data:{
                     "postData": postData,
