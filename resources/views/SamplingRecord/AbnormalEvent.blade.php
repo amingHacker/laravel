@@ -111,6 +111,11 @@
             var sty = "style='font-size:14px; background-color:#FF7777'"
             return sty;
         }
+        else if ( rdata["Status"] == "已解決")
+        {
+            var sty = "style='font-size:14px; background-color:#77FF77'"
+            return sty;
+        }
     }
     function addCellAttrID(rowId, val, rawObject, cm, rdata) {
         if(rawObject.planId == null )

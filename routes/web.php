@@ -224,4 +224,7 @@ Route::get('/Chart1', function () {
 Route::get('/Chart2', function () {
     return view('todo.Chart2');
 })->name('Chart2');
+Route::get('/Chart3', function () {
+    return view('todo.Chart3');
+})->name('Chart3');
 
