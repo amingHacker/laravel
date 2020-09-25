@@ -225,7 +225,7 @@
             }
             else if (colName === 'remarks')
             {
-                colModel.push({name:colName, index:colName, width:250, align:"left", editable:true, cellattr: addCellAttr});
+                colModel.push({name:colName, index:colName, width:350, align:"left", editable:true, cellattr: addCellAttr});
             }
             else if (colName === 'created_at' || colName === 'updated_at')
             {
