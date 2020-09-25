@@ -408,7 +408,9 @@ class GrindingOvenController extends Controller
                                 +(float)$percent_3 * (float)$t3_bulk_actual_assay;
         $update_expect_meo =  (float)$percent_1 *  (float)trim($t1_bulk_actual_meo, '<') 
                                 +(float)$percent_2 *  (float)trim($t2_bulk_actual_meo, '<')
-                                +(float)$percent_3 *  (float)trim($t3_bulk_actual_meo, '<');     
+                                +(float)$percent_3 *  (float)trim($t3_bulk_actual_meo, '<');
+        $update_expect_assay = round($update_expect_assay, 2);
+        $update_expect_meo = round($update_expect_meo, 2);     
 
         $RowData->update(
             [
