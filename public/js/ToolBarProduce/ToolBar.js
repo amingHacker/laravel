@@ -140,7 +140,7 @@ function createToolbar(num_tabs, _ChartTypeSource, _xAxisSource, _yAxisSource, _
 
     $("#jqxToolBarChartRange" + num_tabs).jqxToolBar({ 
         width: "1000", height: '35', 
-        tools: "toggleButton input | toggleButton input",
+        tools: "toggleButton input | toggleButton input | dropdownlist",
         //tools: "toggleButton toggleButton toggleButton | dropdownlist combobox | input",
         initTools: function (type, index, tool, menuToolIninitialization) 
         {
@@ -159,6 +159,21 @@ function createToolbar(num_tabs, _ChartTypeSource, _xAxisSource, _yAxisSource, _
                     break;
                 case 3:
                     tool.jqxInput({ width: 120, placeHolder: "Type here..." })
+                    break;
+                case 4:
+                    
+                    if (menuToolIninitialization === false) {
+                        ddlistjobtype = tool;
+                        } else {
+                        ddlistjobtypeMin = tool;
+                        }
+                        jobtype_source = ['Backup', 'napshot', 'estore'];
+                        tool.jqxDropDownList({ width: '150px', height: '25px', source: jobtype_source, checkboxes:true });
+                        tool.jqxDropDownList( 'checkItem', 'Backup' );
+                        tool.jqxDropDownList( 'checkItem', 'napshot' );
+                        tool.jqxDropDownList( 'checkItem', 'estore' );
+                        break;
+                   
                     break;
             }
         }
