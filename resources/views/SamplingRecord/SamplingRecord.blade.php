@@ -227,10 +227,6 @@
             {
                 colModel.push({name:colName, index:colName, width:350, align:"left", editable:true, cellattr: addCellAttr});
             }
-            else if (colName === 'created_at' || colName === 'updated_at')
-            {
-                colModel.push({name:colName, index:colName, width:150, align:"center", editable:false, cellattr: addCellAttr});
-            }
             else
             {
                 colModel.push({name:colName, index:colName, align:"center", width:120, editable:true, cellattr: addCellAttr});

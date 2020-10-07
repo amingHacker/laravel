@@ -178,6 +178,30 @@
             {
                 colModel.push({name:colName, index:colName, width:250, align:"center", editable:true, cellattr: addCellAttr});
             }
+            else if (colName === 'created_at' || colName === 'updated_at')
+            {
+                colModel.push(
+                    {
+                        name:colName, index:colName, width: 150, align:"center",sortable:true, editable:false, cellattr: addCellAttr,
+                        sorttype: "date",
+                        search:true,
+                        searchoptions: {
+                            sopt: ['eq','le','ge'],
+                            dataInit : function (elem) 
+                            {
+                                var self = this;
+                                $(elem).datepicker({
+                                    dateFormat: 'yy-mm-dd',                                 
+                                    changeYear: true,
+                                    changeMonth: true,
+                                    showOn: 'focus',
+                                    autoclose:1
+                                });
+                            }
+                        },                                   
+                    }
+                );
+            }
             else
             {
                 colModel.push({name:colName, index:colName, align:"center", width:120, editable:true, cellattr: addCellAttr});
