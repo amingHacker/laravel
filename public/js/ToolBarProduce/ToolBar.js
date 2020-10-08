@@ -178,4 +178,5 @@ function createToolbar(num_tabs, _ChartTypeSource, _xAxisSource, _yAxisSource, _
             }
         }
     });
-}     
+}
+

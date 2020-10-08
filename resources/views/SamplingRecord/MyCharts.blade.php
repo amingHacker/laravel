@@ -108,6 +108,7 @@
     var productSpec = []; //用來儲存productSpec資訊
 
     var filter = (SearchCondition!=null)?SearchCondition["filters"]:'';
+   
     
     /*****建立文件的方法*****/
     $(document).ready(function () {  
@@ -308,7 +309,9 @@
                 
             } 
         );
-                
+        
+        var SearchCaption = (filter =='')? '搜尋...(未儲存)':'搜尋...(已儲存)';
+        
         //增加更多的搜尋條件
         $.extend($.jgrid.search, {
                     multipleSearch: true,
@@ -316,7 +319,29 @@
                     closeOnEscape: true,
                     searchOnEnter: true,
                     overlay: 1,
-                    closeAfterSearch:true
+                    closeAfterSearch:true,
+                    caption: SearchCaption,
+                    onReset : function() {
+                        $("#load_dg").show();
+                        $.ajax({
+                                async:false,
+                                url: "MyCharts/ResetMyChartCondition" ,//路徑
+                                type: "POST",           
+                                data:{
+                                    
+                                },
+                                success: function (DownLoadValue)
+                                        {
+                                            $("#dg").jqGrid('setGridParam',{search:false});
+                                            $('#dg').trigger( 'reloadGrid' );
+                                            $.extend($.jgrid.search, {             
+                                                    caption: '搜尋...(未儲存)',                 
+                                            });
+                                        }                               
+                            });       
+                            return true;
+                        },
+                   
                 });
         //表格排序或隱藏       
         $("#dg").jqGrid('navButtonAdd','#dgPager',{
@@ -330,10 +355,21 @@
         $('.ui-icon-refresh').click(function(){
             lastSearchData = null;
             $("#load_dg").show();
+            $.ajax({
+                    async:false,
+                    url: "MyCharts/ResetMyChartCondition" ,//路徑
+                    type: "POST",           
+                    data:{
+                        
+                    },
+                    success: function (DownLoadValue){
+                            $("#dg").jqGrid('setGridParam',{search:false});
+                            $('#dg').trigger( 'reloadGrid' );              
+                        }                               
+                    });                         
         });
 
-        
-            
+   
         //獲得combobox的內容
         combobox_items = getComboboxItem();
 
@@ -739,14 +775,89 @@
     var selectRowData = []; //紀錄選擇的目前的rowdata
 
     $("#SaveSetting").click( function(){
+    $.extend($.jgrid.search, {             
+            caption: '搜尋...(已儲存)',                 
+        });
     var o = $("#dg");
     var postData = o.jqGrid('getGridParam', 'postData');//獲得搜尋條件
+    
+    //分組的分組資料
+    var dataXaxisGroup = [];     //紀錄Group X軸資料 
+    var dataYaxisGroup = [];     //紀錄Group Y軸資料 
+    var chartTypeGroup = [];     //紀錄Group Chart Type資料
+    var columnNameGroup = [];    //紀錄Group 欄位名稱
+    var itemGroup = [];      //紀錄Group Item名稱
+    var USLGroup = [], LSLGroup = [], UCLGroup = [], LCLGroup = [];  //紀錄Group control line資料
+    var LabelItem = [];  //紀錄要在圖面呈現的欄位資訊
+    var DateItem = [];  //紀錄data日期資訊
+    var YaxisMax = [], YaxisMin = [];  //紀錄Y軸的最大值與最小值
+    
+    for(var j = 0; j < 1; j++)
+    {
+        
+        //獲得Toolbar的資料
+        var tools = $("#jqxToolBar" + ( j + 1 )).jqxToolBar("getTools");
+        var chartType = tools[1].tool[0].textContent; 
+        var dataXaxis = getColumnNameFromChineseToDatabase(tools[3].tool[0].textContent);        
+        var dataYaxis = getColumnNameFromChineseToDatabase(tools[5].tool[0].lastChild.value);
+        var columnName = getColumnNameFromChineseToDatabase(tools[7].tool[0].lastChild.value);
+        var item = tools[8].tool[0].value;
+
+        chartTypeGroup.push(chartType);
+        dataXaxisGroup.push(dataXaxis);
+        dataYaxisGroup.push(dataYaxis);
+        columnNameGroup.push(columnName);
+        itemGroup.push(item);
+
+        //獲得Toolbar的資料
+        var toolsConChart = $("#jqxToolBarConChart" + ( j + 1 )).jqxToolBar("getTools");
+        var tUSL = toolsConChart[1].tool[0].value;
+        var tLSL = toolsConChart[3].tool[0].value;
+        var tUCL = toolsConChart[5].tool[0].value;
+        var tLCL = toolsConChart[7].tool[0].value;
+        USLGroup.push(tUSL);
+        LSLGroup.push(tLSL);
+        UCLGroup.push(tUCL);
+        LCLGroup.push(tLCL);
+        LabelItem.push("batch_number");
+        DateItem.push("sampling_date");
+        
+        //獲得Toolbar的資料 
+        var toolsBarChartRange = $("#jqxToolBarChartRange" + ( j + 1 )).jqxToolBar("getTools");
+        var tYaxisMax = toolsBarChartRange[1].tool[0].value;
+        var tYaxisMin = toolsBarChartRange[3].tool[0].value;
+        YaxisMax.push(tYaxisMax);
+        YaxisMin.push(tYaxisMin);
+    }
+    
+    //檢查選擇Control Chart時，Group 不能大於1組以上，UCL 或LCL需同時為空或有值避免Center Line計算錯誤
+    //檢查選擇Scatter Chart時，Group 不能有值沒有選擇，避免無法產生圖表
+    var _checkChartWithGroup = checkChartWithGroup(chartTypeGroup, UCLGroup, LCLGroup); 
+    if (_checkChartWithGroup !==''){alert(_checkChartWithGroup); return;}
+
+    var ToolBarData = {
+        chartType : chartTypeGroup[0],
+        dataXaxis : dataXaxisGroup[0],
+        dataYaxis : dataYaxisGroup[0],
+        columnName : columnNameGroup[0],
+        item : itemGroup[0],
+        USL : USLGroup[0],
+        LSL : LSLGroup[0],
+        UCL : UCLGroup[0],
+        LCL : LCLGroup[0],
+        YaxisMax : YaxisMax[0],
+        YaxisMin : YaxisMin[0],
+    }
+
+    var ToolBarDataString = JSON.stringify(ToolBarData); 
+
     $.ajax({
             async:false,
             url: "MyCharts/SaveMyChartCondition" ,//路徑
             type: "POST",           
             data:{
-                "postData": postData,
+                "postData" : postData,
+                "ToolBarDataString" : ToolBarDataString,
             },
             success: function (DownLoadValue){
                 var dataLo = DownLoadValue.success;                
@@ -755,8 +866,7 @@
 
     });
 
-    $("#ResetSetting").click( function(){
-   
+    $("#ResetSetting").click( function(){ 
     $.ajax({
             async:false,
             url: "MyCharts/ResetMyChartCondition" ,//路徑
@@ -788,12 +898,45 @@
 
     /*產生圖表*/
     $("#ExportChart").click( function(){
+        
         //初始圖表時不產生"無資料"的提醒
         var initial = 'false';
+
         if(document.getElementById("tabs").style.display =='none')
         {
             initial = 'true'; 
         }  
+        var SearchCondition = @json($SearchCondition);
+        if (SearchCondition!=null && SearchCondition["ChartCondition"]!= '')
+        {
+            initial = 'false';
+            var ToolBarData = (SearchCondition!=null)?JSON.parse(SearchCondition["ChartCondition"]):'';
+            for(var j = 0; j < 1; j++)
+            {
+            
+                //取得資料庫的Toolbar的資料
+                var tools = $("#jqxToolBar" + ( j + 1 )).jqxToolBar("getTools");
+                $(tools[1].tool[0]).jqxDropDownList('val', ToolBarData["chartType"]);
+                $(tools[3].tool[0]).jqxDropDownList('val', getColumnNameFromDatabaseToChinese(ToolBarData["dataXaxis"]));
+                $(tools[5].tool[0]).jqxComboBox('val', getColumnNameFromDatabaseToChinese(ToolBarData["dataYaxis"]));
+                $(tools[7].tool[0]).jqxComboBox('val', getColumnNameFromDatabaseToChinese(ToolBarData["columnName"]));
+                $(tools[8].tool[0]).jqxInput('val', ToolBarData["item"]);
+            
+                //取得資料庫的Toolbar的資料
+                var toolsConChart = $("#jqxToolBarConChart" + ( j + 1 )).jqxToolBar("getTools");
+                $(toolsConChart[1].tool[0]).jqxInput('val', ToolBarData["USL"]);
+                $(toolsConChart[3].tool[0]).jqxInput('val', ToolBarData["LSL"]);
+                $(toolsConChart[5].tool[0]).jqxInput('val', ToolBarData["UCL"]);
+                $(toolsConChart[7].tool[0]).jqxInput('val', ToolBarData["LCL"]);
+            
+                //取得資料庫的Toolbar的資料 
+                var toolsBarChartRange = $("#jqxToolBarChartRange" + ( j + 1 )).jqxToolBar("getTools");
+                $(toolsBarChartRange[1].tool[0]).jqxInput('val', ToolBarData["YaxisMax"]);
+                $(toolsBarChartRange[3].tool[0]).jqxInput('val', ToolBarData["YaxisMin"]);
+            }
+        }
+       
+       
         document.getElementById("canvas_div").style.display=""; //顯示Chart
         document.getElementById("tabs").style.display=""; //顯示Control Toolbar
         var num_tabs = $("#tabs ul li").length; //Group 組數

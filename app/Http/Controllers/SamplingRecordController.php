@@ -1099,7 +1099,7 @@ class SamplingRecordController extends Controller
         $SaveToMyChart["SearchField"] =  $Parameter["postData"]["searchField"];
         $SaveToMyChart["SearchString"] =  $Parameter["postData"]["searchString"];
         $SaveToMyChart["SearchOper"] =  $Parameter["postData"]["searchOper"];
-        $SaveToMyChart["ChartCondition"] = "AAAAA";
+        $SaveToMyChart["ChartCondition"] = $Parameter["ToolBarDataString"];
 
         if (!$SearchCondition)
         {
