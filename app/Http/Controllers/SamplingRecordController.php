@@ -1089,18 +1089,19 @@ class SamplingRecordController extends Controller
 
         $SaveToMyChart["MUID"] =  $_SERVER['REMOTE_USER'];
         $SaveToMyChart["ChartNum"] =  "1";
-        $SaveToMyChart["_search"] =  $Parameter["postData"]["_search"];
+        $SaveToMyChart["_search"] =  ($Parameter["postData"]["filters"] != '')? 'true': 'false';
         $SaveToMyChart["nd"] =  $Parameter["postData"]["nd"];
         $SaveToMyChart["limit"] =  $Parameter["postData"]["limit"];
         $SaveToMyChart["pageNum"] =  $Parameter["postData"]["pageNum"];
         $SaveToMyChart["sidx"] =  $Parameter["postData"]["sidx"];
         $SaveToMyChart["order"] =  $Parameter["postData"]["order"];
         $SaveToMyChart["filters"] =  $Parameter["postData"]["filters"];
-        $SaveToMyChart["SearchField"] =  $Parameter["postData"]["searchField"];
-        $SaveToMyChart["SearchString"] =  $Parameter["postData"]["searchString"];
-        $SaveToMyChart["SearchOper"] =  $Parameter["postData"]["searchOper"];
+        $SaveToMyChart["SearchField"] =  "";
+        $SaveToMyChart["SearchString"] =  "";
+        $SaveToMyChart["SearchOper"] =  "";
         $SaveToMyChart["ChartCondition"] = $Parameter["ToolBarDataString"];
 
+        // var_dump($SaveToMyChart);
         if (!$SearchCondition)
         {
             $todo = DB::table("sampling_records_myfavoritecharts")->insert(
@@ -1124,8 +1125,7 @@ class SamplingRecordController extends Controller
     {   
         $user =  $_SERVER['REMOTE_USER'];
         $SearchCondition = DB::table('sampling_records_myfavoritecharts')->where('MUID', '=', $user);
-
-
+        
         $SaveToMyChart["_search"] =  '';
         $SaveToMyChart["nd"] =  '';
         $SaveToMyChart["limit"] =  '';
@@ -1137,9 +1137,15 @@ class SamplingRecordController extends Controller
         $SaveToMyChart["SearchString"] =  '';
         $SaveToMyChart["SearchOper"] =  '';
         $SaveToMyChart["ChartCondition"] = '';
+        
+        if (!$SearchCondition)
+        {
 
-
-        $SearchCondition->update($SaveToMyChart);
+        }
+        else
+        {
+            $SearchCondition->update($SaveToMyChart);
+        }
                      
         return response()->json([
                 'success'=> $SaveToMyChart,    
@@ -1266,6 +1272,21 @@ class SamplingRecordController extends Controller
         return response()->json([
             //'success' =>  $UpdateValue
             'success' => $DownLoadValue,
+        ]); 
+    }
+
+    //This is the GetMyChart from sampling_records_myfavoritecharts
+    public function GetMyChartCondition( Request $request )
+    {      
+        
+        $user = $_SERVER['REMOTE_USER'];
+        // var_dump($user);  // e.g. root or www-data 
+
+        $SearchCondition = DB::table('sampling_records_myfavoritecharts')->where('MUID', '=', $user)->first();
+        
+        return response()->json([
+        //'success' =>  $UpdateValue
+        'SearchCondition' => $SearchCondition,
         ]); 
     }
 }

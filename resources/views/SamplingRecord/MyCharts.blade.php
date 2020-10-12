@@ -364,7 +364,10 @@
                     },
                     success: function (DownLoadValue){
                             $("#dg").jqGrid('setGridParam',{search:false});
-                            $('#dg').trigger( 'reloadGrid' );              
+                            $('#dg').trigger( 'reloadGrid' );
+                            $.extend($.jgrid.search, {             
+                                    caption: '搜尋...(未儲存)',                 
+                            });              
                         }                               
                     });                         
         });
@@ -688,7 +691,7 @@
         $( "#RightClickmenu" ).menu();
     });
 
-   
+
 </script>
 {{-- Data資料呈現 End --}}
  
@@ -699,7 +702,7 @@
     <div style = "margin:0px auto;"  >
         <img class=" img-responsive" src="img/Logo_MyCharts.png" >   
     </div>
-            
+    
     <div align="center">
         <table id="dg" ></table> 
         <div id="dgPager"></div>
@@ -876,7 +879,10 @@
             },
             success: function (DownLoadValue){
                     $("#dg").jqGrid('setGridParam',{search:false});
-                    $('#dg').trigger( 'reloadGrid' );              
+                    $('#dg').trigger( 'reloadGrid' );
+                    $.extend($.jgrid.search, {             
+                            caption: '搜尋...(未儲存)',                 
+                    });              
                 }                               
             });                 
 
@@ -905,131 +911,146 @@
         if(document.getElementById("tabs").style.display =='none')
         {
             initial = 'true'; 
-        }  
-        var SearchCondition = @json($SearchCondition);
-        if (SearchCondition!=null && SearchCondition["ChartCondition"]!= '')
-        {
-            initial = 'false';
-            var ToolBarData = (SearchCondition!=null)?JSON.parse(SearchCondition["ChartCondition"]):'';
-            for(var j = 0; j < 1; j++)
-            {
-            
-                //取得資料庫的Toolbar的資料
-                var tools = $("#jqxToolBar" + ( j + 1 )).jqxToolBar("getTools");
-                $(tools[1].tool[0]).jqxDropDownList('val', ToolBarData["chartType"]);
-                $(tools[3].tool[0]).jqxDropDownList('val', getColumnNameFromDatabaseToChinese(ToolBarData["dataXaxis"]));
-                $(tools[5].tool[0]).jqxComboBox('val', getColumnNameFromDatabaseToChinese(ToolBarData["dataYaxis"]));
-                $(tools[7].tool[0]).jqxComboBox('val', getColumnNameFromDatabaseToChinese(ToolBarData["columnName"]));
-                $(tools[8].tool[0]).jqxInput('val', ToolBarData["item"]);
-            
-                //取得資料庫的Toolbar的資料
-                var toolsConChart = $("#jqxToolBarConChart" + ( j + 1 )).jqxToolBar("getTools");
-                $(toolsConChart[1].tool[0]).jqxInput('val', ToolBarData["USL"]);
-                $(toolsConChart[3].tool[0]).jqxInput('val', ToolBarData["LSL"]);
-                $(toolsConChart[5].tool[0]).jqxInput('val', ToolBarData["UCL"]);
-                $(toolsConChart[7].tool[0]).jqxInput('val', ToolBarData["LCL"]);
-            
-                //取得資料庫的Toolbar的資料 
-                var toolsBarChartRange = $("#jqxToolBarChartRange" + ( j + 1 )).jqxToolBar("getTools");
-                $(toolsBarChartRange[1].tool[0]).jqxInput('val', ToolBarData["YaxisMax"]);
-                $(toolsBarChartRange[3].tool[0]).jqxInput('val', ToolBarData["YaxisMin"]);
-            }
-        }
-       
-       
-        document.getElementById("canvas_div").style.display=""; //顯示Chart
-        document.getElementById("tabs").style.display=""; //顯示Control Toolbar
-        var num_tabs = $("#tabs ul li").length; //Group 組數
-        
-        if (initial == 'true')
-        {
-            return;
-        }
-
-        //分組的分組資料
-        var dataXaxisGroup = [];     //紀錄Group X軸資料 
-        var dataYaxisGroup = [];     //紀錄Group Y軸資料 
-        var chartTypeGroup = [];     //紀錄Group Chart Type資料
-        var columnNameGroup = [];    //紀錄Group 欄位名稱
-        var itemGroup = [];      //紀錄Group Item名稱
-        var USLGroup = [], LSLGroup = [], UCLGroup = [], LCLGroup = [];  //紀錄Group control line資料
-        var LabelItem = [];  //紀錄要在圖面呈現的欄位資訊
-        var DateItem = [];  //紀錄data日期資訊
-        var YaxisMax = [], YaxisMin = [];  //紀錄Y軸的最大值與最小值
-     
-        for(var j = 0; j < num_tabs; j++)
-        {
-          
-            //獲得Toolbar的資料
-            var tools = $("#jqxToolBar" + ( j + 1 )).jqxToolBar("getTools");
-            var chartType = tools[1].tool[0].textContent; 
-            var dataXaxis = getColumnNameFromChineseToDatabase(tools[3].tool[0].textContent);        
-            var dataYaxis = getColumnNameFromChineseToDatabase(tools[5].tool[0].lastChild.value);
-            var columnName = getColumnNameFromChineseToDatabase(tools[7].tool[0].lastChild.value);
-            var item = tools[8].tool[0].value;
-
-            chartTypeGroup.push(chartType);
-            dataXaxisGroup.push(dataXaxis);
-            dataYaxisGroup.push(dataYaxis);
-            columnNameGroup.push(columnName);
-            itemGroup.push(item);
-
-            //獲得Toolbar的資料
-            var toolsConChart = $("#jqxToolBarConChart" + ( j + 1 )).jqxToolBar("getTools");
-            var tUSL = toolsConChart[1].tool[0].value;
-            var tLSL = toolsConChart[3].tool[0].value;
-            var tUCL = toolsConChart[5].tool[0].value;
-            var tLCL = toolsConChart[7].tool[0].value;
-            USLGroup.push(tUSL);
-            LSLGroup.push(tLSL);
-            UCLGroup.push(tUCL);
-            LCLGroup.push(tLCL);
-            LabelItem.push("batch_number");
-            DateItem.push("sampling_date");
-            
-            //獲得Toolbar的資料 
-            var toolsBarChartRange = $("#jqxToolBarChartRange" + ( j + 1 )).jqxToolBar("getTools");
-            var tYaxisMax = toolsBarChartRange[1].tool[0].value;
-            var tYaxisMin = toolsBarChartRange[3].tool[0].value;
-            YaxisMax.push(tYaxisMax);
-            YaxisMin.push(tYaxisMin);
         }
         
-        //檢查選擇Control Chart時，Group 不能大於1組以上，UCL 或LCL需同時為空或有值避免Center Line計算錯誤
-        //檢查選擇Scatter Chart時，Group 不能有值沒有選擇，避免無法產生圖表
-        var _checkChartWithGroup = checkChartWithGroup(chartTypeGroup, UCLGroup, LCLGroup); 
-        if (_checkChartWithGroup !==''){alert(_checkChartWithGroup); return;}
-
-        //獲得資料
-        var o = $("#dg");
-
-        var columnNames = o.jqGrid('getGridParam', 'colNames');//從grid獲得colnames
-
-        var rowNumber = o.jqGrid('getGridParam', 'records');//獲得搜尋後的紀錄筆數
-
-        // var SearchCondition = @json($SearchCondition);
-
-        var postData = o.jqGrid('getGridParam', 'postData');//獲得搜尋條件
-
         $.ajax({
                 async:false,
-                url: "MyCharts/MyChartExport" ,//路徑
-                type: "POST",           
+                url: "MyCharts/GetMyChartCondition" ,//路徑
+                type: "GET",           
                 data:{
-                    "postData": postData,
+                    
                 },
-                success: function (DownLoadValue){
-                    var dataLo = DownLoadValue.success;
-                    //產生要寫入excel的data
-                    //參數格式: original data -> toolbar data -> toolbar control data 
-                        DrowChart( dataLo, 
-                            chartTypeGroup, dataXaxisGroup, dataYaxisGroup, 
-                            columnNameGroup, itemGroup, 
-                            USLGroup, LSLGroup, UCLGroup, LCLGroup, LabelItem, DateItem,
-                            YaxisMax, YaxisMin
-                        );                  
-                    }                               
-                });                 
+                success: function (DownLoadValue)
+                {
+                    var SearchCondition = DownLoadValue.SearchCondition;
+                    if (SearchCondition!=null && SearchCondition["ChartCondition"]!= '')
+                    {
+                        initial = 'false';
+                        var ToolBarData = (SearchCondition!=null)?JSON.parse(SearchCondition["ChartCondition"]):'';
+                        for(var j = 0; j < 1; j++)
+                        {
+                        
+                            //取得資料庫的Toolbar的資料
+                            var tools = $("#jqxToolBar" + ( j + 1 )).jqxToolBar("getTools");
+                            $(tools[1].tool[0]).jqxDropDownList('val', ToolBarData["chartType"]);
+                            $(tools[3].tool[0]).jqxDropDownList('val', getColumnNameFromDatabaseToChinese(ToolBarData["dataXaxis"]));
+                            $(tools[5].tool[0]).jqxComboBox('val', getColumnNameFromDatabaseToChinese(ToolBarData["dataYaxis"]));
+                            $(tools[7].tool[0]).jqxComboBox('val', getColumnNameFromDatabaseToChinese(ToolBarData["columnName"]));
+                            $(tools[8].tool[0]).jqxInput('val', ToolBarData["item"]);
+                        
+                            //取得資料庫的Toolbar的資料
+                            var toolsConChart = $("#jqxToolBarConChart" + ( j + 1 )).jqxToolBar("getTools");
+                            $(toolsConChart[1].tool[0]).jqxInput('val', ToolBarData["USL"]);
+                            $(toolsConChart[3].tool[0]).jqxInput('val', ToolBarData["LSL"]);
+                            $(toolsConChart[5].tool[0]).jqxInput('val', ToolBarData["UCL"]);
+                            $(toolsConChart[7].tool[0]).jqxInput('val', ToolBarData["LCL"]);
+                        
+                            //取得資料庫的Toolbar的資料 
+                            var toolsBarChartRange = $("#jqxToolBarChartRange" + ( j + 1 )).jqxToolBar("getTools");
+                            $(toolsBarChartRange[1].tool[0]).jqxInput('val', ToolBarData["YaxisMax"]);
+                            $(toolsBarChartRange[3].tool[0]).jqxInput('val', ToolBarData["YaxisMin"]);
+                        }
+                    }
+                
+                
+                    document.getElementById("canvas_div").style.display=""; //顯示Chart
+                    document.getElementById("tabs").style.display=""; //顯示Control Toolbar
+                    var num_tabs = $("#tabs ul li").length; //Group 組數
+                    
+                    if (initial == 'true')
+                    {
+                        return;
+                    }
+
+                    //分組的分組資料
+                    var dataXaxisGroup = [];     //紀錄Group X軸資料 
+                    var dataYaxisGroup = [];     //紀錄Group Y軸資料 
+                    var chartTypeGroup = [];     //紀錄Group Chart Type資料
+                    var columnNameGroup = [];    //紀錄Group 欄位名稱
+                    var itemGroup = [];      //紀錄Group Item名稱
+                    var USLGroup = [], LSLGroup = [], UCLGroup = [], LCLGroup = [];  //紀錄Group control line資料
+                    var LabelItem = [];  //紀錄要在圖面呈現的欄位資訊
+                    var DateItem = [];  //紀錄data日期資訊
+                    var YaxisMax = [], YaxisMin = [];  //紀錄Y軸的最大值與最小值
+                
+                    for(var j = 0; j < num_tabs; j++)
+                    {
+                    
+                        //獲得Toolbar的資料
+                        var tools = $("#jqxToolBar" + ( j + 1 )).jqxToolBar("getTools");
+                        var chartType = tools[1].tool[0].textContent; 
+                        var dataXaxis = getColumnNameFromChineseToDatabase(tools[3].tool[0].textContent);        
+                        var dataYaxis = getColumnNameFromChineseToDatabase(tools[5].tool[0].lastChild.value);
+                        var columnName = getColumnNameFromChineseToDatabase(tools[7].tool[0].lastChild.value);
+                        var item = tools[8].tool[0].value;
+
+                        chartTypeGroup.push(chartType);
+                        dataXaxisGroup.push(dataXaxis);
+                        dataYaxisGroup.push(dataYaxis);
+                        columnNameGroup.push(columnName);
+                        itemGroup.push(item);
+
+                        //獲得Toolbar的資料
+                        var toolsConChart = $("#jqxToolBarConChart" + ( j + 1 )).jqxToolBar("getTools");
+                        var tUSL = toolsConChart[1].tool[0].value;
+                        var tLSL = toolsConChart[3].tool[0].value;
+                        var tUCL = toolsConChart[5].tool[0].value;
+                        var tLCL = toolsConChart[7].tool[0].value;
+                        USLGroup.push(tUSL);
+                        LSLGroup.push(tLSL);
+                        UCLGroup.push(tUCL);
+                        LCLGroup.push(tLCL);
+                        LabelItem.push("batch_number");
+                        DateItem.push("sampling_date");
+                        
+                        //獲得Toolbar的資料 
+                        var toolsBarChartRange = $("#jqxToolBarChartRange" + ( j + 1 )).jqxToolBar("getTools");
+                        var tYaxisMax = toolsBarChartRange[1].tool[0].value;
+                        var tYaxisMin = toolsBarChartRange[3].tool[0].value;
+                        YaxisMax.push(tYaxisMax);
+                        YaxisMin.push(tYaxisMin);
+                    }
+                    
+                    //檢查選擇Control Chart時，Group 不能大於1組以上，UCL 或LCL需同時為空或有值避免Center Line計算錯誤
+                    //檢查選擇Scatter Chart時，Group 不能有值沒有選擇，避免無法產生圖表
+                    var _checkChartWithGroup = checkChartWithGroup(chartTypeGroup, UCLGroup, LCLGroup); 
+                    if (_checkChartWithGroup !==''){alert(_checkChartWithGroup); return;}
+
+                    //獲得資料
+                    var o = $("#dg");
+
+                    var columnNames = o.jqGrid('getGridParam', 'colNames');//從grid獲得colnames
+
+                    var rowNumber = o.jqGrid('getGridParam', 'records');//獲得搜尋後的紀錄筆數
+
+                    // var SearchCondition = @json($SearchCondition);
+
+                    var postData = o.jqGrid('getGridParam', 'postData');//獲得搜尋條件
+
+                    $.ajax({
+                            async:false,
+                            url: "MyCharts/MyChartExport" ,//路徑
+                            type: "POST",           
+                            data:{
+                                "postData": postData,
+                            },
+                            success: function (DownLoadValue){
+                                var dataLo = DownLoadValue.success;
+                                //產生要寫入excel的data
+                                //參數格式: original data -> toolbar data -> toolbar control data 
+                                    DrowChart( dataLo, 
+                                        chartTypeGroup, dataXaxisGroup, dataYaxisGroup, 
+                                        columnNameGroup, itemGroup, 
+                                        USLGroup, LSLGroup, UCLGroup, LCLGroup, LabelItem, DateItem,
+                                        YaxisMax, YaxisMin
+                                    );                  
+                                }                               
+                            });                 
+                                   
+                }                               
+        });
+       
+        
     })
 </script>
 {{-- Chart.js End --}}

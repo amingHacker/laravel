@@ -69,6 +69,7 @@ Route::any('/SamplingRecord/delete/{todo}', 'SamplingRecordController@destroy')-
 //資料呈現
 Route::get('/MyCharts', 'SamplingRecordController@MyCharts');
 Route::get('/MyCharts/show', 'SamplingRecordController@MyChartsShow');
+Route::get('/MyCharts/GetMyChartCondition', 'SamplingRecordController@GetMyChartCondition');
 
 //儲存MyChart的設定
 Route::any('/MyCharts/SaveMyChartCondition', 'SamplingRecordController@SaveMyChartCondition');
