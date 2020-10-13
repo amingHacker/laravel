@@ -7,6 +7,7 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'App\\Console\\Kernel' => $baseDir . '/app/Console/Kernel.php',
+    'App\\Container_GdSp' => $baseDir . '/app/Container_GdSp.php',
     'App\\Exceptions\\Handler' => $baseDir . '/app/Exceptions/Handler.php',
     'App\\GrindingOven' => $baseDir . '/app/GrindingOven.php',
     'App\\Http\\Controllers\\AbnormalEventController' => $baseDir . '/app/Http/Controllers/AbnormalEventController.php',
@@ -16,6 +17,7 @@ return array(
     'App\\Http\\Controllers\\Auth\\RegisterController' => $baseDir . '/app/Http/Controllers/Auth/RegisterController.php',
     'App\\Http\\Controllers\\Auth\\ResetPasswordController' => $baseDir . '/app/Http/Controllers/Auth/ResetPasswordController.php',
     'App\\Http\\Controllers\\AuthorityController' => $baseDir . '/app/Http/Controllers/AuthorityController.php',
+    'App\\Http\\Controllers\\Container_GdSp_controller' => $baseDir . '/app/Http/Controllers/Container_GdSp_controller.php',
     'App\\Http\\Controllers\\Controller' => $baseDir . '/app/Http/Controllers/Controller.php',
     'App\\Http\\Controllers\\GrindingOvenController' => $baseDir . '/app/Http/Controllers/GrindingOvenController.php',
     'App\\Http\\Controllers\\ProductSPECController' => $baseDir . '/app/Http/Controllers/ProductSPECController.php',

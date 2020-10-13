@@ -202,6 +202,26 @@ Route::any('/AbnormalEvent/AddandUpdate/{todo}', 'AbnormalEventController@Addand
 Route::delete('/AbnormalEvent/delete/{todo}', 'AbnormalEventController@destroy')->name('AbnormalEvent.destroy');
 
 
+/*************************** Container Golden Sample *****************************/
+Route::get('/Container_GdSp/show', 'Container_GdSp_Controller@show');
+Route::post('/Container_GdSp/export', 'Container_GdSp_Controller@export');
+Route::post('/Container_GdSp/GetDataFromID', 'Container_GdSp_Controller@GetDataFromID');
+
+//資料呈現
+Route::get('/Container_GdSp', 'Container_GdSp_Controller@index');
+Route::get('/Container_GdSp/GetComboboxItem', 'Container_GdSp_Controller@ComboboxItem');
+Route::get('SamplingRecord/GetAuthority', 'SamplingRecordController@GetAuthority');
+Route::get('SamplingRecord/GetUserName', 'SamplingRecordController@GetUserName');
+
+//File 大量新增和修改
+Route::post('/Container_GdSp/FileUpload/{todo}', 'Container_GdSp_Controller@FileUpload')->name('Container_GdSp.FileUpload');
+
+//Grid inline 新增和修改
+Route::any('/Container_GdSp/AddandUpdate/{todo}', 'Container_GdSp_Controller@AddandUpdate')->name('Container_GdSp.AddandUpdate');
+
+//Grid 刪除
+Route::any('/Container_GdSp/delete/{todo}', 'Container_GdSp_Controller@destroy')->name('Container_GdSp.destroy');
+
 
 
 /********* Todo ***********/
