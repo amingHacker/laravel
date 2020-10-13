@@ -1490,8 +1490,8 @@
             LSLGroup.push(tLSL);
             UCLGroup.push(tUCL);
             LCLGroup.push(tLCL);
-            LabelItem.push("batch_number");
-            DateItem.push("sampling_date");
+            LabelItem.push("StandardBottle");
+            DateItem.push("Sampling_date");
             
             //獲得Toolbar的資料 
             var toolsBarChartRange = $("#jqxToolBarChartRange" + ( j + 1 )).jqxToolBar("getTools");

@@ -32,7 +32,8 @@ function XAxisDataTransLate(data)
         "3rd_bulk_batch" : "typeLabel",
         "3rd_tank_batch" : "typeLabel",
         "Oven" : "typeLabel",
-        "Material" : "typeLabel", 
+        "Material" : "typeLabel",
+        "Sampling_date" : "typeDate", 
     };
 
     return XAxisData[data];
