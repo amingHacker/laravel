@@ -1733,7 +1733,7 @@
                     var dataLo = DownLoadValue.success;
                     //產生要寫入excel的data
                     //參數格式: original data -> toolbar data -> toolbar control data 
-                        DrowChart( dataLo, 
+                        DrowChart( 'Sampling Records', dataLo, 
                             chartTypeGroup, dataXaxisGroup, dataYaxisGroup, 
                             columnNameGroup, itemGroup, 
                             USLGroup, LSLGroup, UCLGroup, LCLGroup

@@ -41,7 +41,7 @@ function XAxisDataTransLate(data)
 }
 
 /*產生圖表*/
-function DrowChart( dataLo, chartTypeGroup, dataXaxisGroup, dataYaxisGroup,  
+function DrowChart( ChartTitle, dataLo, chartTypeGroup, dataXaxisGroup, dataYaxisGroup,  
     columnNameGroup, itemGroup, USLGroup, LSLGroup, UCLGroup, LCLGroup, LabelItem, DateItem, YaxisMax, YaxisMin)
 {         
     //實際產生Chart資料的陣列
@@ -415,7 +415,7 @@ function DrowChart( dataLo, chartTypeGroup, dataXaxisGroup, dataYaxisGroup,
             options: {
                 title: {
                     display: true,
-                    text: 'Sampling Records'
+                    text: ChartTitle
                 },
                 scales: Scales,
                     

@@ -319,7 +319,9 @@
 
         var _ChartTypeSource = ["Scatter Chart", "Control Chart"];
         var _xAxisSource = ["取樣日期", "次數"];
-        var _yAxisSource = ["左顯示器(A3)", "右顯示器(A3)", "A3", "左顯示器(Body)", "右顯示器(Body)", "Body"
+        var _yAxisSource = ["左顯示器(A3)", "右顯示器(A3)", "A3", "左顯示器(Body)", "右顯示器(Body)", "Body",
+                            "原始數據(管路)", "原始數據(A3)", "原始數據(Body)", "左顯示器(管路校正)",
+                            "右顯示器(管路校正)", "管路校正"
                         ];
         var _GroupSource = ["品名", "標準瓶", "設備"
         ];
@@ -339,12 +341,18 @@
             Sampling_date: "取樣日期",
             Equipment: "設備",
             StandardBottle: "標準瓶",
+            OriginalPipe: "原始數據(管路)",
+            OriginalA3: "原始數據(A3)",
+            OriginalBody: "原始數據(Body)",
             ProductName: "品名",
+            LeftMonitor_PipeCorrection: "左顯示器(管路校正)",	
+            RightMonitor_PipeCorrection: "右顯示器(管路校正)",	
+            PipeCorrection: "管路校正",
             LeftMonitor_A3: "左顯示器(A3)",
             RightMonitor_A3: "右顯示器(A3)",
             A3: "A3",
-            LeftBody_A3: "左顯示器(Body)",
-            RightBody_A3: "右顯示器(Body)",
+            LeftMonitor_Body: "左顯示器(Body)",
+            RightMonitor_Body: "右顯示器(Body)",
             Body: "Body",
             Remark: "備註",
             Operator: "操作人員",
@@ -372,12 +380,18 @@
             "取樣日期": "Sampling_date", 
             "設備" : "Equipment",
             "標準瓶" : "StandardBottle",
+            "原始數據(管路)" : "OriginalPipe",
+            "原始數據(A3)" : "OriginalA3",
+            "原始數據(Body)" : "OriginalBody",
             "品名" : "ProductName",
+            "左顯示器(管路校正)" : "LeftMonitor_PipeCorrection",	
+            "右顯示器(管路校正)" : "RightMonitor_PipeCorrection",	
+            "管路校正" : "PipeCorrection",
             "左顯示器(A3)" : "LeftMonitor_A3",
             "右顯示器(A3)" : "RightMonitor_A3",
             "A3" : "A3",
-            "左顯示器(Body)" : "LeftBody_A3",
-            "右顯示器(Body)" : "RightBody_A3",
+            "左顯示器(Body)" : "LeftMonitor_Body",
+            "右顯示器(Body)" : "RightMonitor_Body",
             "Body" : "Body",
             "備註" : "Remark",
             "操作人員" : "Operator",
@@ -1277,11 +1291,17 @@
                 "取樣日期": "Sampling_date",
                 "設備": "Equipment",
                 "標準瓶": "StandardBottle",
-                "品名": "ProductName",
+                "原始數據(管路)" : "OriginalPipe",
+                "原始數據(A3)" : "OriginalA3",
+                "原始數據(Body)" : "OriginalBody",
+                "品名" : "ProductName",
+                "左顯示器(管路校正)" : "LeftMonitor_PipeCorrection",	
+                "右顯示器(管路校正)" : "RightMonitor_PipeCorrection",	
+                "管路校正" : "PipeCorrection",
                 "左顯示器(A3)": "LeftMonitor_A3",
                 "右顯示器(A3)": "RightMonitor_A3",                
-                "左顯示器(Body)": "LeftBody_A3",
-                "右顯示器(Body)": "RightBody_A3",     
+                "左顯示器(Body)": "LeftMonitor_Body",
+                "右顯示器(Body)": "RightMonitor_Body",     
                 "操作人員" : "Operator",                
                 "備註" : "Remark", 
             };
@@ -1526,7 +1546,7 @@
                     var dataLo = DownLoadValue.success;
                     //產生要寫入excel的data
                     //參數格式: original data -> toolbar data -> toolbar control data 
-                        DrowChart( dataLo, 
+                        DrowChart( 'Golden Sample', dataLo, 
                             chartTypeGroup, dataXaxisGroup, dataYaxisGroup, 
                             columnNameGroup, itemGroup, 
                             USLGroup, LSLGroup, UCLGroup, LCLGroup, LabelItem, DateItem,
