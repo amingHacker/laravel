@@ -72,9 +72,32 @@ function DrowChart( dataLo, chartTypeGroup, dataXaxisGroup, dataYaxisGroup,
                         var tmX = '', tmY ='';
                         var tID = '', tLabelItem = '', tSamplingTime;
 
-                        //parseFloat()
-                        if(parseFloat(dataLo[key][dataYaxisGroup[i]]) > parseFloat(YaxisMax[0])){continue;}
-                        if(parseFloat(dataLo[key][dataYaxisGroup[i]]) < parseFloat(YaxisMin[0])){continue;}
+                        //判斷目前此筆資料是否需要過濾，因資料來源有可能包含"<",">"符號，所以必須過濾
+
+                        var tmyRevpatern = [];
+                        if (dataLo[key][dataYaxisGroup[i]].indexOf("<")!= -1)
+                        {
+                            tmyRevpatern = dataLo[key][dataYaxisGroup[i]].split("<");
+                        }
+                        else if (dataLo[key][dataYaxisGroup[i]].indexOf(">")!= -1)
+                        {
+                            tmyRevpatern = dataLo[key][dataYaxisGroup[i]].split(">");
+                        }
+                        else 
+                        {
+                            tmyRevpatern = dataLo[key][dataYaxisGroup[i]].split("<");
+                        }
+                        
+                        dataLo[key][dataYaxisGroup[i]] = parseFloat(tmyRevpatern[tmyRevpatern.length - 1]);
+                        if(dataLo[key][dataYaxisGroup[i]] > parseFloat(YaxisMax[0]))
+                        {
+                            
+                            continue;
+                        }
+                        if(dataLo[key][dataYaxisGroup[i]] < parseFloat(YaxisMin[0]))
+                        {
+                            continue;
+                        }
                         
                         if (XAxisDataTransLate(dataXaxisGroup[i]) == 'typeDate')
                         {
@@ -101,21 +124,21 @@ function DrowChart( dataLo, chartTypeGroup, dataXaxisGroup, dataYaxisGroup,
                             tSamplingTime = dataLo[key][DateItem[0]];
                         }
 
-                        var tmyRevpatern = [];
-                        if (tmY.indexOf("<")!= -1)
-                        {
-                            tmyRevpatern = tmY.split("<");
-                        }
-                        else if (tmY.indexOf(">")!= -1)
-                        {
-                            tmyRevpatern = tmY.split(">");
-                        }
-                        else 
-                        {
-                            tmyRevpatern = tmY.split("<");
-                        }
+                        // var tmyRevpatern = [];
+                        // if (tmY.indexOf("<")!= -1)
+                        // {
+                        //     tmyRevpatern = tmY.split("<");
+                        // }
+                        // else if (tmY.indexOf(">")!= -1)
+                        // {
+                        //     tmyRevpatern = tmY.split(">");
+                        // }
+                        // else 
+                        // {
+                        //     tmyRevpatern = tmY.split("<");
+                        // }
                         
-                        tmY = parseFloat(tmyRevpatern[tmyRevpatern.length - 1]);
+                        // tmY = parseFloat(tmyRevpatern[tmyRevpatern.length - 1]);
 
                         dataToChartXGroup[i].push(tmX);
                         dataToChartYGroup[i].push(tmY);
@@ -378,6 +401,7 @@ function DrowChart( dataLo, chartTypeGroup, dataXaxisGroup, dataYaxisGroup,
                 ctx.fillText("Cpu: " + chart.options.addTextOnChart[i]["Cpu"], width * (widthbais + 0.1) , height * .03);
                 ctx.fillText("Cpl: " + chart.options.addTextOnChart[i]["Cpl"], width * (widthbais + 0.1), height * .05);
                 ctx.fillText("Cpk: " + chart.options.addTextOnChart[i]["Cpk"], width * (widthbais + 0.1), height * .07);
+                ctx.fillText("Outlier: " + chart.options.addTextOnChart[i]["Outlier"], width * (widthbais + 0.1), height * .09);
             }               
             return;
         }
@@ -437,7 +461,7 @@ function DrowChart( dataLo, chartTypeGroup, dataXaxisGroup, dataYaxisGroup,
         else {
             pointBackgroundColors.push("#FF0000");
             pointBorderColors.push("#FF0000");
-
+            window.myLine.data.datasets[0].data._chartjs.listeners[0].chart.options.addTextOnChart[0]["Outlier"] = parseInt(window.myLine.data.datasets[0].data._chartjs.listeners[0].chart.options.addTextOnChart[0]["Outlier"]) + 1;
         }
     }
 
@@ -592,8 +616,8 @@ function removeChartData()
                 window.myLine.data.datasets[removeDataSetIndex].data._chartjs.listeners[0].chart.options.addTextOnChart[removeDataSetIndex]["Mean"] = result["Mean"];
                 window.myLine.data.datasets[removeDataSetIndex].data._chartjs.listeners[0].chart.options.addTextOnChart[removeDataSetIndex]["Stddev"] = result["Stddev"];
                 window.myLine.data.datasets[removeDataSetIndex].data._chartjs.listeners[0].chart.options.addTextOnChart[removeDataSetIndex]["Cpu"] = result["Cpu"];
-                    window.myLine.data.datasets[removeDataSetIndex].data._chartjs.listeners[0].chart.options.addTextOnChart[removeDataSetIndex]["Cpl"] = result["Cpl"];
-                    window.myLine.data.datasets[removeDataSetIndex].data._chartjs.listeners[0].chart.options.addTextOnChart[removeDataSetIndex]["Cpk"] = result["Cpk"];
+                window.myLine.data.datasets[removeDataSetIndex].data._chartjs.listeners[0].chart.options.addTextOnChart[removeDataSetIndex]["Cpl"] = result["Cpl"];
+                window.myLine.data.datasets[removeDataSetIndex].data._chartjs.listeners[0].chart.options.addTextOnChart[removeDataSetIndex]["Cpk"] = result["Cpk"];
             }
 
             window.myLine.update();
@@ -634,6 +658,7 @@ function getDeviation(data, tUSL, tLSL)
         Cpu: tCpu,
         Cpl: tCpl,
         Cpk: tCpk,
+        Outlier:0,
     };
     return Result;
 }
@@ -663,6 +688,7 @@ function getDataYFromChart(data)
 /*更改BorderColor*/
 function changeBorderColor(data, UCL, LCL)
 {
+    window.myLine.data.datasets[0].data._chartjs.listeners[0].chart.options.addTextOnChart[0]["Outlier"] = 0;
     for(var i = 0 ; i < data.length; i++)
     {
         
@@ -676,6 +702,7 @@ function changeBorderColor(data, UCL, LCL)
         else {
             window.myLine.data.datasets[0].pointBackgroundColor[i] = '#FF0000';
             window.myLine.data.datasets[0].pointBorderColor[i] = '#FF0000';
+            window.myLine.data.datasets[0].data._chartjs.listeners[0].chart.options.addTextOnChart[0]["Outlier"] = parseInt(window.myLine.data.datasets[0].data._chartjs.listeners[0].chart.options.addTextOnChart[0]["Outlier"]) + 1;
         }
     }
 }
