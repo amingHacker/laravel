@@ -316,6 +316,10 @@ class AbnormalEventController extends Controller
             unset($AddParameter["table"]);
             unset($AddParameter["created_at"]);
             unset($AddParameter["caption"]);
+            if($AddParameter["PD_Comment"] != '')
+            {
+                $AddParameter["Status"] = '已解決';
+            }
             $updateData = DB::table($table)->where('id', $request->id);
             $updateData->update($AddParameter);
             return response()->json([
