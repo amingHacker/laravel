@@ -477,7 +477,8 @@ class SamplingRecordController extends Controller
                 'DMAH' => $RowData["DMAH"],
                 'equipment_name' => $RowData["equipment_name"],
                 'standard_solution' => $RowData["standard_solution"],
-                'sampling_kind' => $RowData["sampling_kind"],                    
+                'sampling_kind' => $RowData["sampling_kind"],
+                "Quattro_id" => $RowData["Quattro_id"],                    
             ]    
         );
     }
@@ -652,7 +653,8 @@ class SamplingRecordController extends Controller
             'DMAH',
             'equipment_name',
             'standard_solution', 
-            'sampling_kind',     
+            'sampling_kind',
+            "Quattro_id",     
             '建立時間',
             '更新時間'            
         ];
@@ -904,7 +906,8 @@ class SamplingRecordController extends Controller
             'IR_A' => 'IR A',
             "equipment_name" => '設備名稱',
             "standard_solution" => '標準液批號', 
-            "sampling_kind" => '取樣類別',                 
+            "sampling_kind" => '取樣類別',
+            "Quattro_id" => "Quattro編號",                 
         ];
 
         if (array_key_exists($col, $dbCol))

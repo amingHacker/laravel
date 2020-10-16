@@ -19,6 +19,6 @@ class SamplingRecord extends Model
         'Impurity_A', 'Impurity_B', 'Impurity_C', 'Impurity_D', 'Impurity_E', 'Impurity_F',
         '1H_NMR', 'Other_Metals', 'Parameter_B', 'Parameter_C', 'Parameter_D', 'Organic_impurity',
         '0_0ppm', '2_2ppm', '3_8ppm', '4_0ppm', 'Sum223840', 'IR_A', 'DMAH', 'id', 'equipment_name', 'standard_solution',
-        'sampling_kind',
+        'sampling_kind', "Quattro_id"
     ];
 }

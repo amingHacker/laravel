@@ -402,6 +402,7 @@
             "equipment_name":"設備名稱",
             "standard_solution":"標準液批號", 
             "sampling_kind": "取樣類別",
+            "Quattro_id" : "Quattro編號",
             created_at: "建立時間",
             updated_at: "更新時間",
         };
@@ -459,6 +460,7 @@
             "設備名稱" : "equipment_name",
             "標準液批號" : "standard_solution", 
             "取樣類別" : "sampling_kind",
+            "Quattro編號": "Quattro編號",
             "建立時間" : "created_at",
             "更新時間" : "updated_at" ,
         };
@@ -675,7 +677,9 @@
         <input type="BUTTON" class="btn btn-outline-info btn-space" id="ExportChart" value="圖表" />
         <input type="BUTTON" class="btn btn-outline-info btn-space" id="CloseChart" value="收合" />
         <input type="BUTTON" class="btn btn-outline-info btn-space" id="ViewLog" style="display: none" value="紀錄" />   
-    
+            
+        <input type="BUTTON" class="btn btn-outline-info btn-space" id="ExportTxt" value="Quattro" />
+
     </div>
 
     <div id="noChangeDialog" title="No change">
@@ -1387,7 +1391,8 @@
                 "IR A": "IR_A",
                 "設備名稱": "equipment_name",
                 "標準液批號": "standard_solution", 
-                "取樣類別": "sampling_kind"
+                "取樣類別": "sampling_kind",
+                "Quattro編號": "Quattro_id",
             };
             //新物件被刪除時，對應的物件也會一起刪掉，並產生新物件
             for(var i = 0;i < _upLoadData.length; i++){
@@ -1528,6 +1533,107 @@
             });                                       
         })
     }
+
+    /*產生Excel檔案*/
+    $("#ExportTxt").click(function(){        
+        
+        var o = $("#dg");
+        
+        var columnNames = o.jqGrid('getGridParam', 'colNames');//從grid獲得colnames
+
+        var rowNumber = o.jqGrid('getGridParam', 'records');//獲得搜尋後的紀錄筆數
+        
+        var postData = o.jqGrid('getGridParam', 'postData');//獲得搜尋條件
+
+        var getData = o.jqGrid('getGridParam', 'data');//獲得所有jqgrid的資料
+        
+        //o.jqGrid('setGridParam', { rowNum: rowNumber }).trigger('reloadGrid', [{current:true}]);//此方式可能會lag                  
+        
+        var rowData = o.jqGrid('getRowData');//獲得目前顯示在表格上的資料
+
+        if(rowNumber > 1){
+            alert("下載筆數超過1筆，請重新縮小範圍再進行下載。(The record is more than 1, please smaller the range and download again.) ");
+            return;
+        }
+
+        $.ajax({
+                async:false,
+                url: "SamplingRecord/export" ,//路徑
+                type: "POST",           
+                data:{
+                    "postData": postData,
+                },
+                success: function (DownLoadValue)
+                    {
+                        var dataExport = DownLoadValue.success;
+                        //產生要寫入excel的data
+                        var i = 1;
+                        var dataToExcel = [];    
+                        dataToExcel.push(columnNames);
+
+                        for(var key in dataExport)
+                        {
+                            var tmp = [];
+                            for (var p in dataExport[key])
+                            {
+                                tmp.push(dataExport[key][p]);
+                            }
+                            dataToExcel.push(tmp);
+                        }
+                        
+                        var myDate = new Date().toISOString().slice(0,10); 
+
+                        //檔名
+                        var idIndex = columnNames.indexOf("編號");
+                        var id = dataToExcel[1][idIndex];  
+                        var filename = myDate + '-'+ id + '-' + 'Quattro.txt';
+
+                        //下載
+                        var quattroidIndex =  columnNames.indexOf("Quattro編號");
+                        var quattroid =   dataToExcel[1][quattroidIndex];       
+                        var Quattro_txt = '';
+                        var instrument  = '';
+                            
+                        Quattro_txt += quattroid;
+                        Quattro_txt += '\r\n';
+                        Quattro_txt += 'TWAFQC01';
+                        Quattro_txt += '\r\n';
+
+                        for(var i = 1; i < dataToExcel.length; i ++)
+                        {
+                            for(var k = 0; k < dataToExcel[0].length; k ++)
+                            {      
+                                if(dataToExcel[0][k] == '分析項目')
+                                {
+                                    instrument = GetInstrument(dataToExcel[i][k]);
+                                }
+                           
+                                if (dataToExcel[i][k] != '')
+                                {
+                                     
+                                    if (TranslateElement(dataToExcel[0][k]) != '')
+                                    {
+                                        Quattro_txt += TranslateElement(dataToExcel[0][k]) + '-' + instrument;
+                                        Quattro_txt += '\r\n';
+                                        Quattro_txt += dataToExcel[i][k];
+                                        Quattro_txt += '\r\n';
+                                        Quattro_txt += '\r\n';
+                                        Quattro_txt += '\r\n';
+                                    }
+                                    
+                                }
+                            }
+                            
+                        }
+                        Quattro_txt += 'UPLOAD';
+
+                        var blob = new Blob([Quattro_txt], {type: "text/plain;charset=utf-8"});
+
+                        saveAs(blob, filename);
+                        
+                    }                               
+                });    
+    });
 </script>
 {{-- 表單輸出、輸入功能 End--}}
 
@@ -1782,6 +1888,128 @@ $("button#view-outlier").click(
             });     
     }
 );      
+</script>
+
+<script type="text/javascript">
+    function TranslateElement(tElement)
+    {
+        var Result = '';
+         //舊key到新key的映射，colName的轉換
+        var oldkey = {
+            "Sb" : "Antimony (Sb)",
+            "As" : "Arsenic (As)",	
+            "Ba" : "Barium (Ba)",
+            "Be" : "Beryllium (Be)",
+            "Bi" : "Bismuth (Bi)",
+            "B" : "Boron (B)",
+            "Cd" : "Cadmium (Cd)",
+            "Cr" : "Chromium (Cr)",
+            "Co" : "Cobalt (Co)",
+            "Cu" : "Copper (Cu)",
+            "Ge" : "Germanium (Ge)",
+            "Au" : "Gold (Au)",
+            "I" : "Iodine (I)",
+            "Fe" : "Iron (Fe)",
+            "La" : "Lanthanum (La)",
+            "Pb" : "Lead (Pb)",
+            "Li" : "Lithium (Li)",
+            "Mg" : "Magnesium (Mg)",
+            "Mn" : "Manganese (Mn)",
+            "Hg" : "Mercury (Hg)",
+            "Mo" : "Molybdenum (Mo)",
+            "Ni" : "Nickel (Ni)",
+            "Nb" : "Niobium (Nb)",
+            "MeO" : "Oxygen (O)",
+            "Pd" : "Palladium (Pd)",
+            "P"	: "Phosphorus (P)",
+            "Pt" : "Platinum (Pt)",
+            "Rh" : "Rhodium (Rh)",
+            "Se" : "Selenium (Se)",
+            "Si" : "Silicon (Si)",
+            "Ag" : "Silver (Ag)",
+            "Sr" : "Strontium (Sr)",
+            "S"	: "Sulphur (S)",
+            "Te" : "Tellurium (Te)",
+            "Tb" : "Terbium (Tb)",
+            "Sn" : "Tin (Sn)",
+            "Ti": "Titanium (Ti)",
+            "W"	: "Tungsten (W)",
+            "V" : "Vanadium (V)",
+            "Y"	: "Yttrium (Y)",
+            "Zn": "Zinc (Zn)",
+            "Ca" : "Calcium (Ca)",
+            "Ga" : "Gallium (Ga)",
+            "In" : "Indium (In)",
+            "Al" : "Aluminum (Al)",
+            "Ce" : "Cerium (Ce)",
+            "Cs" : "Cesium (Cs)",
+            "In" : "Indium (In)",
+            "K"	: "Potassium (K)",
+            "Na" : "Sodium (Na)",
+            "Rb" : "Rubidium (Rb)",
+            "Re" : "Rhenium (Re)",
+            "Ru" : "Ruthenium (Ru)",
+            "Ta" : "Tantalum (Ta)",
+            "Th" : "Thorium (Th)", 
+            "Tl" : "Thallium (Tl)",
+            "U"	: "Uranium (U)",
+            "Zr" : "Zirconium (Zr)",
+            "F"	: "Fluoride",
+            "Cl" :	"Chloride (Cl)",
+            "Hf" : "Hafnium (Hf)",
+            "Parameter A" :	"Parameter A",
+            "Impurity A" : "Impurity A",
+            "Impurity B" : "Impurity B",
+            "Impurity C" : "Impurity C",
+            "Impurity D" : "Impurity D",
+            "Parameter B" : "Parameter B",
+            "Parameter C" : "Parameter C",
+            "Parameter D" : "Parameter D",
+            "Assay(Purity)"	: "Assay",
+            "HC" : "Hydrocarbons",
+            "[δ0.0ppm]" : "NMR 0 PPM shift",
+            "Organic impurity" : "Organic Impurities",
+        };
+        for(var key in oldkey)
+        {        
+            if (tElement == key)
+            {
+                Result = oldkey[key];
+            }
+        }
+        return Result = (Result == '')?  '' : Result;
+    }
+
+    function GetInstrument(instrument)
+    {
+        var Result = '';
+         //舊key到新key的映射，colName的轉換
+        var oldkey = {
+            "ICP-MS": "MS",
+            "ICP-OES":"OES",
+            "NMR-neat":	"NMR",
+            "NMR-presat": "NMR",
+            "NMR": "NMR",
+            "Presat":"NMR",
+            "IC": "IC",
+            "GC": "GC",
+            "GC-MS": "GCMS",
+            "IR": "IR",
+            "HPLC": "LC",
+            "KF": "KF",
+            "UV":"UV",
+            "FT-IR"	: "IR"
+        };
+        for(var key in oldkey)
+        {        
+            if (instrument == key)
+            {
+                Result = oldkey[key];
+            }
+        }
+        return Result = (Result == '')?  '' : Result;
+    }
+
 </script>
 
 {{-- Show outlier Log End --}}
