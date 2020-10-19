@@ -762,6 +762,7 @@
 <ul id="Chartmenu" style="display:none;" >
     <li><a href="#" onclick="saveoutlierChartData();return false;"><span class="ui-icon ui-icon-disk"></span>Save</a></li>
     <li><a href="#" onclick="removeChartData();return false;"><span class="ui-icon ui-icon-trash"></span>Delete</a></li>
+    <li><a href="#" onclick="viewChartData();return false;"><span class="ui-icon ui-icon-search"></span>View</a></li>
 </ul>
 {{-- Chart選單 End --}}
 

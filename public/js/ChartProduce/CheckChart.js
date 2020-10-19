@@ -628,6 +628,132 @@ function removeChartData()
         }   
 }
 
+/**/ 
+function viewChartData( ){
+    var $menu = $('#Chartmenu');
+    $menu.hide();
+    var dataSetIndex = sessionStorage.getItem('operatingChartDataSetIndex');
+    var index= sessionStorage.getItem('operatingChartIndex');
+    var outlier = window.myLine.data.datasets[dataSetIndex].data[index];
+    var outlier_data = [];
+    outlier_data.push(outlier["id"]);
+  
+    $.ajax({
+            async:false,
+            url: "SamplingRecord/GetDataFromID" ,//路徑
+            type: "POST",           
+            data:{
+                "postData": outlier_data,
+            },
+            success: function (DownLoadValue){
+                var data = DownLoadValue.success;
+                //產生要寫入excel的data
+                var table = "import_preview";
+                var pcontent = '<span style="font-weight:bold; color:#2e6e9e;">《 極端值 view outlier  》</span><br /><br />' + '<table id= '+ table + '></table><div id="import_previewPager"></div>';
+                
+                //建立動態表格
+                $("#confirmDialog").html(pcontent);
+                var colNames = [];
+                var colModel = [];
+                
+                for ( var colName in data[0])
+                {
+                    colNames.push(getColumnNameFromDatabaseToChinese(colName));
+                }
+
+                for ( var colName in data[0])
+                {           
+                    if (colName === 'id')
+                    {
+                        colModel.push({name:colName, index:colName, align:"center", width:84, frozen:true, sortable:true, sorttype:"int"});
+                    }
+                    else
+                    {
+                        colModel.push({name:colName, index:colName, align:"center", width:112});
+                    }
+                }
+                
+                $("#" + table).jqGrid({      
+                    datatype: "local",
+                    data:data,
+                    colNames: colNames,
+                    colModel: colModel,
+                    width: 896,
+                    height: 'auto',
+                    sortname: 'id',
+                    sortorder: "asc",
+                    hidegrid: false,
+                    cmTemplate: { title: false },   // Hide Tooltip
+                    gridview: true,
+                    shrinkToFit: false,
+                    rowNum:10,
+                    rowList:[10,20,50],
+                    pager: '#import_previewPager',
+                    caption: "極端值紀錄 Outlier Log", 
+                    loadComplete: function (){ fixPositionsOfFrozenDivs.call(this); }, // Fix column's height are different after enable frozen column feature 
+                    gridComplete: function() { $("#" + table).jqGrid('setFrozenColumns');}
+                });
+                
+                
+                //$("#" + table).jqGrid('setFrozenColumns');
+                //增加Tool bar        
+                $("#" + table).jqGrid('navGrid','#import_previewPager', { search:true, edit:false, add:false, del:false, refresh:true } );
+                    
+
+                $("#confirmDialog").dialog({
+                    width:'auto', height:'auto', autoResize:true, modal:true, closeText:"關閉", 
+                    resizable:true, closeOnEscape:true, dialogClass:'top-dialog',position:['center',168],
+                    show:{effect: "fade", duration: 140},
+                    hide:{effect: "clip", duration: 140},
+                    focus: function() { $(".ui-dialog").focus(); }, // Unfocus the default focus elem
+                    buttons : {
+                        "關閉" : function() {
+                            $(this).dialog("close");
+                                                                               
+                        },
+                        "清除極端值" : function() {
+                            var answer = window.confirm("確認清除極端值?");
+                            if (answer)
+                            {
+                                clearoutlierChartData();
+                                $(this).dialog("close");
+                            }
+                                                                               
+                        },
+                        "下載": function(){
+                            var dataExport = DownLoadValue.success;
+                            //產生要寫入excel的data
+                            var i = 1;
+                            var dataToExcel = [];    
+                            dataToExcel.push(colNames);
+
+                            for(var key in dataExport)
+                            {
+                                var tmp = [];
+                                for (var p in dataExport[key])
+                                {
+                                    tmp.push(dataExport[key][p]);
+                                }
+                                dataToExcel.push(tmp);
+                            }
+                            
+                            var myDate = new Date().toISOString().slice(0,10); 
+
+                            //檔名
+                            var filename = myDate + '-' + 'OutlierLog.xlsx';
+
+                            //表名
+                            var sheetname = 'Sheet';
+
+                            //下載
+                            downloadxlsx(filename, sheetname, dataToExcel);             
+                                    }
+                    }
+                });                                                   
+            }                               
+        });     
+}
+
 /*獲得標準差, UCL, LCL*/
 function getDeviation(data, tUSL, tLSL)
 {   
