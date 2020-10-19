@@ -1551,8 +1551,8 @@
         
         var rowData = o.jqGrid('getRowData');//獲得目前顯示在表格上的資料
 
-        if(rowNumber > 1){
-            alert("下載筆數超過1筆，請重新縮小範圍再進行下載。(The record is more than 1, please smaller the range and download again.) ");
+        if(rowNumber > 1000){
+            alert("下載筆數超過1000筆，請重新縮小範圍再進行下載。(The record is more than 1, please smaller the range and download again.) ");
             return;
         }
 
@@ -1589,18 +1589,19 @@
                         var filename = myDate + '-'+ id + '-' + 'Quattro.txt';
 
                         //下載
-                        var quattroidIndex =  columnNames.indexOf("Quattro編號");
-                        var quattroid =   dataToExcel[1][quattroidIndex];       
+                        var quattroidIndex =  columnNames.indexOf("Quattro編號");                   
                         var Quattro_txt = '';
                         var instrument  = '';
                             
-                        Quattro_txt += quattroid;
-                        Quattro_txt += '\r\n';
-                        Quattro_txt += 'TWAFQC01';
-                        Quattro_txt += '\r\n';
+                     
 
                         for(var i = 1; i < dataToExcel.length; i ++)
                         {
+                            var quattroid =  dataToExcel[i][quattroidIndex];    
+                            Quattro_txt += quattroid;
+                            Quattro_txt += '\r\n';
+                            Quattro_txt += 'TWAFQC01';
+                            Quattro_txt += '\r\n';
                             for(var k = 0; k < dataToExcel[0].length; k ++)
                             {      
                                 if(dataToExcel[0][k] == '分析項目')
