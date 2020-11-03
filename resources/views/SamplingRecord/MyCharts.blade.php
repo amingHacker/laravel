@@ -384,7 +384,7 @@
 
         var _ChartTypeSource = ["Scatter Chart", "Control Chart"];
         var _xAxisSource = ["取樣日期", "次數", "批號"];
-        var _yAxisSource = ["MeO", "Assay", "HC", "Si", "Sn", "Al", "I", "Fe", "Zn", "Ag", "As", "Au", "B", "Ba",
+        var _yAxisSource = ["MeO", "Assay (Purity)", "HC", "Si", "Sn", "Al", "I", "Fe", "Zn", "Ag", "As", "Au", "B", "Ba",
                             "Be", "Bi", "Ca", "Cd", "Ce", "Co", "Cr", "Cs", "Cu", "Ga", "Ge", "Hg", "In", "K",
                             "La", "Li", "Mg", "Mn", "Mo", "Na", "Nb", "Ni", "P", "Pb", "Pd", "Pt", "Rb", "Re", "Rh", 
                             "Ru", "S", "Sb", "Se", "Sr", "Ta", "Tb", "Te", "Th", "Ti", "Tl", "U", "V", "W", "Y", "Zr", 
@@ -394,7 +394,7 @@
                         ];
         var _GroupSource = ["品名","等級", "瓶號","批號", "取樣者", "樣品來源", 
             "分析項目","分析者", "完成日","判定", "備註", "設備名稱", 
-            "MeO", "Assay", "HC", "Si", "Sn", "Al", "I", "Fe", "Zn", "Ag", "As", "Au", "B", "Ba",
+            "MeO", "Assay (Purity)", "HC", "Si", "Sn", "Al", "I", "Fe", "Zn", "Ag", "As", "Au", "B", "Ba",
             "Be", "Bi", "Ca", "Cd", "Ce", "Co", "Cr", "Cs", "Cu", "Ga", "Ge", "Hg", "In", "K",
             "La", "Li", "Mg", "Mn", "Mo", "Na", "Nb", "Ni", "P", "Pb", "Pd", "Pt", "Rb", "Re", "Rh", 
             "Ru", "S", "Sb", "Se", "Sr", "Ta", "Tb", "Te", "Th", "Ti", "Tl", "U", "V", "W", "Y", "Zr", 
@@ -795,6 +795,7 @@
     var LabelItem = [];  //紀錄要在圖面呈現的欄位資訊
     var DateItem = [];  //紀錄data日期資訊
     var YaxisMax = [], YaxisMin = [];  //紀錄Y軸的最大值與最小值
+    var SPCRule = [];  //紀錄Y軸的最大值與最小值
     
     for(var j = 0; j < 1; j++)
     {
@@ -830,8 +831,11 @@
         var toolsBarChartRange = $("#jqxToolBarChartRange" + ( j + 1 )).jqxToolBar("getTools");
         var tYaxisMax = toolsBarChartRange[1].tool[0].value;
         var tYaxisMin = toolsBarChartRange[3].tool[0].value;
+        var tSPCRule = toolsBarChartRange[5].tool[0].lastChild.value;
+        
         YaxisMax.push(tYaxisMax);
         YaxisMin.push(tYaxisMin);
+        SPCRule.push(tSPCRule);
     }
     
     //檢查選擇Control Chart時，Group 不能大於1組以上，UCL 或LCL需同時為空或有值避免Center Line計算錯誤
@@ -949,7 +953,7 @@
                             //取得資料庫的Toolbar的資料 
                             var toolsBarChartRange = $("#jqxToolBarChartRange" + ( j + 1 )).jqxToolBar("getTools");
                             $(toolsBarChartRange[1].tool[0]).jqxInput('val', ToolBarData["YaxisMax"]);
-                            $(toolsBarChartRange[3].tool[0]).jqxInput('val', ToolBarData["YaxisMin"]);
+                            $(toolsBarChartRange[3].tool[0]).jqxInput('val', ToolBarData["YaxisMin"]);                          
                         }
                     }
                 
@@ -973,6 +977,7 @@
                     var LabelItem = [];  //紀錄要在圖面呈現的欄位資訊
                     var DateItem = [];  //紀錄data日期資訊
                     var YaxisMax = [], YaxisMin = [];  //紀錄Y軸的最大值與最小值
+                    var SPCRule = [];  //紀錄Y軸的最大值與最小值
                 
                     for(var j = 0; j < num_tabs; j++)
                     {
@@ -1008,8 +1013,11 @@
                         var toolsBarChartRange = $("#jqxToolBarChartRange" + ( j + 1 )).jqxToolBar("getTools");
                         var tYaxisMax = toolsBarChartRange[1].tool[0].value;
                         var tYaxisMin = toolsBarChartRange[3].tool[0].value;
+                        var tSPCRule = toolsBarChartRange[5].tool[0].lastChild.value;
+
                         YaxisMax.push(tYaxisMax);
                         YaxisMin.push(tYaxisMin);
+                        SPCRule.push(tSPCRule);
                     }
                     
                     //檢查選擇Control Chart時，Group 不能大於1組以上，UCL 或LCL需同時為空或有值避免Center Line計算錯誤
@@ -1043,7 +1051,7 @@
                                         chartTypeGroup, dataXaxisGroup, dataYaxisGroup, 
                                         columnNameGroup, itemGroup, 
                                         USLGroup, LSLGroup, UCLGroup, LCLGroup, LabelItem, DateItem,
-                                        YaxisMax, YaxisMin
+                                        YaxisMax, YaxisMin, SPCRule
                                     );                  
                                 }                               
                             });                 

@@ -1483,6 +1483,7 @@
         var LabelItem = [];  //紀錄要在圖面呈現的欄位資訊
         var DateItem = [];  //紀錄data日期資訊
         var YaxisMax = [], YaxisMin = [];  //紀錄Y軸的最大值與最小值
+        var SPCRule = [];  //紀錄Y軸的最大值與最小值
      
         for(var j = 0; j < num_tabs; j++)
         {
@@ -1518,8 +1519,11 @@
             var toolsBarChartRange = $("#jqxToolBarChartRange" + ( j + 1 )).jqxToolBar("getTools");
             var tYaxisMax = toolsBarChartRange[1].tool[0].value;
             var tYaxisMin = toolsBarChartRange[3].tool[0].value;
+            var tSPCRule = toolsBarChartRange[5].tool[0].lastChild.value;
+            
             YaxisMax.push(tYaxisMax);
             YaxisMin.push(tYaxisMin);
+            SPCRule.push(tSPCRule);
         }
         
         //檢查選擇Control Chart時，Group 不能大於1組以上，UCL 或LCL需同時為空或有值避免Center Line計算錯誤

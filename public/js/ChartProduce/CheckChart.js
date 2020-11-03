@@ -42,7 +42,7 @@ function XAxisDataTransLate(data)
 
 /*產生圖表*/
 function DrowChart( ChartTitle, dataLo, chartTypeGroup, dataXaxisGroup, dataYaxisGroup,  
-    columnNameGroup, itemGroup, USLGroup, LSLGroup, UCLGroup, LCLGroup, LabelItem, DateItem, YaxisMax, YaxisMin)
+    columnNameGroup, itemGroup, USLGroup, LSLGroup, UCLGroup, LCLGroup, LabelItem, DateItem, YaxisMax, YaxisMin, SPCRule)
 {         
     //實際產生Chart資料的陣列
     var dataToChartXGroup = [], dataToChartYGroup = []; 
@@ -265,8 +265,13 @@ function DrowChart( ChartTitle, dataLo, chartTypeGroup, dataXaxisGroup, dataYaxi
                 "text":"LCL=" + ((LCLGroup[i] != '')? LCLGroup[i] : UpandDown[i]["LCL"].toString()),
             },
 
-        ]            
+        ]
         
+        //UCL LCL Mean值的變更
+        UpandDown[i]["UCL"] = horizontalLinetmp[0]["y"];
+        UpandDown[i]["Mean"] = horizontalLinetmp[1]["y"];
+        UpandDown[i]["LCL"] = horizontalLinetmp[2]["y"];
+
         for(var j in horizontalLinetmp)
         {
             horizontalLineScales.push(horizontalLinetmp[j]);
@@ -447,12 +452,62 @@ function DrowChart( ChartTitle, dataLo, chartTypeGroup, dataXaxisGroup, dataYaxi
         }  
     );
 
+    var tSPCRule = SPCRule[0].split(",");
+    //產生SPC圖表
     for (i = 0; i < window.myLine.data.datasets[0].data.length; i++) 
     {
-        if (
-            (parseFloat(window.myLine .data.datasets[0].data[i]["y"]) <= ((UCLGroup[0] != '')? parseFloat(UCLGroup[0]) : parseFloat(UpandDown[0]["UCL"]))) && 
-            (parseFloat(window.myLine .data.datasets[0].data[i]["y"]) >= ((LCLGroup[0] != '')? parseFloat(LCLGroup[0]) : parseFloat(UpandDown[0]["LCL"])))
-        ) 
+        var judgeColor = 'normal';
+
+        // 1.超過三個標準差
+        if (tSPCRule.find(element => element == '1.超過3個標準差') != undefined)
+        {
+            if (
+                !(
+                    (parseFloat(window.myLine .data.datasets[0].data[i]["y"]) <= ((UCLGroup[0] != '')? parseFloat(UCLGroup[0]) : parseFloat(UpandDown[0]["UCL"]))) && 
+                    (parseFloat(window.myLine .data.datasets[0].data[i]["y"]) >= ((LCLGroup[0] != '')? parseFloat(LCLGroup[0]) : parseFloat(UpandDown[0]["LCL"])))
+                )
+            )
+                {
+                    judgeColor = 'abnormal';
+                }
+        }
+        
+        // 2.連續九點在中線同一側
+        if (tSPCRule.find(element => element == '2.連續九點在中線同一側') != undefined)
+        {  
+            if ( JudgeSPCRule(i, window.myLine .data.datasets[0].data[i]["y"], window.myLine.data.datasets[0].data, window.myLine.data.datasets[0].data._chartjs.listeners[0].chart.options, 'PointOnSameSide') == 'true')
+            {
+                judgeColor = 'abnormal';
+            }
+        }
+        
+        // 3.連續六點呈現上升或下降
+        if (tSPCRule.find(element => element == '3.連續六點呈現上升或下降') != undefined)
+        {  
+            if ( JudgeSPCRule(i, window.myLine .data.datasets[0].data[i]["y"], window.myLine.data.datasets[0].data, window.myLine.data.datasets[0].data._chartjs.listeners[0].chart.options, 'PointIncrease') == 'true')
+            {
+                judgeColor = 'abnormal';
+            }
+        }
+        
+        // 4.連續三點中的兩點落在2個標準差之外
+        if (tSPCRule.find(element => element == '4.連續三點中的兩點落在2個標準差之外') != undefined)
+        {  
+            if ( JudgeSPCRule(i, window.myLine .data.datasets[0].data[i]["y"], window.myLine.data.datasets[0].data, window.myLine.data.datasets[0].data._chartjs.listeners[0].chart.options, 'PointOut2Sigma') == 'true')
+            {
+                judgeColor = 'abnormal';
+            }
+        }
+        // 5.連續五點中的四點落在1個標準差之外
+        if (tSPCRule.find(element => element == '5.連續五點中的四點落在1個標準差之外') != undefined)
+        {
+            if ( JudgeSPCRule(i, window.myLine .data.datasets[0].data[i]["y"], window.myLine.data.datasets[0].data, window.myLine.data.datasets[0].data._chartjs.listeners[0].chart.options, 'PointOut1Sigma') == 'true')
+            {
+                judgeColor = 'abnormal';
+            }
+        }
+
+        if (judgeColor == 'normal') 
         {
             // pointBackgroundColors.push("rgba(255, 99, 132, .2)");
             pointBackgroundColors.push("#00c434");
@@ -463,6 +518,22 @@ function DrowChart( ChartTitle, dataLo, chartTypeGroup, dataXaxisGroup, dataYaxi
             pointBorderColors.push("#FF0000");
             window.myLine.data.datasets[0].data._chartjs.listeners[0].chart.options.addTextOnChart[0]["Outlier"] = parseInt(window.myLine.data.datasets[0].data._chartjs.listeners[0].chart.options.addTextOnChart[0]["Outlier"]) + 1;
         }
+
+        // var judgeColor = 'normal';
+        // if (
+        //     (parseFloat(window.myLine .data.datasets[0].data[i]["y"]) <= ((UCLGroup[0] != '')? parseFloat(UCLGroup[0]) : parseFloat(UpandDown[0]["UCL"]))) && 
+        //     (parseFloat(window.myLine .data.datasets[0].data[i]["y"]) >= ((LCLGroup[0] != '')? parseFloat(LCLGroup[0]) : parseFloat(UpandDown[0]["LCL"])))
+        // ) 
+        // {
+        //     // pointBackgroundColors.push("rgba(255, 99, 132, .2)");
+        //     pointBackgroundColors.push("#00c434");
+        //     pointBorderColors.push("#00c434");
+        // } 
+        // else {
+        //     pointBackgroundColors.push("#FF0000");
+        //     pointBorderColors.push("#FF0000");
+        //     window.myLine.data.datasets[0].data._chartjs.listeners[0].chart.options.addTextOnChart[0]["Outlier"] = parseInt(window.myLine.data.datasets[0].data._chartjs.listeners[0].chart.options.addTextOnChart[0]["Outlier"]) + 1;
+        // }
     }
 
     window.myLine.update();
@@ -562,6 +633,9 @@ function removeChartData()
                 var tLSL = toolsConChart[3].tool[0].value;
                 var tUCL = toolsConChart[5].tool[0].value;
                 var tLCL = toolsConChart[7].tool[0].value;
+
+                var toolsBarChartRange = $("#jqxToolBarChartRange1").jqxToolBar("getTools");
+                var tSPCRule = toolsBarChartRange[5].tool[0].lastChild.value;
                 
                 
                 window.myLine.data.datasets[removeDataSetIndex].pointBackgroundColor.splice(removeIndex, 1);
@@ -596,7 +670,7 @@ function removeChartData()
                     }
                     //重新給予Y軸Data顏色
                     
-                    changeBorderColor(_newYdata,  result["UCL"],  result["LCL"]);
+                    changeBorderColor(_newYdata,  result["UCL"],  result["LCL"], tSPCRule);
 
                     window.myLine.data.datasets[removeDataSetIndex].data._chartjs.listeners[0].chart.options.addTextOnChart[removeDataSetIndex]["Item"] = result["Item"];
                     window.myLine.data.datasets[removeDataSetIndex].data._chartjs.listeners[0].chart.options.addTextOnChart[removeDataSetIndex]["Mean"] = result["Mean"];
@@ -687,24 +761,87 @@ function getDataYFromChart(data)
 }
 
 /*更改BorderColor*/
-function changeBorderColor(data, UCL, LCL)
+function changeBorderColor(data, UCL, LCL, SPCRule)
 {
     window.myLine.data.datasets[0].data._chartjs.listeners[0].chart.options.addTextOnChart[0]["Outlier"] = 0;
+    var tSPCRule = SPCRule.split(",");
+
     for(var i = 0 ; i < data.length; i++)
     {
+
+        var judgeColor = 'normal';
+
+        // 1.超過三個標準差
+        if (tSPCRule.find(element => element == '1.超過3個標準差') != undefined)
+        {
+            if (
+                !(
+                    parseFloat(data[i]) <  parseFloat(UCL) && parseFloat(data[i]) >  parseFloat(LCL)
+                )
+            )
+                {
+                    judgeColor = 'abnormal';
+                }
+        }
         
-        if (
-            parseFloat(data[i]) <  parseFloat(UCL) && parseFloat(data[i]) >  parseFloat(LCL)
-        ) 
-         {
+        // 2.連續九點在中線同一側
+        if (tSPCRule.find(element => element == '2.連續九點在中線同一側') != undefined)
+        {  
+            if ( JudgeSPCRule(i, data[i], window.myLine.data.datasets[0].data, window.myLine.data.datasets[0].data._chartjs.listeners[0].chart.options, 'PointOnSameSide') == 'true')
+            {
+                judgeColor = 'abnormal';
+            }
+        }
+        
+        // 3.連續六點呈現上升或下降
+        if (tSPCRule.find(element => element == '3.連續六點呈現上升或下降') != undefined)
+        {  
+            if ( JudgeSPCRule(i, data[i], window.myLine.data.datasets[0].data, window.myLine.data.datasets[0].data._chartjs.listeners[0].chart.options, 'PointIncrease') == 'true')
+            {
+                judgeColor = 'abnormal';
+            }
+        }
+        
+        // 4.連續三點中的兩點落在2個標準差之外
+        if (tSPCRule.find(element => element == '4.連續三點中的兩點落在2個標準差之外') != undefined)
+        {  
+            if ( JudgeSPCRule(i, data[i], window.myLine.data.datasets[0].data, window.myLine.data.datasets[0].data._chartjs.listeners[0].chart.options, 'PointOut2Sigma') == 'true')
+            {
+                judgeColor = 'abnormal';
+            }
+        }
+        // 5.連續五點中的四點落在1個標準差之外
+        if (tSPCRule.find(element => element == '5.連續五點中的四點落在1個標準差之外') != undefined)
+        {
+            if ( JudgeSPCRule(i, data[i], window.myLine.data.datasets[0].data, window.myLine.data.datasets[0].data._chartjs.listeners[0].chart.options, 'PointOut1Sigma') == 'true')
+            {
+                judgeColor = 'abnormal';
+            }
+        }
+
+        if (judgeColor == 'normal') 
+        {    
             window.myLine.data.datasets[0].pointBackgroundColor[i] = '#00c434';
             window.myLine.data.datasets[0].pointBorderColor[i] = '#00c434';
-         } 
+        } 
         else {
             window.myLine.data.datasets[0].pointBackgroundColor[i] = '#FF0000';
             window.myLine.data.datasets[0].pointBorderColor[i] = '#FF0000';
             window.myLine.data.datasets[0].data._chartjs.listeners[0].chart.options.addTextOnChart[0]["Outlier"] = parseInt(window.myLine.data.datasets[0].data._chartjs.listeners[0].chart.options.addTextOnChart[0]["Outlier"]) + 1;
         }
+     
+        // if (
+        //     parseFloat(data[i]) <  parseFloat(UCL) && parseFloat(data[i]) >  parseFloat(LCL)
+        // ) 
+        //  {
+        //     window.myLine.data.datasets[0].pointBackgroundColor[i] = '#00c434';
+        //     window.myLine.data.datasets[0].pointBorderColor[i] = '#00c434';
+        //  } 
+        // else {
+        //     window.myLine.data.datasets[0].pointBackgroundColor[i] = '#FF0000';
+        //     window.myLine.data.datasets[0].pointBorderColor[i] = '#FF0000';
+        //     window.myLine.data.datasets[0].data._chartjs.listeners[0].chart.options.addTextOnChart[0]["Outlier"] = parseInt(window.myLine.data.datasets[0].data._chartjs.listeners[0].chart.options.addTextOnChart[0]["Outlier"]) + 1;
+        // }
     }
 }
 
@@ -948,5 +1085,131 @@ function checkChartWithGroup(chartTypeGroup, UCLGroup, LCLGroup)
         }    
     }
 
+    return result;
+}
+
+// JudgeSPCRule(i, window.myLine .data.datasets[0].data[i]["y"], window.myLine.data.datasets[0].data, UpandDown[0], 'PointOnSameSide')
+/*判斷SPC Rule */
+function JudgeSPCRule( index, point, OriginalData, condition, type )
+{
+    var result = 'false';
+    
+    switch (type){
+        //2.連續九點在中線同一側
+        case 'PointOnSameSide': 
+                if (index < 8 ){result = 'false'; break;}
+                else{ 
+                    var Center = condition.addTextOnChart[0]["Mean"];
+                    var side = Math.sign(point - Center); //判斷此點在中線的上或下
+                    for(var i = index - 1; i >= index - 8; i--)
+                    {
+                       if ( Math.sign(OriginalData[i]["y"] - Center) != side )
+                       {
+                            return result = 'false';
+                       } 
+                    }
+                    result = 'true';
+                }
+                break;
+        
+        //3.連續六點呈現上升或下降
+        case 'PointIncrease':
+
+                if (index < 5 ){result = 'false'; break;}
+                else{
+                    var side = Math.sign(point - OriginalData[index - 1]["y"]); //判斷此點是否大於或小於上一點
+                    if (side == 0){ return result = 'false';}
+                    for(var i = index -1; i > index - 5; i--)
+                    {   
+                        if (  Math.sign(OriginalData[i]["y"] - OriginalData[i - 1]["y"]) != side )
+                        {
+                            return result = 'false';
+                        } 
+                    }
+                    result = 'true';
+                }
+                break;
+        
+        //4.連續三點中的兩點落在2個標準差之外
+        case 'PointOut2Sigma':
+                
+                if (index < 2){result = 'false'; break;}
+                else
+                {
+                    var sigma2Positive = parseFloat(condition.addTextOnChart[0]["Mean"]) + 2 * parseFloat(condition.addTextOnChart[0]["Stddev"]);
+                    var sigma2Negative = parseFloat(condition.addTextOnChart[0]["Mean"]) - 2 * parseFloat(condition.addTextOnChart[0]["Stddev"]);
+                    //大於兩個標準差
+                    if (point > sigma2Positive){
+                        for(var i = index -1; i >= index - 2; i--)
+                        {
+                            if(OriginalData[i]["y"] > sigma2Positive)
+                            {
+                                return result = 'true';
+                            }
+                        }
+                    }
+                    //小於兩個標準差
+                    else if (point < sigma2Negative)
+                    {
+                        for(var i = index -1 ; i >= index - 2; i--)
+                        {
+                            if(OriginalData[i]["y"] < sigma2Negative)
+                            {
+                                return result = 'true';
+                            }
+                        }
+                    }
+                    //其他
+                    else
+                    {
+                        return result = 'false';
+                    }
+                }
+            break;
+        //5.連續五點中的四點落在1個標準差之外
+        case 'PointOut1Sigma':
+                
+                if (index < 4){result = 'false'; break;}
+                else
+                {
+                    var sigma1Positive = parseFloat(condition.addTextOnChart[0]["Mean"]) + 1 * parseFloat(condition.addTextOnChart[0]["Stddev"]);
+                    var sigma1Negative = parseFloat(condition.addTextOnChart[0]["Mean"]) - 1 * parseFloat(condition.addTextOnChart[0]["Stddev"]);
+                    //大於1個標準差
+                    if (point > sigma1Positive){
+                        var count = 0;
+                        for(var i = index -1; i >= index - 4; i--)
+                        {
+                            if(OriginalData[i]["y"] > sigma1Positive)
+                            {
+                                count++;
+                            }
+                        }
+                        if (count >= 3){
+                            result = 'true';
+                        }
+                    }
+                    //小於1個標準差
+                    else if (point < sigma1Negative)
+                    {
+                        var count = 0;
+                        for(var i = index -1; i >= index - 4; i--)
+                        {
+                            if(OriginalData[i]["y"] < sigma1Negative)
+                            {
+                                count++;
+                            }
+                        }
+                        if (count >= 3){
+                            result = 'true';
+                        }
+                    }
+                    //其他
+                    else
+                    {
+                        return result = 'false';
+                    }
+                }
+            break;                         
+    }
     return result;
 }

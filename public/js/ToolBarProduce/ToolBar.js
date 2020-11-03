@@ -140,8 +140,8 @@ function createToolbar(num_tabs, _ChartTypeSource, _xAxisSource, _yAxisSource, _
 
     $("#jqxToolBarChartRange" + num_tabs).jqxToolBar({ 
         width: "1000", height: '35', 
-        tools: "toggleButton input | toggleButton input",
-        // tools: "toggleButton input | toggleButton input | dropdownlist",
+        // tools: "toggleButton input | toggleButton input",
+        tools: "toggleButton input | toggleButton input | toggleButton dropdownlist",
         initTools: function (type, index, tool, menuToolIninitialization) 
         {
             switch (index) 
@@ -160,21 +160,25 @@ function createToolbar(num_tabs, _ChartTypeSource, _xAxisSource, _yAxisSource, _
                 case 3:
                     tool.jqxInput({ width: 120, placeHolder: "Type here..." })
                     break;
-                // case 4:
-                    
-                //     if (menuToolIninitialization === false) {
-                //         ddlistjobtype = tool;
-                //         } else {
-                //         ddlistjobtypeMin = tool;
-                //         }
-                //         jobtype_source = ['Backup', 'napshot', 'estore'];
-                //         tool.jqxDropDownList({ width: '150px', height: '25px', source: jobtype_source, checkboxes:true });
-                //         tool.jqxDropDownList( 'checkItem', 'Backup' );
-                //         tool.jqxDropDownList( 'checkItem', 'napshot' );
-                //         tool.jqxDropDownList( 'checkItem', 'estore' );
-                //         break;
+                case 4:
+                    tool.jqxToggleButton({ width: 80, toggled: true });
+                    tool.text("SPC規則:");
+                    break;
+                case 5:           
+                    if (menuToolIninitialization === false) {
+                        ddlistjobtype = tool;
+                        } else {
+                        ddlistjobtypeMin = tool;
+                        }
+                        jobtype_source = ['1.超過3個標準差', '2.連續九點在中線同一側', '3.連續六點呈現上升或下降',
+                            '4.連續三點中的兩點落在2個標準差之外', '5.連續五點中的四點落在1個標準差之外',
+                    ];
+                        tool.jqxDropDownList({ width: 205, source: jobtype_source, checkboxes:true });
+                        tool.jqxDropDownList( 'checkItem', '1.超過3個標準差' );
+                       
+                        break;
                    
-                //     break;
+                    break;
             }
         }
     });

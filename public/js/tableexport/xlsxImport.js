@@ -158,8 +158,6 @@ function ExcelImportf(obj) {
                         {
                             _datatotrim[tmp][key] = _datatotrim[tmp][key].trim();
                         }
-
-
                    }               
                 }
                 const ReturnData = JSON.stringify( _datatotrim ) ;
