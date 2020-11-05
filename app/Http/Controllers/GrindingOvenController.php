@@ -321,10 +321,28 @@ class GrindingOvenController extends Controller
         //dd($updateItemSelect);
 
         //update bulk batch 的assay, meo
-        $t1 = DB::table('sublimations')->where('bulk_batch', $RowData["1st_bulk_batch"])->where('judge', 'Pass')->first();//得到陣列
-        $t2 = DB::table('sublimations')->where('bulk_batch', $RowData["2nd_bulk_batch"])->where('judge', 'Pass')->first();//得到陣列
-        $t3 = DB::table('sublimations')->where('bulk_batch', $RowData["3rd_bulk_batch"])->where('judge', 'Pass')->first();//得到陣列
+        // $t1 = DB::table('sublimations')->where('bulk_batch', $RowData["1st_bulk_batch"])->where('judge', 'Pass')->first();//得到陣列
+        // $t2 = DB::table('sublimations')->where('bulk_batch', $RowData["2nd_bulk_batch"])->where('judge', 'Pass')->first();//得到陣列
+        // $t3 = DB::table('sublimations')->where('bulk_batch', $RowData["3rd_bulk_batch"])->where('judge', 'Pass')->first();//得到陣列
 
+        // $t1MeO = DB::table('sampling_records')->where('batch_number', $RowData["1st_bulk_batch"])->where((function($query){
+        //     $query->where('MeO', '!=', '')
+        //           ->orWhere('Assay', '!=', '');
+        // }))->orderBy('id', 'desc')->first();//得到陣列
+        $t1MeO = ($RowData["1st_bulk_batch"]!='')? DB::table('sampling_records')->where('batch_number', $RowData["1st_bulk_batch"])->where('MeO', '!=', '')
+                ->orderBy('id', 'desc')->first() : null;//得到陣列
+        $t1Assay = ($RowData["1st_bulk_batch"]!='')? DB::table('sampling_records')->where('batch_number', $RowData["1st_bulk_batch"])->where('Assay', '!=', '')
+        ->orderBy('id', 'desc')->first(): null;//得到陣列    
+        $t2MeO = ($RowData["2nd_bulk_batch"]!='')? DB::table('sampling_records')->where('batch_number', $RowData["2nd_bulk_batch"])->where('MeO', '!=', '')
+        ->orderBy('id', 'desc')->first():null;//得到陣列
+        $t2Assay = ($RowData["2nd_bulk_batch"]!='')? DB::table('sampling_records')->where('batch_number', $RowData["2nd_bulk_batch"])->where('Assay', '!=', '')
+        ->orderBy('id', 'desc')->first() : null;//得到陣列
+        $t3MeO = ($RowData["3rd_bulk_batch"]!='')?DB::table('sampling_records')->where('batch_number', $RowData["3rd_bulk_batch"])->where('MeO', '!=', '')
+        ->orderBy('id', 'desc')->first(): null;//得到陣列
+        $t3Assay = ($RowData["3rd_bulk_batch"]!='')?DB::table('sampling_records')->where('batch_number', $RowData["3rd_bulk_batch"])->where('Assay', '!=', '')
+        ->orderBy('id', 'desc')->first(): null;//得到陣列        
+
+        
         $t1_bulk_actual_assay = ''; $t2_bulk_actual_assay = ''; $t3_bulk_actual_assay = '';
         $t1_bulk_actual_meo = ''; $t2_bulk_actual_meo = ''; $t3_bulk_actual_meo = '';
 
@@ -353,38 +371,59 @@ class GrindingOvenController extends Controller
                 ]             
             );                 
         }
-        if ($t1 != null)
+        if ($t1MeO != null)
         {
             $RowData->update(
                 [
-                    '1st_bulk_assay' => $t1->bulk_actual_assay,
-                    '1st_bulk_meo' => $t1->bulk_actual_meo,
+                    '1st_bulk_meo' => $t1MeO->MeO,
                 ]             
             );
-            $t1_bulk_actual_assay =  $t1->bulk_actual_assay;
-            $t1_bulk_actual_meo =  $t1->bulk_actual_meo;            
+            $t1_bulk_actual_meo =  $t1MeO->MeO;            
         }
-        if ($t2 != null)
+        if($t1Assay != null)
         {
             $RowData->update(
                 [
-                    '2nd_bulk_assay' => $t2->bulk_actual_assay,
-                    '2nd_bulk_meo' => $t2->bulk_actual_meo,
+                    '1st_bulk_assay' => $t1Assay->Assay,
                 ]             
             );
-            $t2_bulk_actual_assay =  $t2->bulk_actual_assay;
-            $t2_bulk_actual_meo =  $t2->bulk_actual_meo;            
+            $t1_bulk_actual_assay =  $t1Assay->Assay;
         }
-        if ($t3 != null)
+        if ($t2MeO != null)
         {
             $RowData->update(
                 [
-                    '3rd_bulk_assay' => $t3->bulk_actual_assay,
-                    '3rd_bulk_meo' => $t3->bulk_actual_meo,
+                    '2nd_bulk_meo' => $t2MeO->MeO,
                 ]             
             );
-            $t3_bulk_actual_assay =  $t3->bulk_actual_assay;
-            $t3_bulk_actual_meo =  $t3->bulk_actual_meo;            
+            $t2_bulk_actual_meo =  $t2MeO->MeO;            
+        }
+        if($t2Assay != null)
+        {
+            $RowData->update(
+                [
+                    '2nd_bulk_assay' => $t2Assay->Assay,
+                ]             
+            );
+            $t2_bulk_actual_assay =  $t2Assay->Assay;
+        }
+        if ($t3MeO != null)
+        {
+            $RowData->update(
+                [
+                    '3rd_bulk_meo' => $t3MeO->MeO,
+                ]             
+            );
+            $t3_bulk_actual_meo =  $t3MeO->MeO;            
+        }
+        if($t3Assay != null)
+        {
+            $RowData->update(
+                [
+                    '3rd_bulk_assay' => $t3Assay->Assay,
+                ]             
+            );
+            $t3_bulk_actual_assay =  $t3Assay->Assay;
         }
 
         //expect assay, expect meo 
