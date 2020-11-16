@@ -118,7 +118,8 @@ function showSelectSPEC()
                 "MO",
                 "PDMAT",
                 "CCTBA",
-                "ALEXA",  
+                "ALEXA",
+                "AGATHOS",  
             ]
             var dictionary ={
                 "TMALEG": "TMAL_EG",
@@ -128,7 +129,8 @@ function showSelectSPEC()
                 "MO":"MO",
                 "PDMAT":"PDMAT",
                 "CCTBA":"CCTBA",       
-                "ALEXA":"ALEXA", 
+                "ALEXA":"ALEXA",
+                "AGATHOS":"AGATHOS", 
             };
 
             $("#jqxcombobox_SPEC").jqxComboBox({ source: sourceSPEC, selectedIndex: -1, width: '200px', height: '25' });

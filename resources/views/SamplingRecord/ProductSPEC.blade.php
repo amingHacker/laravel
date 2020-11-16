@@ -88,6 +88,7 @@
     var TMAL_EG = @json($todosTMAL_EG);
     var TMAL_TW = @json($todosTMAL_TW);
     var TMAL_UM = @json($todosTMAL_UM);
+    var AGATHOS = @json($todosAGATHOS);
 
  
     var _todoList = {
@@ -99,7 +100,7 @@
             TMAL_EG: TMAL_EG,
             TMAL_TW: TMAL_TW,
             TMAL_UM: TMAL_UM,
-    
+            AGATHOS: AGATHOS,
         };
     $(document).ready(function () {      
         var i = 0;
@@ -460,6 +461,7 @@
               <li><a href="#tabs-3">PDMAT</a></li>
               <li><a href="#tabs-4">CCTBA</a></li>
               <li><a href="#tabs-5">ALEXA</a></li>
+              <li><a href="#tabs-6">AGATHOS</a></li>
             </ul>
             <div id = "tabs-1" >
                 <div id='jqxcombobox_TMAL'></div>
@@ -493,6 +495,12 @@
                 <table id="dgALEXA" ></table> 
                 <div id="dgALEXApager"></div>
                 </div>        
+            </div>
+            <div id = "tabs-6" >
+                <div class = "row justify-content-center">     
+                <table id="dgAGATHOS" ></table> 
+                <div id="dgAGATHOSpager"></div>
+                </div>                             
             </div>
         </div>
 

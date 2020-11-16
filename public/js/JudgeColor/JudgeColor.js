@@ -239,6 +239,7 @@ function judgeFailEvent(rowID){
                 + '<input type="checkbox" class="TWKH" name="TWKH_[]" value="TWKH_SCM">SCM '
                 + '<input type="checkbox" class="TWKH" name="TWKH_[]" value="TWKH_Site_Director">Site_Director '
                 + '<input type="checkbox" class="TWKH" name="TWKH_[]" value="TWKH_Test_User">Test_User '
+                + '<input type="checkbox" class="TWKH" name="TWKH_[]" value="NotSendMail">不寄信 '
                 + '</br></br>'
                 + '<div id="jqxcombobox_SPEC" >Table</div>'
                 + '</br>' 
@@ -338,7 +339,8 @@ function judgeFailEvent(rowID){
                     "MO",
                     "PDMAT",
                     "CCTBA",
-                    "ALEXA",  
+                    "ALEXA",
+                    "AGATHOS",  
                 ]
                 var dictionary ={
                     "TMALEG": "TMAL_EG",
@@ -348,7 +350,8 @@ function judgeFailEvent(rowID){
                     "MO":"MO",
                     "PDMAT":"PDMAT",
                     "CCTBA":"CCTBA",       
-                    "ALEXA":"ALEXA", 
+                    "ALEXA":"ALEXA",
+                    "AGATHOS":"AGATHOS", 
                 };
     
                 $("#jqxcombobox_SPEC").jqxComboBox({ source: sourceSPEC, selectedIndex: -1, width: '200px', height: '25' });
