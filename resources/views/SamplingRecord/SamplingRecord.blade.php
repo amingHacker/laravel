@@ -341,7 +341,7 @@
                             "Ru", "S", "Sb", "Se", "Sr", "Ta", "Tb", "Te", "Th", "Ti", "Tl", "U", "V", "W", "Y", "Zr", 
                             "F", "Cl", "Hf", "H2O","Parameter A", "Parameter B", "Parameter C", "Parameter D", "Impurity A","Impurity B", 
                             "Impurity C", "Impurity D", "Impurity E", "Impurity F", "1H NMR", "Other Metals", "Organic impurity",
-                            "[δ0.0ppm]", "[δ2.2ppm]", "[δ3.8ppm]", "[δ4.0ppm]", "Sum[2.2+3.8+4.0]", "IR A", "DMAH"
+                            "[δ0.0ppm]", "[δ2.2ppm]", "[δ3.8ppm]", "[δ4.0ppm]", "Sum[2.2+3.8+4.0]", "IR A", "DMAH", "IPA"
                         ];
         var _GroupSource = ["品名","等級", "瓶號","批號", "取樣者", "樣品來源", 
             "分析項目","分析者", "完成日","判定", "備註", "設備名稱", 
@@ -351,7 +351,7 @@
             "Ru", "S", "Sb", "Se", "Sr", "Ta", "Tb", "Te", "Th", "Ti", "Tl", "U", "V", "W", "Y", "Zr", 
             "F", "Cl", "Hf", "H2O", "Parameter A", "Parameter B", "Parameter C", "Parameter D", "Impurity A","Impurity B", 
             "Impurity C", "Impurity D", "Impurity E", "Impurity F", "1H NMR", "Other Metals", "Organic impurity",
-            "[δ0.0ppm]", "[δ2.2ppm]", "[δ3.8ppm]", "[δ4.0ppm]", "Sum[2.2+3.8+4.0]", "IR A", "DMAH"
+            "[δ0.0ppm]", "[δ2.2ppm]", "[δ3.8ppm]", "[δ4.0ppm]", "Sum[2.2+3.8+4.0]", "IR A", "DMAH", "IPA"
         ];
         //建立ToolBar
         var SPCSource = ['A1.超過3個標準差', 'A2.連續九點在中線同一側', 'A3.連續六點呈現上升或下降',
