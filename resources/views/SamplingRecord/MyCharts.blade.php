@@ -403,7 +403,11 @@
             "[δ0.0ppm]", "[δ2.2ppm]", "[δ3.8ppm]", "[δ4.0ppm]", "Sum[2.2+3.8+4.0]", "IR A", "DMAH"
         ];
         //建立ToolBar
-        PrepareToToolbar(_ChartTypeSource, _xAxisSource, _yAxisSource, _GroupSource);
+        var SPCSource = ['A1.超過3個標準差', 'A2.連續九點在中線同一側', 'A3.連續六點呈現上升或下降',
+                        'A4.連續三點中的兩點落在2個標準差之外', 'A5.連續五點中的四點落在1個標準差之外',
+                        'B1.中位數偏移', 'B2.標準差偏移',
+                    ];
+        PrepareToToolbar(_ChartTypeSource, _xAxisSource, _yAxisSource, _GroupSource, SPCSource);
         
 
     });
@@ -1022,7 +1026,7 @@
                     
                     //檢查選擇Control Chart時，Group 不能大於1組以上，UCL 或LCL需同時為空或有值避免Center Line計算錯誤
                     //檢查選擇Scatter Chart時，Group 不能有值沒有選擇，避免無法產生圖表
-                    var _checkChartWithGroup = checkChartWithGroup(chartTypeGroup, UCLGroup, LCLGroup); 
+                    var _checkChartWithGroup = checkChartWithGroup(chartTypeGroup, UCLGroup, LCLGroup, SPCRule); 
                     if (_checkChartWithGroup !==''){alert(_checkChartWithGroup); return;}
 
                     //獲得資料
@@ -1036,7 +1040,38 @@
 
                     var postData = o.jqGrid('getGridParam', 'postData');//獲得搜尋條件
 
-                    $.ajax({
+
+                    if (SPCRule[0].indexOf("B") >= 0)
+                    {
+                        var type = '';
+                        if(SPCRule[0].indexOf("B1") >= 0){type = "TSMC-Median";}
+                        else{type = "TSMC-Variance";}
+                        $.ajax({
+                            async:false,
+                            url: "MyCharts/MyChartExport" ,//路徑
+                            type: "POST",           
+                            data:{
+                                "postData": postData,
+                                "type":type,
+                                "DataY": dataYaxisGroup[0]
+                            },
+                            success: function (DownLoadValue){
+                                var dataLo = DownLoadValue.success;
+                                //產生要寫入excel的data
+                                //參數格式: original data -> toolbar data -> toolbar control data 
+                                    DrowChart( 'Sampling Records', dataLo, 
+                                        chartTypeGroup, dataXaxisGroup, dataYaxisGroup, 
+                                        columnNameGroup, itemGroup, 
+                                        USLGroup, LSLGroup, UCLGroup, LCLGroup, LabelItem, DateItem,
+                                        YaxisMax, YaxisMin, SPCRule
+                                    );                  
+                                }                               
+                            });                
+                    }
+                    
+                    else
+                    {
+                        $.ajax({
                             async:false,
                             url: "MyCharts/MyChartExport" ,//路徑
                             type: "POST",           
@@ -1055,6 +1090,9 @@
                                     );                  
                                 }                               
                             });                 
+                    }
+
+                    
                                    
                 }                               
         });

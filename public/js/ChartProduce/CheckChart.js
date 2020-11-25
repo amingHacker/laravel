@@ -459,7 +459,7 @@ function DrowChart( ChartTitle, dataLo, chartTypeGroup, dataXaxisGroup, dataYaxi
         var judgeColor = 'normal';
 
         // 1.超過三個標準差
-        if (tSPCRule.find(element => element == '1.超過3個標準差') != undefined)
+        if (tSPCRule.find(element => element == 'A1.超過3個標準差') != undefined)
         {
             if (
                 !(
@@ -473,7 +473,7 @@ function DrowChart( ChartTitle, dataLo, chartTypeGroup, dataXaxisGroup, dataYaxi
         }
         
         // 2.連續九點在中線同一側
-        if (tSPCRule.find(element => element == '2.連續九點在中線同一側') != undefined)
+        if (tSPCRule.find(element => element == 'A2.連續九點在中線同一側') != undefined)
         {  
             if ( JudgeSPCRule(i, window.myLine .data.datasets[0].data[i]["y"], window.myLine.data.datasets[0].data, window.myLine.data.datasets[0].data._chartjs.listeners[0].chart.options, 'PointOnSameSide') == 'true')
             {
@@ -482,7 +482,7 @@ function DrowChart( ChartTitle, dataLo, chartTypeGroup, dataXaxisGroup, dataYaxi
         }
         
         // 3.連續六點呈現上升或下降
-        if (tSPCRule.find(element => element == '3.連續六點呈現上升或下降') != undefined)
+        if (tSPCRule.find(element => element == 'A3.連續六點呈現上升或下降') != undefined)
         {  
             if ( JudgeSPCRule(i, window.myLine .data.datasets[0].data[i]["y"], window.myLine.data.datasets[0].data, window.myLine.data.datasets[0].data._chartjs.listeners[0].chart.options, 'PointIncrease') == 'true')
             {
@@ -491,7 +491,7 @@ function DrowChart( ChartTitle, dataLo, chartTypeGroup, dataXaxisGroup, dataYaxi
         }
         
         // 4.連續三點中的兩點落在2個標準差之外
-        if (tSPCRule.find(element => element == '4.連續三點中的兩點落在2個標準差之外') != undefined)
+        if (tSPCRule.find(element => element == 'A4.連續三點中的兩點落在2個標準差之外') != undefined)
         {  
             if ( JudgeSPCRule(i, window.myLine .data.datasets[0].data[i]["y"], window.myLine.data.datasets[0].data, window.myLine.data.datasets[0].data._chartjs.listeners[0].chart.options, 'PointOut2Sigma') == 'true')
             {
@@ -499,12 +499,34 @@ function DrowChart( ChartTitle, dataLo, chartTypeGroup, dataXaxisGroup, dataYaxi
             }
         }
         // 5.連續五點中的四點落在1個標準差之外
-        if (tSPCRule.find(element => element == '5.連續五點中的四點落在1個標準差之外') != undefined)
+        if (tSPCRule.find(element => element == 'A5.連續五點中的四點落在1個標準差之外') != undefined)
         {
             if ( JudgeSPCRule(i, window.myLine .data.datasets[0].data[i]["y"], window.myLine.data.datasets[0].data, window.myLine.data.datasets[0].data._chartjs.listeners[0].chart.options, 'PointOut1Sigma') == 'true')
             {
                 judgeColor = 'abnormal';
             }
+        }
+
+        // 6.中位數偏移(近7天中位數-前90天中位數 / 前90天標準差 > 0.9 )
+        if (tSPCRule.find(element => element == 'B1.中位數偏移') != undefined)
+        {
+            if (
+                parseFloat(window.myLine .data.datasets[0].data[i]["y"]) > 0.9     
+            )
+                {
+                    judgeColor = 'abnormal';
+                }
+        }
+
+        // 7.標準差偏移(近7天標準差 / 前90天標準差 > 3 )
+        if (tSPCRule.find(element => element == 'B2.標準差偏移') != undefined)
+        {
+            if (
+                parseFloat(window.myLine .data.datasets[0].data[i]["y"]) > 3     
+            )
+                {
+                    judgeColor = 'abnormal';
+                }
         }
 
         if (judgeColor == 'normal') 
@@ -772,7 +794,7 @@ function changeBorderColor(data, UCL, LCL, SPCRule)
         var judgeColor = 'normal';
 
         // 1.超過三個標準差
-        if (tSPCRule.find(element => element == '1.超過3個標準差') != undefined)
+        if (tSPCRule.find(element => element == 'A1.超過3個標準差') != undefined)
         {
             if (
                 !(
@@ -785,7 +807,7 @@ function changeBorderColor(data, UCL, LCL, SPCRule)
         }
         
         // 2.連續九點在中線同一側
-        if (tSPCRule.find(element => element == '2.連續九點在中線同一側') != undefined)
+        if (tSPCRule.find(element => element == 'A2.連續九點在中線同一側') != undefined)
         {  
             if ( JudgeSPCRule(i, data[i], window.myLine.data.datasets[0].data, window.myLine.data.datasets[0].data._chartjs.listeners[0].chart.options, 'PointOnSameSide') == 'true')
             {
@@ -794,7 +816,7 @@ function changeBorderColor(data, UCL, LCL, SPCRule)
         }
         
         // 3.連續六點呈現上升或下降
-        if (tSPCRule.find(element => element == '3.連續六點呈現上升或下降') != undefined)
+        if (tSPCRule.find(element => element == 'A3.連續六點呈現上升或下降') != undefined)
         {  
             if ( JudgeSPCRule(i, data[i], window.myLine.data.datasets[0].data, window.myLine.data.datasets[0].data._chartjs.listeners[0].chart.options, 'PointIncrease') == 'true')
             {
@@ -803,7 +825,7 @@ function changeBorderColor(data, UCL, LCL, SPCRule)
         }
         
         // 4.連續三點中的兩點落在2個標準差之外
-        if (tSPCRule.find(element => element == '4.連續三點中的兩點落在2個標準差之外') != undefined)
+        if (tSPCRule.find(element => element == 'A4.連續三點中的兩點落在2個標準差之外') != undefined)
         {  
             if ( JudgeSPCRule(i, data[i], window.myLine.data.datasets[0].data, window.myLine.data.datasets[0].data._chartjs.listeners[0].chart.options, 'PointOut2Sigma') == 'true')
             {
@@ -811,12 +833,34 @@ function changeBorderColor(data, UCL, LCL, SPCRule)
             }
         }
         // 5.連續五點中的四點落在1個標準差之外
-        if (tSPCRule.find(element => element == '5.連續五點中的四點落在1個標準差之外') != undefined)
+        if (tSPCRule.find(element => element == 'A5.連續五點中的四點落在1個標準差之外') != undefined)
         {
             if ( JudgeSPCRule(i, data[i], window.myLine.data.datasets[0].data, window.myLine.data.datasets[0].data._chartjs.listeners[0].chart.options, 'PointOut1Sigma') == 'true')
             {
                 judgeColor = 'abnormal';
             }
+        }
+
+        // 6.中位數偏移(近7天中位數-前90天中位數 / 前90天標準差 > 0.9 )
+        if (tSPCRule.find(element => element == 'B1.中位數偏移') != undefined)
+        {
+            if (
+                parseFloat(data[i]) > 0.9     
+            )
+                {
+                    judgeColor = 'abnormal';
+                }
+        }
+
+        // 7.標準差偏移(近7天標準差 / 前90天標準差 > 3 )
+        if (tSPCRule.find(element => element == 'B2.標準差偏移') != undefined)
+        {
+            if (
+                parseFloat(data[i]) > 3     
+            )
+                {
+                    judgeColor = 'abnormal';
+                }
         }
 
         if (judgeColor == 'normal') 
@@ -1053,7 +1097,7 @@ function checkDataToChart( dataToChartYGroup, dataToChartIDGroup )
 }
 
 /*檢查UCL LCL是否有誤*/
-function checkChartWithGroup(chartTypeGroup, UCLGroup, LCLGroup)
+function checkChartWithGroup(chartTypeGroup, UCLGroup, LCLGroup, SPCRule)
 {
     var result = '';
     
@@ -1085,8 +1129,60 @@ function checkChartWithGroup(chartTypeGroup, UCLGroup, LCLGroup)
         }    
     }
 
+    if (SPCRule[0].indexOf("A")>= 0)
+    {   
+        if(SPCRule[0].indexOf("B") >= 0)
+        {
+            result = 'A and B Group should not appear in the same time!';
+        }                
+    }
+    
+    if (SPCRule[0].indexOf("B1")>= 0)
+    {   
+        if(SPCRule[0].indexOf("B2") >= 0)
+        {
+            result = 'B1 and B2 Group should not appear in the same time!';
+        }                
+    }
+
     return result;
 }
+
+/*檢查UCL LCL是否有誤*/
+function checkChartWithGroup(chartTypeGroup, UCLGroup, LCLGroup)
+{
+    var result = '';
+    
+    if (chartTypeGroup[0] == 'Control Chart')
+    {
+        if(chartTypeGroup.length > 1)
+        {
+            result = 'In control chart, there should not exceed 1 group.';
+        }
+
+        // if ((UCLGroup[0] !=='' && LCLGroup[0] === '') || (UCLGroup[0] ==='' && LCLGroup[0] !== '')) 
+        // {
+        //     result = 'To prevent wrong center line, please fill in both UCL and LCL or leave both of blank.';
+        // }
+
+    }
+
+    if (chartTypeGroup[0] == 'Scatter Chart')
+    {
+        if(chartTypeGroup.length > 1)
+        {
+            for(var i = 0 ; i < chartTypeGroup.length ; i++)
+            {
+                if (chartTypeGroup[i] == 'Please Choose:' ) 
+                {
+                    result = 'There is no data in Group ' + ( i + 1 ) + '.';
+                }
+            }
+        }    
+    }
+    return result;
+}
+
 
 // JudgeSPCRule(i, window.myLine .data.datasets[0].data[i]["y"], window.myLine.data.datasets[0].data, UpandDown[0], 'PointOnSameSide')
 /*判斷SPC Rule */
@@ -1209,7 +1305,7 @@ function JudgeSPCRule( index, point, OriginalData, condition, type )
                         return result = 'false';
                     }
                 }
-            break;                         
+            break;                       
     }
     return result;
 }

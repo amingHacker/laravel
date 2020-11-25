@@ -4,9 +4,9 @@
 @aim Check Data to Chart
 */
 //$(document).ready(
-function PrepareToToolbar(_ChartTypeSource, _xAxisSource, _yAxisSource, _GroupSource) {
+function PrepareToToolbar(_ChartTypeSource, _xAxisSource, _yAxisSource, _GroupSource, SPCSource) {
     $("#tabs").tabs();
-    createToolbar(1, _ChartTypeSource, _xAxisSource, _yAxisSource, _GroupSource);
+    createToolbar(1, _ChartTypeSource, _xAxisSource, _yAxisSource, _GroupSource, SPCSource);
     $("button#add-tab").click(
         function() 
         {
@@ -46,7 +46,7 @@ function PrepareToToolbar(_ChartTypeSource, _xAxisSource, _yAxisSource, _GroupSo
 }
 //);
 
-function createToolbar(num_tabs, _ChartTypeSource, _xAxisSource, _yAxisSource, _GroupSource){
+function createToolbar(num_tabs, _ChartTypeSource, _xAxisSource, _yAxisSource, _GroupSource, _spcSource){
  
     var _dataSource = [];  //用來保存
     // var itemCount = 7; // The item count of Toolbar.
@@ -170,11 +170,13 @@ function createToolbar(num_tabs, _ChartTypeSource, _xAxisSource, _yAxisSource, _
                         } else {
                         ddlistjobtypeMin = tool;
                         }
-                        jobtype_source = ['1.超過3個標準差', '2.連續九點在中線同一側', '3.連續六點呈現上升或下降',
-                            '4.連續三點中的兩點落在2個標準差之外', '5.連續五點中的四點落在1個標準差之外',
-                    ];
+                        jobtype_source = _spcSource;
+                        // jobtype_source = ['A1.超過3個標準差', 'A2.連續九點在中線同一側', 'A3.連續六點呈現上升或下降',
+                        //     'A4.連續三點中的兩點落在2個標準差之外', 'A5.連續五點中的四點落在1個標準差之外',
+                        //     'B1.中位數偏移', 'B2.標準差偏移',
+                        // ];
                         tool.jqxDropDownList({ width: 205, source: jobtype_source, checkboxes:true });
-                        tool.jqxDropDownList( 'checkItem', '1.超過3個標準差' );
+                        tool.jqxDropDownList( 'checkItem', 'A1.超過3個標準差' );
                        
                         break;
                    

@@ -221,14 +221,35 @@ class SamplingRecordController extends Controller
             $DownLoadValue = DB::table('sampling_records')->limit(10000)->orderBy($sidx, 'asc')->get();
              
         } 
-        //dd($DownLoadValue);
-        //$DownLoadValue = $query->orderBy( $sidx, $order)->get();
-        //var_dump($DownLoadValue);
-
-        return response()->json([
-            //'success' =>  $UpdateValue
-            'success' => $DownLoadValue,
-        ]); 
+        
+        if(array_key_exists('type', $downloadReq))
+        {
+            if ($downloadReq["type"] == 'TSMC-Median' || $downloadReq["type"] == 'TSMC-Variance')
+            {
+                $FindShift = $this->FindShift($DownLoadValue, $downloadReq["DataY"], $downloadReq["type"]);
+            
+                $index = 0;
+                $tmp = strval($downloadReq["DataY"]);
+                foreach ($DownLoadValue as $i)
+                {
+                    $i[$tmp] = $FindShift[$index];
+                    $index ++;              
+                }
+        
+                return response()->json([
+                    //'success' =>  $UpdateValue
+                    'success' => $DownLoadValue,
+                ]); 
+            }
+        }
+         
+        else
+        {
+            return response()->json([
+                //'success' =>  $UpdateValue
+                'success' => $DownLoadValue,
+            ]); 
+        }
     }
 
     //此處應包含excel上傳時的新增與更新功能
@@ -1163,6 +1184,7 @@ class SamplingRecordController extends Controller
 
         //var_dump($SearchCondition ->_search);
         $downloadReq = $request->all();
+        
         if (!$SearchCondition){
 
         }
@@ -1264,18 +1286,39 @@ class SamplingRecordController extends Controller
         else
         {     
             
-            //dd($Record);
-            $DownLoadValue = DB::table('sampling_records')->limit(10000)->orderBy($sidx, 'asc')->get();
+            $DownLoadValue = DB::table('sampling_records')->limit(10000)->orderBy($sidx, 'asc')->get();     
+        }
+        
+        if(array_key_exists('type', $downloadReq))
+        {
+            if ($downloadReq["type"] == 'TSMC-Median' || $downloadReq["type"] == 'TSMC-Variance')
+            {
+                $FindShift = $this->FindShift($DownLoadValue, $downloadReq["DataY"], $downloadReq["type"]);
             
-        } 
-        //dd($DownLoadValue);
-        //$DownLoadValue = $query->orderBy( $sidx, $order)->get();
-        //var_dump($DownLoadValue);
+                $index = 0;
+                $tmp = strval($downloadReq["DataY"]);
+                foreach ($DownLoadValue as $i)
+                {
+                    $i[$tmp] = $FindShift[$index];
+                    $index ++;              
+                }
+        
+                return response()->json([
+                    //'success' =>  $UpdateValue
+                    'success' => $DownLoadValue,
+                ]); 
+            }
+        }
+         
+        else
+        {
+            return response()->json([
+                //'success' =>  $UpdateValue
+                'success' => $DownLoadValue,
+            ]); 
+        }
 
-        return response()->json([
-            //'success' =>  $UpdateValue
-            'success' => $DownLoadValue,
-        ]); 
+       
     }
 
     //This is the GetMyChart from sampling_records_myfavoritecharts
@@ -1292,4 +1335,111 @@ class SamplingRecordController extends Controller
         'SearchCondition' => $SearchCondition,
         ]); 
     }
+
+    //This is Find MideanShift
+    public function FindShift( $DownLoadValue, $DataY, $type )
+    {
+        $result = array();
+        $_source = $DownLoadValue;
+
+        $SearchMedian = array();
+        $SearchVariance =  array();
+
+        foreach ($_source as $i)
+        {
+            $DateEnd = $i->sampling_date;
+            $Date90Begin = date("Y-m-d H:i:s", strtotime("-90 day", strtotime($i->sampling_date)));
+            $Date7Begin = date("Y-m-d H:i:s", strtotime("-7 day", strtotime($i->sampling_date)));
+            $product = $i->product_name;
+            $level = $i->level;
+            $sample_source = $i->sample_source;
+            $analytical_item = $i->analytical_item;
+            
+
+            $Search90Data = DB::table("sampling_records")->whereBetween('sampling_date', [$Date90Begin, $DateEnd])->
+                            where('product_name', '=', $product)->where('level', '=', $level)->
+                            where('sample_source', '=', $sample_source)->where('analytical_item', '=', $analytical_item)->
+                            where("$DataY", '!=', '')->get();
+            $Search7Data = DB::table("sampling_records")->whereBetween('sampling_date', [$Date7Begin, $DateEnd])->
+                            where('product_name', '=', $product)->where('level', '=', $level)->
+                            where('sample_source', '=', $sample_source)->where('analytical_item', '=', $analytical_item)->
+                            where("$DataY", '!=', '')->get();
+
+            $Search90DataY = array();
+            $Search7DataY = array();
+            foreach ($Search90Data as $item) 
+            {
+                $tmp = explode("<", $item->$DataY);
+                array_push($Search90DataY, (float)$tmp[count($tmp) -1]);
+            }
+            
+            foreach ($Search7Data as $item) 
+            {
+                $tmp = explode("<", $item->$DataY);
+                array_push($Search7DataY, (float)$tmp[count($tmp) -1]);
+            }
+
+            $Search90Median =  $this->median($Search90DataY);
+            $Search7Median =  $this->median($Search7DataY);
+            $Search90variance =  $this->variance($Search90DataY);
+            $Search7variance =  $this->variance($Search7DataY);
+            
+            if($Search90variance == 0){ 
+                array_push($SearchMedian, strval(0));             
+                array_push($SearchVariance, strval(0));
+            }
+            else
+            {
+                array_push($SearchMedian, strval(($Search7Median - $Search90Median)/$Search90variance));             
+                array_push($SearchVariance, strval($Search7variance/$Search90variance));
+            }
+           
+        }
+
+        if ($type == 'TSMC-Median')
+        {
+            $result = $SearchMedian;
+        }
+
+        else
+        {
+            $result = $SearchVariance;
+        }
+
+        return $result;
+    }
+
+    //This function Get Median
+    public function median($numbers)
+    {
+        sort($numbers);
+        $totalNumbers = count($numbers);
+        $mid = floor($totalNumbers / 2);
+
+        return ($totalNumbers % 2) === 0 ? ($numbers[$mid - 1] + $numbers[$mid]) / 2 : $numbers[$mid];
+    }
+
+    //This function Get variance
+    public function variance($numbers) 
+    {
+        
+        $length = (float)count($numbers);
+        //var_dump($numbers);
+        
+        if ($length == 0) 
+        {
+            return 0;
+        }
+        $average = array_sum($numbers) / $length;
+        
+        $count = 0;
+        foreach ($numbers as $v) 
+        {
+            $count  = $count + pow($average-$v, 2);
+        }
+        $variance = sqrt($count/$length);
+        
+        return $variance;
+    }
+    
 }
