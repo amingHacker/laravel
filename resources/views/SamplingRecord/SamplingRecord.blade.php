@@ -356,6 +356,7 @@
         //建立ToolBar
         var SPCSource = ['A1.超過3個標準差', 'A2.連續九點在中線同一側', 'A3.連續六點呈現上升或下降',
                             'A4.連續三點中的兩點落在2個標準差之外', 'A5.連續五點中的四點落在1個標準差之外',
+                            'A6.區間最大最小值',
                             'B1.中位數偏移', 'B2.標準差偏移',
                         ];
         PrepareToToolbar(_ChartTypeSource, _xAxisSource, _yAxisSource, _GroupSource, SPCSource);
@@ -1737,31 +1738,23 @@
 
         if (SPCRule[0].indexOf("B") >= 0)
         {
+            var url = "SamplingRecord/export";
             var type = '';
             if(SPCRule[0].indexOf("B1") >= 0){type = "TSMC-Median";}
             else{type = "TSMC-Variance";}
-       
-            $.ajax({
-                    async:false,
-                    url: "SamplingRecord/export" ,//路徑
-                    type: "POST",           
-                    data:{
-                        "postData": postData,
-                        "type":type,
-                        "DataY": dataYaxisGroup[0]
-                    },
-                    success: function (DownLoadValue){
-                        var dataLo = DownLoadValue.success;
-                        //產生要寫入excel的data
-                        //參數格式: original data -> toolbar data -> toolbar control data 
-                            DrowChart( 'Sampling Records', dataLo, 
+
+            var tmp = FindShift(url, postData, type, dataYaxisGroup[0]); // ChartProduce/CkeckChart.js
+            var dataImport; //用來承接promise方法的回傳參數
+            tmp.then(function (dataImport) 
+            {   
+                
+                DrowChart( 'Sampling Records', dataImport, 
                                 chartTypeGroup, dataXaxisGroup, dataYaxisGroup, 
                                 columnNameGroup, itemGroup, 
                                 USLGroup, LSLGroup, UCLGroup, LCLGroup, LabelItem, DateItem,
                                 YaxisMax, YaxisMin, SPCRule
-                            );                  
-                        }                               
-                    });
+                        );                                           
+            })           
         }
         else
         {

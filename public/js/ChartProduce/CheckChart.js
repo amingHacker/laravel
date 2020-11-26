@@ -177,6 +177,7 @@ function DrowChart( ChartTitle, dataLo, chartTypeGroup, dataXaxisGroup, dataYaxi
 
     var pointBackgroundColors = []; //紀錄點的背景顏色
     var pointBorderColors = [];     //紀錄點的外圍顏色
+    var pointStyles = [];  //紀錄點的外框形狀
 
     //定義scatter chart使用的顏色
     var _chartcolor = [window.chartColors.red, window.chartColors.blue, window.chartColors.green, window.chartColors.yellow, window.chartColors.purple];
@@ -243,6 +244,7 @@ function DrowChart( ChartTitle, dataLo, chartTypeGroup, dataXaxisGroup, dataYaxi
                 data:dataToChart[i],
                 pointBackgroundColor: pointBackgroundColors,
                 pointBorderColor: pointBackgroundColors,
+                pointStyle:pointStyles,
                 fill:false
             }
         }
@@ -452,6 +454,12 @@ function DrowChart( ChartTitle, dataLo, chartTypeGroup, dataXaxisGroup, dataYaxi
         }  
     );
 
+    //找尋資料中的最高值與最低值
+    var maxIndex = 0, minIndex = 0;
+    var arr = Array.from(window.myLine.data.datasets[0].data, c => c.y);
+    maxIndex = arr.indexOf(Math.max.apply(null,arr));
+    minIndex = arr.indexOf(Math.min.apply(null,arr));
+
     var tSPCRule = SPCRule[0].split(",");
     //產生SPC圖表
     for (i = 0; i < window.myLine.data.datasets[0].data.length; i++) 
@@ -529,33 +537,30 @@ function DrowChart( ChartTitle, dataLo, chartTypeGroup, dataXaxisGroup, dataYaxi
                 }
         }
 
-        if (judgeColor == 'normal') 
+        if (judgeColor == 'abnormal') 
         {
+            pointBackgroundColors.push("#FF0000");
+            pointBorderColors.push("#FF0000");
+            pointStyles.push("circle");
+            window.myLine.data.datasets[0].data._chartjs.listeners[0].chart.options.addTextOnChart[0]["Outlier"] = parseInt(window.myLine.data.datasets[0].data._chartjs.listeners[0].chart.options.addTextOnChart[0]["Outlier"]) + 1;
+        } 
+        else {
             // pointBackgroundColors.push("rgba(255, 99, 132, .2)");
             pointBackgroundColors.push("#00c434");
             pointBorderColors.push("#00c434");
-        } 
-        else {
-            pointBackgroundColors.push("#FF0000");
-            pointBorderColors.push("#FF0000");
-            window.myLine.data.datasets[0].data._chartjs.listeners[0].chart.options.addTextOnChart[0]["Outlier"] = parseInt(window.myLine.data.datasets[0].data._chartjs.listeners[0].chart.options.addTextOnChart[0]["Outlier"]) + 1;
+            pointStyles.push("circle");
         }
+    }
 
-        // var judgeColor = 'normal';
-        // if (
-        //     (parseFloat(window.myLine .data.datasets[0].data[i]["y"]) <= ((UCLGroup[0] != '')? parseFloat(UCLGroup[0]) : parseFloat(UpandDown[0]["UCL"]))) && 
-        //     (parseFloat(window.myLine .data.datasets[0].data[i]["y"]) >= ((LCLGroup[0] != '')? parseFloat(LCLGroup[0]) : parseFloat(UpandDown[0]["LCL"])))
-        // ) 
-        // {
-        //     // pointBackgroundColors.push("rgba(255, 99, 132, .2)");
-        //     pointBackgroundColors.push("#00c434");
-        //     pointBorderColors.push("#00c434");
-        // } 
-        // else {
-        //     pointBackgroundColors.push("#FF0000");
-        //     pointBorderColors.push("#FF0000");
-        //     window.myLine.data.datasets[0].data._chartjs.listeners[0].chart.options.addTextOnChart[0]["Outlier"] = parseInt(window.myLine.data.datasets[0].data._chartjs.listeners[0].chart.options.addTextOnChart[0]["Outlier"]) + 1;
-        // }
+    // 8.區間最大最小值
+    if (tSPCRule.find(element => element == 'A6.區間最大最小值') != undefined)
+    {
+        pointStyles[maxIndex] = "triangle";
+        pointStyles[minIndex] = "triangle";
+        pointBackgroundColors[maxIndex] = window.chartColors.purple;
+        pointBackgroundColors[minIndex] = window.chartColors.purple;
+        pointBorderColors[maxIndex] = window.chartColors.purple;;
+        pointBorderColors[minIndex] = window.chartColors.purple;
     }
 
     window.myLine.update();
@@ -788,6 +793,11 @@ function changeBorderColor(data, UCL, LCL, SPCRule)
     window.myLine.data.datasets[0].data._chartjs.listeners[0].chart.options.addTextOnChart[0]["Outlier"] = 0;
     var tSPCRule = SPCRule.split(",");
 
+    //找尋資料中的最高值與最低值
+    var maxIndex = 0, minIndex = 0;
+    maxIndex = data.indexOf(Math.max.apply(null,data));
+    minIndex = data.indexOf(Math.min.apply(null,data));
+
     for(var i = 0 ; i < data.length; i++)
     {
 
@@ -863,30 +873,32 @@ function changeBorderColor(data, UCL, LCL, SPCRule)
                 }
         }
 
-        if (judgeColor == 'normal') 
-        {    
-            window.myLine.data.datasets[0].pointBackgroundColor[i] = '#00c434';
-            window.myLine.data.datasets[0].pointBorderColor[i] = '#00c434';
-        } 
-        else {
+        if (judgeColor == 'abnormal') 
+        {   
             window.myLine.data.datasets[0].pointBackgroundColor[i] = '#FF0000';
             window.myLine.data.datasets[0].pointBorderColor[i] = '#FF0000';
-            window.myLine.data.datasets[0].data._chartjs.listeners[0].chart.options.addTextOnChart[0]["Outlier"] = parseInt(window.myLine.data.datasets[0].data._chartjs.listeners[0].chart.options.addTextOnChart[0]["Outlier"]) + 1;
+            window.myLine.data.datasets[0].data._chartjs.listeners[0].chart.options.addTextOnChart[0]["Outlier"] = parseInt(window.myLine.data.datasets[0].data._chartjs.listeners[0].chart.options.addTextOnChart[0]["Outlier"]) + 1; 
+         
+        } 
+        else {
+            window.myLine.data.datasets[0].pointBackgroundColor[i] = '#00c434';
+            window.myLine.data.datasets[0].pointBorderColor[i] = '#00c434';
         }
-     
-        // if (
-        //     parseFloat(data[i]) <  parseFloat(UCL) && parseFloat(data[i]) >  parseFloat(LCL)
-        // ) 
-        //  {
-        //     window.myLine.data.datasets[0].pointBackgroundColor[i] = '#00c434';
-        //     window.myLine.data.datasets[0].pointBorderColor[i] = '#00c434';
-        //  } 
-        // else {
-        //     window.myLine.data.datasets[0].pointBackgroundColor[i] = '#FF0000';
-        //     window.myLine.data.datasets[0].pointBorderColor[i] = '#FF0000';
-        //     window.myLine.data.datasets[0].data._chartjs.listeners[0].chart.options.addTextOnChart[0]["Outlier"] = parseInt(window.myLine.data.datasets[0].data._chartjs.listeners[0].chart.options.addTextOnChart[0]["Outlier"]) + 1;
-        // }
     }
+
+    // 8.區間最大最小值
+    if (tSPCRule.find(element => element == 'A6.區間最大最小值') != undefined)
+    {
+        window.myLine.data.datasets[0].pointStyle[maxIndex] = "triangle";
+        window.myLine.data.datasets[0].pointStyle[minIndex] = "triangle";
+        window.myLine.data.datasets[0].pointBackgroundColor[maxIndex] = window.chartColors.purple;
+        window.myLine.data.datasets[0].pointBackgroundColor[minIndex] = window.chartColors.purple;
+        window.myLine.data.datasets[0].pointBorderColor[maxIndex] = window.chartColors.purple;;
+        window.myLine.data.datasets[0].pointBorderColor[minIndex] = window.chartColors.purple;
+    }
+
+    
+
 }
 
 /*設定Scale方法*/
@@ -1308,4 +1320,26 @@ function JudgeSPCRule( index, point, OriginalData, condition, type )
             break;                       
     }
     return result;
+}
+
+//用來找尋偏移(中位數偏移、標準差偏移)，採用後台執行方式，避免等待太久
+function FindShift(url, postData, type, DataY){
+    return new Promise( function(resolve) 
+    {
+        $.ajax({
+                    async:false,
+                    url: url ,//路徑
+                    type: "POST",           
+                    data:{
+                        "postData": postData,
+                        "type":type,
+                        "DataY": DataY
+                    },
+                success: function (DownLoadValue){
+                    var dataLo = DownLoadValue.success;
+                        resolve(dataLo);   
+                            
+                    }                               
+                }); 
+    });  
 }
