@@ -84,11 +84,13 @@
     var PDMAT = @json($todosPDMAT);
     var CCTBA = @json($todosCCTBA);
     var ALEXA = @json($todosALEXA);
+    var AGATHOS = @json($todosAGATHOS);
     
     var TMAL_EG = @json($todosTMAL_EG);
     var TMAL_TW = @json($todosTMAL_TW);
     var TMAL_UM = @json($todosTMAL_UM);
-    var AGATHOS = @json($todosAGATHOS);
+    var TMAL_SH = @json($todosTMAL_SH);
+    
 
  
     var _todoList = {
@@ -100,6 +102,7 @@
             TMAL_EG: TMAL_EG,
             TMAL_TW: TMAL_TW,
             TMAL_UM: TMAL_UM,
+            TMAL_SH: TMAL_SH,
             AGATHOS: AGATHOS,
         };
     $(document).ready(function () {      
@@ -288,6 +291,7 @@
             "TMALEG",
             "TMALTW",
             "TMALUM",
+            "TMALSH"
                 ];
         var source_CCTBA = [
             "CCTBA",
@@ -299,6 +303,7 @@
             "TMALEG": "TMAL_EG",
             "TMALTW": "TMAL_TW",
             "TMALUM": "TMAL_UM",
+            "TMALSH": "TMAL_SH",
             "TMAL": "TMAL",
             "CCTBA":"CCTBA",
             "ALEXA":"ALEXA",

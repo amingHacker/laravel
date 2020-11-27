@@ -22,6 +22,7 @@ class ProductSPECController extends Controller
         $todosTMAL_EG = DB::table('product_spec_tmal_tmaleg')->orderBy('id','desc')->first();
         $todosTMAL_TW = DB::table('product_spec_tmal_tmaltw')->orderBy('id','desc')->first();
         $todosTMAL_UM = DB::table('product_spec_tmal_tmalum')->orderBy('id','desc')->first();
+        $todosTMAL_SH = DB::table('product_spec_tmal_tmalsh')->orderBy('id','desc')->first();
 
 
         return view('SamplingRecord.ProductSPEC',[
@@ -33,6 +34,7 @@ class ProductSPECController extends Controller
             'todosTMAL_EG'=> $todosTMAL_EG,
             'todosTMAL_TW'=> $todosTMAL_TW,
             'todosTMAL_UM'=> $todosTMAL_UM,
+            'todosTMAL_SH'=> $todosTMAL_SH,
             'todosAGATHOS' => $todosAGATHOS,
         ]);
     }
@@ -75,6 +77,9 @@ class ProductSPECController extends Controller
                 break;
             case "/ProductSPEC/show/TMAL_UM":
                 $table = 'product_spec_tmal_tmalum';
+                break;
+            case "/ProductSPEC/show/TMAL_SH":
+                $table = 'product_spec_tmal_tmalsh';
                 break;
             case "/ProductSPEC/show/AGATHOS":
                 $table = 'product_spec_agathos';
@@ -181,6 +186,9 @@ class ProductSPECController extends Controller
                         break;
                     case 'TMAL_UM':
                         $table = 'product_spec_tmal_tmalum';
+                        break;
+                    case 'TMAL_SH':
+                        $table = 'product_spec_tmal_tmalsh';
                         break;
                     case 'TMAL':
                         $table = 'product_spec_tmal';
@@ -331,6 +339,9 @@ class ProductSPECController extends Controller
                     case 'TMAL_UM':
                         $table = 'product_spec_tmal_tmalum';
                         break;
+                    case 'TMAL_SH':
+                        $table = 'product_spec_tmal_tmalsh';
+                        break;
                     case 'TMAL':
                         $table = 'product_spec_tmal';
                         break;
@@ -403,6 +414,9 @@ class ProductSPECController extends Controller
                     case 'TMAL_UM':
                         $table = 'product_spec_tmal_tmalum';
                         break;
+                    case 'TMAL_SH':
+                        $table = 'product_spec_tmal_tmalsh';
+                        break;
                     case 'TMAL':
                         $table = 'product_spec_tmal';
                         break;
@@ -462,6 +476,9 @@ class ProductSPECController extends Controller
                         break;
                     case 'TMAL_UM':
                         $table = 'product_spec_tmal_tmalum';
+                        break;
+                    case 'TMAL_SH':
+                        $table = 'product_spec_tmal_tmalsh';
                         break;
                     case 'TMAL':
                         $table = 'product_spec_tmal';
@@ -552,6 +569,9 @@ class ProductSPECController extends Controller
                 break;
             case "/ProductSPEC/GetTable/TMAL_UM":
                 $table = 'product_spec_tmal_tmalum';
+                break;
+            case "/ProductSPEC/GetTable/TMAL_SH":
+                $table = 'product_spec_tmal_tmalsh';
                 break;
             case "/ProductSPEC/GetTable/AGATHOS":
                 $table = 'product_spec_agathos';
