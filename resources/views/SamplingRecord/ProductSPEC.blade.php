@@ -1020,7 +1020,7 @@
                                                 if (response.success == data[data.length-1].id){                                                    
                                                     $(confirmDialog).dialog("close");
                                                     $("#progressbar").remove();
-                                                    $('#dg').trigger( 'reloadGrid' );
+                                                    o.trigger( 'reloadGrid' );
                                                 }
                                             },
                                             failure: function (response) {                              
