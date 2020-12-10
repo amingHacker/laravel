@@ -130,8 +130,11 @@
             </li>
             <li><a class="dropdown-item dropdown-toggle" href="#">Container </a>
               <ul class="submenu dropdown-menu">
-               <li><a class="dropdown-item" href="Container_GdSp">GoldenSample</a>
+                <li><a class="dropdown-item" href="Container_GdSp">GoldenSample</a>
+                <li><a class="dropdown-item" href="ContainerRecord">Container Record</a>
+                <li><a class="dropdown-item" href="ContainerSPEC">Container SPEC</a>
               </ul>
+        
             </li>
         
             </ul>

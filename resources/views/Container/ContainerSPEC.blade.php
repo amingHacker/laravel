@@ -44,7 +44,7 @@
     {{-- 使用擴充的datePicker --}}
 <script type="text/javascript" src="{{asset('js/jqgrid/jquery-ui-timepicker-addon.js')}}"></script>  
 
-{{-- jQWidgets --}}
+    {{-- jQWidgets --}}
 <link rel="stylesheet" type="text/css" href="{{asset('css/jQWidget/jqx.base.css')}}" />
 <link rel="stylesheet" type="text/css" href="{{asset('css/jQWidget/jqx.bootstrap.css')}}" />
 
@@ -57,10 +57,13 @@
 <script type="text/javascript" src="{{asset('js/jQWidget/jqxdropdownlist.js')}}"></script>
 <script type="text/javascript" src="{{asset('js/jQWidget/jqxinput.js')}}"></script>
 <script type="text/javascript" src="{{asset('js/jQWidget/jqxtoolbar.js')}}"></script>
+<script type="text/javascript" src="{{asset('js/jQWidget/jqxdata.js')}}"></script>
+
 {{-- Include combobox, DatePicker End --}}
 
 {{-- ajax同步 This is for es5 (ie11)--}}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bluebird/3.3.4/bluebird.min.js"></script>
+
 
 {{-- 圖表生成 Chart.js Start--}}
 <script type="text/javascript" src="{{asset('js/chart/moment.min.js')}}"></script>
@@ -77,352 +80,184 @@
 {{-- ToolBar End--}}
 
 {{-- CSS設定 Start--}}
-
 <style type="text/css">
-   .ui-jqgrid-hdiv { overflow-y: hidden; }
+    .ui-jqgrid-hdiv { overflow-y: hidden; }
+    .ui-tabs
+    {
+        width:72%;
+    }
 </style>
 
 {{-- CSS設定 End --}}
+{{-- Translate --}}
+<script type="text/javascript">
+    
+    /* 輸入中文 Name 輸出英文 Name*/
+    function getColumnNameFromChineseToDatabase(ColumnName)
+    {
+        var Result = '';
+         //舊key到新key的映射，colName的轉換
+        var oldkey = {
+            "鋼瓶型號": "container_model",
+            "瓶號": "bottle_number",
+            "清洗-導電度": "Conductivity",
+            "組裝測試-烘箱溫度": "Oven_Temperature",
+            "組裝測試-烘箱時間": "Oven_Time",
+            "Outbound-M1": "Outbound_M1",
+            "Outbound-M2": "Outbound_M2",
+            "Outbound-A1": "Outbound_A1",
+            "Outbound-A2": "Outbound_A2",
+            "Outbound-A3": "Outbound_A3",
+            "壓降-Bypass-1": "CPD_Bypass_1",
+            "壓降-Bypass-2": "CPD_Bypass_2",
+            "壓降-Body-1": "CPD_Body_1",
+            "壓降-Body-2": "CPD_Body_2",
+            "Inbound-VCR": "Inbound_VCR",
+            "Inbound-Fill Port": "Inbound_FillPort",
+            "Inbound-M1": "Inbound_M1",
+            "Inbound-M2": "Inbound_M2",
+            "Inbound-A1": "Inbound_A1",
+            "Inbound-A2": "Inbound_A2",
+            "Inbound-A3": "Inbound_A3",
+            "Inbound-M1 Valve": "Inbound_M1_Valve",
+            "Inbound-M2 Valve": "Inbound_M2_Valve",
+            "Inbound-A1 Valve": "Inbound_A1_Valve",
+            "Inbound-A2 Valve": "Inbound_A2_Valve",
+            "Inbound-A3 Valve": "Inbound_A3_Valve",
+            "Inbound-IN-1": "Inbound_IN_1",
+            "Inbound-IN-2": "Inbound_IN_2",
+            "Inbound-OUT": "Inbound_OUT",
+            "PP-Pump": "PP_Pump",
+            "PP-時間": "PP_Time",
+            "PP-循環": "PP_Cycle",
+            "RGA-真空值": "RGA_Vacuum",
+            "RGA-H2O": "RGA_H2O",
+            "RGA-O2": "RGA_O2",
+            "RGA-CO2": "RGA_CO2",
+            "RGA-丙酮": "RGA_Acetone",
+            "RGA-戊烷": "RGA_Pentane",
+            "RGA-He": "RGA_He",
+            "HotN2-露點值": "HotN2_DewPoint",
+            "HotN2-含水量": "HotN2_WaterContent",
+            "建立時間" : "created_at",
+            "更新時間" : "updated_at" ,
+        };
+        for(var key in oldkey)
+        {        
+            if (ColumnName == key)
+            {
+                Result = oldkey[key];
+            }
+        }
+        return Result = (Result == '')?  ColumnName : Result;
+    }
 
+    /* 輸入英文 Name 輸出中文 Name*/
+    function getColumnNameFromDatabaseToChinese(ColumnName)
+    {
+        var Result = '';
+         //舊key到新key的映射，colName的轉換
+        var oldkey = {
+            "container_model":"鋼瓶型號",
+            "bottle_number":"瓶號",
+            "Conductivity":"清洗-導電度",
+            "Oven_Temperature":"組裝測試-烘箱溫度",
+            "Oven_Time":"組裝測試-烘箱時間",
+            "Outbound_M1":"Outbound-M1",
+            "Outbound_M2":"Outbound-M2",
+            "Outbound_A1":"Outbound-A1",
+            "Outbound_A2":"Outbound-A2",
+            "Outbound_A3":"Outbound-A3",
+            "CPD_Bypass_1":"壓降-Bypass-1",
+            "CPD_Bypass_2":"壓降-Bypass-2",
+            "CPD_Body_1":"壓降-Body-1",
+            "CPD_Body_2":"壓降-Body-2",
+            "Inbound_VCR":"Inbound-VCR",
+            "Inbound_FillPort":"Inbound-Fill Port",
+            "Inbound_M1":"Inbound-M1",
+            "Inbound_M2":"Inbound-M2",
+            "Inbound_A1":"Inbound-A1",
+            "Inbound_A2":"Inbound-A2",
+            "Inbound_A3":"Inbound-A3",
+            "Inbound_M1_Valve":"Inbound-M1 Valve",
+            "Inbound_M2_Valve":"Inbound-M2 Valve",
+            "Inbound_A1_Valve":"Inbound-A1 Valve",
+            "Inbound_A2_Valve":"Inbound-A2 Valve",
+            "Inbound_A3_Valve":"Inbound-A3 Valve",
+            "Inbound_IN_1":"Inbound-IN-1",
+            "Inbound_IN_2":"Inbound-IN-2",
+            "Inbound_OUT":"Inbound-OUT",
+            "PP_Pump":"PP-Pump",
+            "PP_Time":"PP-時間",
+            "PP_Cycle":"PP-循環",
+            "RGA_Vacuum":"RGA-真空值",
+            "RGA_H2O":"RGA-H2O",
+            "RGA_O2":"RGA-O2",
+            "RGA_CO2":"RGA-CO2",
+            "RGA_Acetone":"RGA-丙酮",
+            "RGA_Pentane":"RGA-戊烷",
+            "RGA_He":"RGA-He",
+            "HotN2_DewPoint":"HotN2-露點值",
+            "HotN2_WaterContent":"HotN2-含水量",
+            "created_at":"建立時間",
+            "updated_at":"更新時間",
+        };
+        for(var key in oldkey)
+        {        
+            if (ColumnName == key)
+            {
+                Result = oldkey[key];
+            }
+        }
+        return Result = (Result == '')?  ColumnName : Result;
+    }
+</script>
 
 {{-- Data資料呈現 Start --}}
 <script type="text/javascript">
 
-    var _todos = @json($todos);
+    var SPEC = @json($todosContainerSPEC);
+    var Model = @json($todosContainerModel);
+  
+    var _todoList = {
+            SPEC: SPEC,
+            Model: Model,
+        };
     var combobox_items = [];  //用來儲存colName內容選項
-    
-    /*****建立文件的方法*****/
-    $(document).ready(function () {
-        
-        //建立動態表格
-        var colNames = [];
-        var colModel = [];
-   
-        for ( var colName in _todos)
-        {
-            colNames.push(colName);
+
+    $(document).ready(function () {      
+        var i = 0;
+        for(var _todoP in _todoList ){       
+            ShowTable(_todoP, i);
+            i++;
         }
-        
-        for ( var colName in _todos)
-        {           
-            if (colName === 'id')
-            {           
-                colModel.push(
-                        {name:colName, index:colName, width:80, align:"center",sortable:true, frozen: true, sorttype:"int", editable:false, cellattr: addCellAttrID}
-                    );
-            }
-            else if (colName === 'Filling_Date')
-            {
-                colModel.push(
-                    {
-                        name:colName, index:colName, width:200, align:"center",sortable:true, editable:true, cellattr: addCellAttr,
-                        sorttype: "date", edittype:'text', 
-                        editoptions: 
-                        {                       
-                            dataInit: function (elem) 
-                            {                                                                 
-                                $(elem).datetimepicker(
-                                    {
-                                        autoclose:true,
-                                        dateFormat: 'yy-mm-dd', 
-                                        timeFormat: 'HH:mm:ss',                         
-                                    }                             
-                                );
-                            },      
-                        },
-                        search:true,
-                        searchoptions: {
-                            sopt: ['eq','le','ge'],
-                            dataInit : function (elem) 
-                            {
-                                var self = this;
-                                $(elem).datepicker({
-                                    dateFormat: 'yy-mm-dd',                                 
-                                    changeYear: true,
-                                    changeMonth: true,
-                                    showOn: 'focus',
-                                    autoclose:1
-                                });
-                            }
-                        },                                   
-                    }
-                );
-            }
-            else if (colName === 'Op' || colName === 'glove_box' || colName === 'Oven' || colName === 'Material')
-            {
-                colModel.push(
-                    {
-                        name:colName, index:colName, width:150, align:"center",sortable:true, editable:true, cellattr: addCellAttr,
-                        stype:'text',
-                        edittype:'custom', editoptions:
-                        {
-                            custom_element: combobox_elem, custom_value:combobox_value
-                        }, 
-                        stype:'custom', searchoptions:
-                        {
-                            custom_element: combobox_elem, custom_value:combobox_value                   
-                        },
-                    }
-                );
-            }
-            else if (colName === 'created_at' || colName === 'updated_at')
-            {
-                colModel.push(
-                    {
-                        name:colName, index:colName, width: 150, align:"center",sortable:true, editable:false, cellattr: addCellAttr,
-                        sorttype: "date",
-                        search:true,
-                        searchoptions: {
-                            sopt: ['eq','le','ge'],
-                            dataInit : function (elem) 
-                            {
-                                var self = this;
-                                $(elem).datepicker({
-                                    dateFormat: 'yy-mm-dd',                                 
-                                    changeYear: true,
-                                    changeMonth: true,
-                                    showOn: 'focus',
-                                    autoclose:1
-                                });
-                            }
-                        },                                   
-                    }
-                );
-            }
-            else
-            {
-                colModel.push({name:colName, index:colName, align:"center", width:120, editable:true, cellattr: addCellAttr});
-            }
-        }
-
-        for(var index in colNames)
-        {     
-            colNames[index] = getColumnNameFromDatabaseToChinese(colNames[index]);                
-        }
-        
-        var jqgridWidth = parseInt($(window).width()) * 0.7;
-
-        // 準備資料           
-        $("#dg").jqGrid({
-            url:'GrindingOven/show',
-            datatype: "json",
-            altrows:false,
-            width: jqgridWidth,
-            height:'100%',
-            colNames:colNames,
-            colModel:colModel,
-            multiselect:false,
-            rowNum:10,
-            rowList:[10,20,50],
-            pager: '#dgPager',
-            sortname: 'id',
-            viewrecords: true,
-            gridview: true,
-            sortorder: "desc",
-            caption:"Grinding & Oven",
-            shrinkToFit :false,
-            loadonce:false,
-            multiselect : true,
-            jsonReader : {
-                            root: "dataList",
-                            page: "currPage",
-                            total: "totalPages",
-                            records: "totalCount"                     
-                        },
-            prmNames : {
-                            page:"pageNum", 
-                            rows:"limit", 
-                            order: "order"
-                        },
-            loadComplete: function (){ 
-                fixPositionsOfFrozenDivs.call(this);
-            }, // Fix column's height are different after enable frozen column feature
-            gridComplete: function(){
-                //根據瀏覽器寬度動態改變
-                $(window).resize(function(){ 
-                    var winwidth= parseInt($(window).width()) * 0.7;     
-                    $("#dg").jqGrid('setGridWidth', winwidth);
-                });
-            },                                                    
-        }).jqGrid('setFrozenColumns'); 
-        
-        //增加Tool bar        
-        $("#dg").jqGrid('navGrid','#dgPager', { search:true, edit:false, add:false, del:false, refresh:true } );
-                
-        //增加更多的搜尋條件
-        $.extend($.jgrid.search, {
-                    multipleSearch: true,
-                    recreateFilter: true,
-                    closeOnEscape: true,
-                    searchOnEnter: true,
-                    overlay: 1,
-                    closeAfterSearch:true
-                });
-
-        //表格排序或隱藏       
-        $("#dg").jqGrid('navButtonAdd','#dgPager',{
-                caption: "",
-                title: "表格排序",
-                onClickButton : function (){
-                jQuery("#dg").jqGrid('columnChooser');
-                }
-            });
-
-        //重新整理功能
-        $('.ui-icon-refresh').click(function(){
-            lastSearchData = null;
-            $("#load_dg").show();
-        });
+        setTimeout(Showtab,1000);
+        getAuthority();
+        //test
+        var _ChartTypeSource = ["Scatter Chart", "Control Chart"];
+        var _xAxisSource = ["日期", "次數", "型號", "瓶號"];
+        var _yAxisSource = ["導電度"];
+        var _GroupSource = ["型號", "瓶號", "ALL"];
+        //建立ToolBar
+        var SPCSource = ['A1.超過3個標準差', 'A2.連續九點在中線同一側', 'A3.連續六點呈現上升或下降',
+                            'A4.連續三點中的兩點落在2個標準差之外', 'A5.連續五點中的四點落在1個標準差之外',
+                            'A6.區間最大最小值',
+                        ];
+        PrepareToToolbar(_ChartTypeSource, _xAxisSource, _yAxisSource, _GroupSource, SPCSource); 
         
         //獲得combobox的內容
         combobox_items = getComboboxItem();
-
-        var _ChartTypeSource = ["Scatter Chart", "Control Chart"];
-        var _xAxisSource = ["Filling Date", "次數", "sap batch", "serial number", "Main bubbler tank", "1st bulk batch", "1st tank batch", 
-                            "2nd bulk batch", "2nd tank batch", "3rd bulk batch", "3rd tank batch","glove box", "Oven", "Material"];
-        
-        var _yAxisSource = ["sap batch actual assay", "sap batch actual meo", "1st bulk wt.", "2nd bulk wt.", "3rd bulk wt.", 
-                            "1st bulk assay", "1st bulk meo", "2nd bulk assay", "2nd bulk meo", "3rd bulk assay", "3rd bulk meo", 
-                            "expect meo", "PDMAT (g)", "<75um (%)", "grinding time (h)", "input system oxygen", "input system moisture", 
-                            "output system oxygen", "output system moisture", "Q Time", "anneal seat", "0.0 ppm", "pressure Drop Via bypass",
-                            "pressure Drop Via body"
-                        ];
-        var _GroupSource = ["sap batch", "Op.", "serial number", "Main bubbler tank", "1st bulk batch", "1st tank batch", "2nd bulk batch", 
-                            "2nd tank batch", "2nd tank batch", "3rd bulk batch", "3rd tank batch", "glove box", "Material","ALL"
-                        ];
-
-        //建立ToolBar
-        var SPCSource = ['A1.超過3個標準差', 'A2.連續九點在中線同一側', 'A3.連續六點呈現上升或下降',
-                    'A4.連續三點中的兩點落在2個標準差之外', 'A5.連續五點中的四點落在1個標準差之外',
-                ];
-        PrepareToToolbar(_ChartTypeSource, _xAxisSource, _yAxisSource, _GroupSource, SPCSource);
-        
     });
-
-     /*輸入Database ColumnName 輸出中文 ColumnName*/
-     function getColumnNameFromDatabaseToChinese(ColumnName)
-     {
-        var Result = '';
-        
-        //舊key到新key的映射，colName的轉換
-        var oldkey = {
-            id: "編號",
-            Filling_Date: "Filling Date",
-            sap_batch: "sap batch",
-            sap_batch_actual_assay: "sap batch actual assay",
-            sap_batch_actual_meo: "sap batch actual meo",
-            Op: "Op.",
-            serial_number: "serial number",
-            Main_bubbler_tank: "Main bubbler tank",
-            "1st_bulk_batch": "1st bulk batch",
-            "1st_bulk_wt": "1st bulk wt.",
-            "1st_tank_batch": "1st tank batch",
-            "2nd_bulk_batch": "2nd bulk batch",
-            "2nd_bulk_wt": "2nd bulk wt.",
-            "2nd_tank_batch": "2nd tank batch",
-            "3rd_bulk_batch": "3rd bulk batch",
-            "3rd_bulk_wt": "3rd bulk wt.",
-            "3rd_tank_batch": "3rd tank batch",
-            "1st_bulk_assay": "1st bulk assay",
-            "1st_bulk_meo": "1st bulk meo",
-            "2nd_bulk_assay": "2nd bulk assay",
-            "2nd_bulk_meo": "2nd bulk meo",
-            "3rd_bulk_assay": "3rd bulk assay",
-            "3rd_bulk_meo": "3rd bulk meo",
-            expect_assay: "expect assay",
-            expect_meo:"expect meo",
-            PDMAT_g:"PDMAT (g)",
-            s_75um:"<75um (%)",
-            grinding_time_h:"grinding time (h)",
-            glove_box:"glove box",
-            input_system_oxygen:"input system oxygen",
-            output_system_oxygen:"output_system_oxygen",
-            input_system_moisture:"input system moisture",
-            output_system_moisture:"output system moisture",
-            Q_Time:"Q Time", 
-            Oven:"Oven",
-            anneal_seat:"anneal seat",
-            "0_0_ppm": "0.0 ppm",
-            Remark:"Remark",
-            Material:"Material",
-            pressure_Drop_Via_bypass: "pressure Drop Via bypass",
-            pressure_Drop_Via_body: "pressure Drop Via body",
-            created_at: "建立時間",
-            updated_at: "更新時間",
-        };
-
-        for(var key in oldkey)
-        {        
-            if (ColumnName == key)
-            {
-                Result = oldkey[key];
-            }
-        }
-        return Result = (Result == '')?  ColumnName : Result;
-    }
-    /* 輸入中文 ColumnName 輸出Database ColumnName*/
-    function getColumnNameFromChineseToDatabase(ColumnName)
-    {
-        var Result = '';
-        //舊key到新key的映射，colName的轉換
-        var oldkey = {
-            "編號": "id",
-            "Filling Date" : "Filling_Date",
-            "sap batch" : "sap_batch" ,
-            "sap batch actual assay" : "sap_batch_actual_assay",
-            "sap batch actual meo" : "sap_batch_actual_meo",
-            "Op." : "Op",
-            "serial number" : "serial_number",
-            "Main bubbler tank" : "Main_bubbler_tank",
-            "1st bulk batch" : "1st_bulk_batch",
-            "1st bulk wt." : "1st_bulk_wt",
-            "1st tank batch" : "1st_tank_batch",
-            "2nd bulk batch" : "2nd_bulk_batch",
-            "2nd bulk wt." : "2nd_bulk_wt",
-            "2nd tank batch" : "2nd_tank_batch",
-            "3rd bulk batch" : "3rd_bulk_batch",
-            "3rd bulk wt." : "3rd_bulk_wt",
-            "3rd tank batch" : "3rd_tank_batch",
-            "1st bulk assay" : "1st_bulk_assay",
-            "1st bulk meo" : "1st_bulk_meo",
-            "2nd bulk assay" : "2nd_bulk_assay",
-            "2nd bulk meo" : "2nd_bulk_meo" ,
-            "3rd bulk assay" : "3rd_bulk_assay",
-            "3rd bulk meo" : "3rd_bulk_meo",
-            "expect assay" : "expect_assay",
-            "expect meo" : "expect_meo",
-            "PDMAT (g)" : "PDMAT_g",
-            "<75um (%)" : "s_75um",
-            "grinding time (h)" : "grinding_time_h",
-            "glove box" : "glove_box",
-            "input system oxygen" : "input_system_oxygen",
-            "output_system_oxygen" : "output_system_oxygen",
-            "input system moisture" : "input_system_moisture",
-            "output system moisture" : "output_system_moisture",
-            "Q Time" : "Q_Time", 
-            "Oven" : "Oven",
-            "anneal seat" : "anneal_seat",
-            "0.0 ppm" : "0_0_ppm",
-            "Remark" : "Remark",
-            "Material" : "Material",
-            "pressure Drop Via bypass" : "pressure_Drop_Via_bypass",
-            "pressure Drop Via body" : "pressure_Drop_Via_body",
-            "建立時間" : "created_at",
-            "更新時間" : "updated_at",
-        };
-        for(var key in oldkey)
-        {        
-            if (ColumnName == key)
-            {
-                Result = oldkey[key];
-            }
-        }
-        return Result = (Result == '')?  ColumnName : Result;
-        
-    }
     
-
     /*****修改GridView欄位字體顏色*****/
+    function addCellAttrUrgent(rowId, val, rawObject, cm, rdata) {
+        
+        if ( rdata["urgent"] == "TRUE")
+        {
+            var sty = "style='font-size:14px; background-color:#FF7777'"
+            return sty;
+        }
+    }
     function addCellAttrID(rowId, val, rawObject, cm, rdata) {
         if(rawObject.planId == null )
         {
@@ -437,6 +272,237 @@
             return sty;
         }
     }
+    function Showtab () {
+        $( "#Gridtabs" ).tabs();
+    }
+
+    function ShowTable(_todoP, i){
+        setTimeout(function(){
+        var colNames = [];
+        var colModel = [];
+        for ( var colName in _todoList[_todoP])
+        {
+            colNames.push(colName);
+        }
+    
+        for ( var colName in _todoList[_todoP])
+        {           
+            if (colName === 'id')
+            {           
+                colModel.push(
+                        {name:colName, index:colName, width:80, align:"center",sortable:true, sorttype:"int", frozen: true, editable:false, cellattr: addCellAttrID}
+                    );
+            }
+            else if (colName === 'container_model' || colName === 'bottle_number')
+            {
+                colModel.push(
+                    {
+                        name:colName, index:colName, width:150, align:"center",sortable:true, editable:true, cellattr: addCellAttr, frozen: true,
+                        stype:'text',
+                        edittype:'custom', editoptions:
+                        {
+                            custom_element: combobox_elem, custom_value:combobox_value
+                        }, 
+                        stype:'custom', searchoptions:
+                        {
+                            custom_element: combobox_elem, custom_value:combobox_value                   
+                        },
+                    }
+                );
+            }
+            else if (colName === 'created_at' || colName === 'updated_at')
+            {
+                colModel.push({name:colName, index:colName, width:150, align:"center", editable:false, cellattr: addCellAttr});
+            }
+            else
+            {
+                colModel.push({name:colName, index:colName, align:"center", width:120, editable:true, cellattr: addCellAttr});
+            }
+        }
+
+        for(var index in colNames)
+        {     
+            colNames[index] = getColumnNameFromDatabaseToChinese(colNames[index]);                
+        }
+
+        var table = "dg" + _todoP ;
+        var jqgridWidth = parseInt($(window).width()) * 0.7;
+        var gridCaption = getColumnNameFromDatabaseToChinese(_todoP);
+        // 準備資料           
+        $("#" + table).jqGrid({
+            url:"ContainerSPEC/show/"+_todoP,
+            datatype: "json",        
+            altrows:false,
+            width: jqgridWidth,
+            height:'100%',
+            colNames:colNames,
+            colModel:colModel,
+            multiselect:false,
+            rowNum:10,
+            rowList:[10,20,50],
+            pager: '#' + table + "pager",
+            sortname: 'id',
+            viewrecords: true,
+            gridview: false,
+            sortorder: "asc",
+            caption: gridCaption,
+            shrinkToFit :false,
+            loadonce: false,          
+            jsonReader : {
+                            root: "dataList",
+                            page: "currPage",
+                            total: "totalPages",
+                            records: "totalCount"                     
+                        },
+            prmNames : {
+                            page:"pageNum", 
+                            rows:"limit", 
+                            order: "order",
+                        },
+
+            loadComplete: function (){ 
+                fixPositionsOfFrozenDivs.call(this);
+                
+            }, // Fix column's height are different after enable frozen column feature
+            gridComplete: function(){
+                //根據瀏覽器寬度動態改變
+                $(window).resize(function(){ 
+                    var winwidth= parseInt($(window).width()) * 0.7;     
+                    $("#" + table).jqGrid('setGridWidth', winwidth);
+                });
+            },                                                           
+        }).jqGrid('setFrozenColumns'); 
+
+
+        //增加Tool bar        
+        $("#" + table).jqGrid('navGrid','#' + table + "pager", { search:true, edit:false, add:false, del:false, refresh:true } );
+                
+        //增加更多的搜尋條件
+        $.extend($.jgrid.search, {
+                    multipleSearch: true,
+                    recreateFilter: true,
+                    closeOnEscape: true,
+                    searchOnEnter: true,
+                    overlay: 1,
+                    closeAfterSearch:true
+                });
+        //表格排序或隱藏       
+        $("#" + table).jqGrid('navButtonAdd','#' + table + "pager",{
+                caption: "",
+                title: "表格排序",
+                onClickButton : function (){
+                $("#" + table).jqGrid('columnChooser');
+                }
+            });     
+        //重新整理功能
+        $('.ui-icon-refresh').click(function(){
+            lastSearchData = null;
+            $("#load_" + table).show();
+        });
+    
+        },i * 20);  
+    }
+
+    function getAuthority(){
+        var User = "<?php echo $_SERVER['REMOTE_USER']; ?>";
+        var Authority = '';
+        $.ajax({
+            async:false,
+            url: "SamplingRecord/GetAuthority",//路徑
+            type: "Get",
+            data:
+                {
+                    "User": User,
+                },
+        }).done(function(data){
+            Authority = data.success[0];
+            if (Authority == undefined || Authority[""])
+            {
+               
+            }
+            else
+            {
+                // if (Authority["ProductSPEC"] == 1)
+                // {     
+                    document.getElementById("New").style.display="";
+                    document.getElementById("Save").style.display="";
+                    document.getElementById("Cancel").style.display="";        
+                    document.getElementById("Edit").style.display="";
+                    document.getElementById("Delete").style.display=""; 
+                    document.getElementById("Import").style.display="";
+                    document.getElementById("ExportExcel").style.display="";
+                //}            
+            }
+        });
+    }
+
+    /*初始化選單*/
+    $(function() 
+    {
+        $( "#Chartmenu" ).menu();
+        $( "#RightClickmenu" ).menu();
+
+        // $("#Gridtabs").tabs({
+        //     select: function(event, ui) {
+        //         //alert(ui.tab.innerHTML);
+        //         ChangeToolbar(ui.tab.innerHTML); 
+        //     }
+        // });
+    });
+
+    /*動態修改toolbar source*/
+    function ChangeToolbar(process) {
+        
+        var SourceY = [], SourceCol = ["型號", "瓶號", "ALL"];
+        switch (process) {
+            case "清洗":
+                SourceY = ["導電度"];
+                break;
+            case "組裝測試":
+                SourceY = ["烘箱溫度", "烘箱時間"];
+                break;
+            case "Outbound":
+                SourceY = ["M1", "M2", "A1", "A2", "A3", "M1-Fail紀錄", "M2-Fail紀錄", "A1-Fail紀錄", 
+                "A2-Fail紀錄", "A3-Fail紀錄"];
+                break;
+            case "壓降測漏":
+                SourceY = ["管路校正", "管路校正-Fail紀錄", "By pass-1", "By pass-2", "By pass-Fail紀錄", 
+                "Body-1", "Body-2", "Body-Fail紀錄"];
+                break;
+            case "Inbound":
+                SourceY = ["VCR", "Fill Port", "VCR-Fail紀錄", "Fill Port-Fail紀錄", "M1", "M2", 
+                "A1", "A2", "A3", "M1-Fail紀錄", "M2-Fail紀錄", "A1-Fail紀錄", "A2-Fail紀錄",
+                "A3-Fail紀錄", "M1 Valve", "M2 Valve", "A1 Valve", "A2 Valve", "A3 Valve",
+                "M1 Valve-Fail紀錄", "M2 Valve-Fail紀錄", "A1 Valve-Fail紀錄", "A2 Valve-Fail紀錄", 
+                "A3 Valve-Fail紀錄", "In-1", "In-2", "OUT", "In-1-Fail紀錄", "In-2-Fail紀錄", 
+                "OUT-Fail紀錄"];
+                break;
+            case "PP測試":
+                SourceY = ["Pump", "花費時間"];
+                break;
+            case "RGA測試":
+                SourceY = ["真空值", "H2O", "N2", "O2", "CO2", "戊烷", "He"];
+                break;
+            case "熱氮氣":
+                SourceY = ["露點值", "含水量"];
+                break;
+        }
+        //修改ToolBary source
+        var num_tabs = $("#tabs ul li").length + 1;
+        for(var i = 1; i < num_tabs; i++)
+        {
+            destoryToolbar("jqxToolBar" + i, 8);
+            destoryToolbar("jqxToolBar" + i, 7);
+            destoryToolbar("jqxToolBar" + i, 6);
+            destoryToolbar("jqxToolBar" + i, 5);
+            
+            addToolbar("jqxToolBar" + i, "combobox", "last", SourceY, true);
+            addToolbar("jqxToolBar" + i, "toggle", "last", "Column:", false);
+            addToolbar("jqxToolBar" + i, "combobox", "last", SourceCol, false);
+            addToolbar("jqxToolBar" + i, "input", "last", "", false); 
+        }
+        
+    }
 
     /*****獲得item內容包含的方法*****/
     var selectItemJson; //用來存放item包含的值
@@ -444,7 +510,7 @@
         
         $.ajax({
             async:false,
-            url: "GrindingOven/GetComboboxItem",//路徑
+            url: "ContainerSPEC/GetComboboxItem",//路徑
             type: "Get",
             data:{    
             },
@@ -452,6 +518,7 @@
         }).done(function(data){
             selectItemJson = data;
         });
+        
         return selectItemJson;
     }
     
@@ -474,11 +541,12 @@
         
         // Get column width value and calculate for JQWidgets combobox
         var width = $("#dg_" + name).width() - 2;       
-    
+        
         // Get column width value and calculate for JQWidgets combobox
         var height = $("#dg_" + name).height() - 2;       
-  
+
         if (width < 0 ){width = 120;}
+
         //Get items from combobox_items array 
         //獲得預選值的陣列
         var items = [];
@@ -489,7 +557,7 @@
             {
                 items.push(combobox_items[i][j][i])
             }
-        }    
+        }  
         // Get items amount to decide dropdown height to avoid autoDropDownHeight making list too long
         if (items.length > 7)
         {
@@ -502,7 +570,7 @@
                 autoDropDownHeight:true, autoComplete: true, openDelay:210, closeDelay:140});
         }
         
-        // Set initial value as original value
+        //Set initial value as original value
         elem.jqxComboBox('val', value);
         
         return elem;
@@ -516,97 +584,113 @@
         return elem.find("input").val();
     }
 
-    //Datetime picker
-    $( function() {
-        $('#datepicker').datetimepicker({
-            dateFormat: 'yy-mm-dd', 
-            timeFormat: 'HH:mm:ss'
-        });
-       
-    }); 
 </script>
+
 {{-- Data資料呈現 End --}}
  
 <meta name="csrf-token" content="{{ csrf_token() }}"> 
-{{-- <div class = "container"> --}}
     <h1 class="my-2"></h1>
-    <div style = "margin:0px auto;" >
-        <img class=" img-responsive" src="img/Logo_Grinding.png" >   
-    </div>
-
+    <div style = "margin:0px auto;"  >
+        <img class=" img-responsive" src="img/Logo_ContainerSPEC.png" >   
+    </div>  
     <div align="center">
-        <table id="dg" ></table> 
-        <div id="dgPager"></div>                         
-    </div>
-
-    <div align="center">
-        <input type="BUTTON" class="btn btn-outline-info btn-space" id="New"  value="新增" />
-        <input type="BUTTON" class="btn btn-outline-info btn-space" id="Edit"  value="編輯" />
-        <input type="BUTTON" class="btn btn-outline-info btn-space" id="Save"  disabled="true" value="儲存" />
-        <input type="BUTTON" class="btn btn-outline-info btn-space" id="Cancel"  disabled="true" value="取消" />       
-        <input type="BUTTON" class="btn btn-outline-info btn-space" id="Delete" value="刪除" />
-        <input type="BUTTON" class="btn btn-outline-info btn-space" id="ExportExcel" value="下載" />
-        
-        {{-- <div> --}}
-            <input id="file" type="file" onchange="Import(this)" style="display: none" />
-            <input type="button" onclick="file.click()" class="btn btn-outline-info btn-space" id="Import" value="上傳" />
-        {{-- </div> --}}
-        <input type="BUTTON" class="btn btn-outline-info btn-space" id="ExportChart" value="圖表" />
-        <input type="BUTTON" class="btn btn-outline-info btn-space" id="CloseChart" value="收合" />
-        <input type="BUTTON" class="btn btn-outline-info btn-space" id="BackFill" value="回填" />         
-    </div>
-
-    <div id="confirmDialog" title="Comfirm Information">
-        <p></p>
-    </div>
-    <div id="warningDialog" title="Warning Information">
-        <p></p>
-    </div>
-    <div id="loadingImg" style = "display:none"><img src = "img/loadingImg.gif" width = "10%" height = "10%">
-    </div>
+        <div id="Gridtabs"  >
+            <ul class = "row justify-content-center">
+              <li><a href="#Gridtabs-1">SPEC</a></li>
+              <li><a href="#Gridtabs-2">Model</a></li>
     
-    {{-- Tab ToolBar Start --}}
-    <h1 class="my-4"></h1>
-    <div id='tabs' style = 'width: 1200px; margin:0px auto; text-align:justify; display:none' >
-        <button id='add-tab' class="btn btn-outline-info btn-space">＋ Groups</button>
-        <button id='remove-tab' class="btn btn-outline-info btn-space">－ Groups</button>
-        <button id='view-outlier' class="btn btn-outline-info btn-space">View Outlier</button>
-        <ul>
-            <li><a href='#tab1'>Group 1</a></li>
-        </ul>
-        <div id='tab1' style='background-color:powderblue;'>
-            <span style='font-weight:bold; color:#2e6e9e; display:block; text-align:center'>《 Group 1 》</span> <br />
-            <div id="jqxToolBar1" style = "margin:0px auto; text-align:justify" ></div>
-            <h1 class="my-1"></h1>
-            <div id="jqxToolBarConChart1" style = " margin:0px auto; text-align:justify" ></div>
-            <h1 class="my-1"></h1>
-            <div id="jqxToolBarChartRange1" style = " margin:0px auto; text-align:justify" ></div>
+            </ul>
+            <div id = "Gridtabs-1" >
+                <div class = "row justify-content-center">
+                <table id="dgSPEC" ></table> 
+                <div id="dgSPECpager"></div>
+                </div>                             
+            </div>
+            <div id = "Gridtabs-2" >
+                <div class = "row justify-content-center">
+                <table id="dgModel" ></table> 
+                <div id="dgModelpager"></div>
+                </div>                             
+            </div>
+        </div>
+
+        <div id="warningDialog" title="Warning Information">
+            <p></p>
+        </div>
+
+        <div id="confirmDialog" title="Comfirm Information">
+            <p></p>
         </div>
     </div>
-    {{-- Tab ToolBar End --}}    
+
     
-    {{-- Chart Start --}}
-    <div id = canvas_div style="width:70%; margin:0px auto; display: none;" >
-        <canvas id="canvas" ></canvas>
-    </div>
-    {{-- Chart End --}}
-    
-     {{-- Chart選單 Start --}}
-     <ul id="Chartmenu" style="display:none;" >
-        <li><a href="#" onclick="saveoutlierChartData();return false;"><span class="ui-icon ui-icon-disk"></span>Save</a></li>
-        <li><a href="#" onclick="removeChartData();return false;"><span class="ui-icon ui-icon-trash"></span>Delete</a></li>
-        <li><a href="#" onclick="viewChartData();return false;"><span class="ui-icon ui-icon-search"></span>View</a></li>
+<div align = "center">
+    <input type="BUTTON" class="btn btn-outline-info btn-space" id="New" style="display: none" value="新增" />
+    <input type="BUTTON" class="btn btn-outline-info btn-space" id="Edit" style="display: none" value="編輯" />
+    <input type="BUTTON" class="btn btn-outline-info btn-space" id="Save" style="display: none" disabled="true" value="儲存" />
+    <input type="BUTTON" class="btn btn-outline-info btn-space" id="Cancel" style="display: none" disabled="true" value="取消" />       
+    <input type="BUTTON" class="btn btn-outline-info btn-space" id="Delete" style="display: none" value="刪除" />
+    <input type="BUTTON" class="btn btn-outline-info btn-space" id="ExportExcel" style="display: none" value="下載" />   
+    {{-- <div> --}}
+        <input id="file" type="file" onchange="Import(this)" style="display: none" />
+        <input type="button" onclick="file.click()" class="btn btn-outline-info btn-space" id="Import" style="display: none" value="上傳" />
+    {{-- </div>     --}}
+</div>
+<h1 class="my-4"></h1>
+
+
+{{-- Tab ToolBar Start --}}
+<h1 class="my-4"></h1>
+<div id='tabs' style = 'width: 1200px; margin:0px auto; text-align:justify; display:none' >
+    <button id='add-tab' class="btn btn-outline-info btn-space">＋ Groups</button>
+    <button id='remove-tab' class="btn btn-outline-info btn-space">－ Groups</button>
+    <button id='view-outlier' class="btn btn-outline-info btn-space">View Outlier</button>
+    <ul>
+        <li><a href='#tab1'>Group 1</a></li>
     </ul>
-    {{-- Chart選單 End --}}
+    <div id='tab1' style='background-color:powderblue;'>
+        <span style='font-weight:bold; color:#2e6e9e; display:block; text-align:center'>《 Group 1 》</span> <br />
+        <div id="jqxToolBar1" style = "margin:0px auto; text-align:justify" ></div>
+        <h1 class="my-1"></h1>
+        <div id="jqxToolBarConChart1" style = " margin:0px auto; text-align:justify" ></div>
+        <h1 class="my-1"></h1>
+        <div id="jqxToolBarChartRange1" style = " margin:0px auto; text-align:justify" ></div>
+    </div>
+</div>
+{{-- Tab ToolBar End --}}    
+
+{{-- Chart Start --}}
+<div id = canvas_div style="width:70%; margin:0px auto; display: none;" >
+    <canvas id="canvas" ></canvas>
+</div>
+{{-- Chart End --}}
+
+
+{{-- Chart選單 Start --}}
+<ul id="Chartmenu" style="display:none;" >
+<li><a href="#" onclick="saveoutlierChartData();return false;"><span class="ui-icon ui-icon-disk"></span>Save</a></li>
+<li><a href="#" onclick="removeChartData();return false;"><span class="ui-icon ui-icon-trash"></span>Delete</a></li>
+<li><a href="#" onclick="viewChartData();return false;"><span class="ui-icon ui-icon-search"></span>View</a></li>
+</ul>
+{{-- Chart選單 End --}}
+
+{{-- RightClick選單 Start --}}
+<ul id="RightClickmenu" style="display:none;" >
+<li><a href="#" onclick="showSelectSPEC();return false;"><span class="ui-icon ui-icon-document"></span>View SPEC</a></li>
+</ul>
+{{-- RightClick選單 End --}}
+
 
 {{-- 表單送出方法 inline Start --}}
 <script type="text/javascript">
-
     var target_id = 'none'; //紀錄目前要修改的列id
     var selectRowData = []; //紀錄選擇的目前的rowdata
-
+    
     $("#New").click( function(){
-        var ret = $("#dg").jqGrid('getRowData',1);   
+        //var selected = $('#tabs').tabs('option', 'selected'); // selected tab index integer
+    
+        var table = "dg" +  getColumnNameFromChineseToDatabase($("#Gridtabs .ui-tabs-active").text()); //呈現此table的title
+        var ret = $("#" + table).jqGrid('getRowData',1);    
         var newparameter =  
         {
             ker:true,
@@ -620,88 +704,97 @@
             useFormatter: false,
             addRowParams: { extraparam: {} }
         };
-        $("#dg").jqGrid('addRow', newparameter);         
+        $("#" + table ).jqGrid('addRow', newparameter);
+        $("#" + table).jqGrid('destroyFrozenColumns');   
         button_Control('after_Add');
      });
     
-    $("#Edit").click( function(){ 
-        var s = $("#dg").jqGrid('getGridParam','selrow');
+     $("#Edit").click( function(){
+        var table = "dg" +  getColumnNameFromChineseToDatabase($("#Gridtabs .ui-tabs-active").text()); //呈現此table的title
+        $("#" + table).jqGrid('destroyFrozenColumns');
+        var s = $("#" + table).jqGrid('getGridParam','selrow');
         target_id = s;
-        if (s)	{
-        var ret = $("#dg").jqGrid('getRowData',s);
-        var i = 0;
-        var colNames = $("#dg").jqGrid('getGridParam','colNames');       
-        for (key in ret)
-        {
-            // Fill (column name, column value) from target row data into array
-            selectRowData[key] = Array(colNames[i], ret[key]);
-            i++;         
-        }
+         if (s)	{
+            var ret = $("#" + table ).jqGrid('getRowData',s);
+            var i = 0;
+            var colNames = $("#" + table ).jqGrid('getGridParam','colNames');       
+            for (key in ret)
+            {
+                // Fill (column name, column value) from target row data into array
+                selectRowData[key] = Array(colNames[i], ret[key]);
+                i++;         
+            }
 
-        $("#dg").jqGrid('editRow', s);
-        button_Control('after_Edit');    
-        }
-        else
-            alert("Please select a row...");
-    });
+            $("#" + table ).jqGrid('editRow', s);
+            button_Control('after_Edit');    
+         }
+         else
+             alert("Please select a row...");
+     });
 
-    //儲存
-    $("#Save").click( function(){
-        var rowIds = $('#dg').jqGrid('getDataIDs');
+     //儲存
+     $("#Save").click( function(){
+        var table = "dg" +  getColumnNameFromChineseToDatabase($("#Gridtabs .ui-tabs-active").text()); //呈現此table的title
+        var rowIds = $('#' + table ).jqGrid('getDataIDs');
         var oper = "edit";
+        var caption = $('#' + table ).jqGrid("getGridParam", "caption");
+        
+        $("#" + table).jqGrid('setFrozenColumns');   
         //判斷目前是新增或是修改
         for(idIndex = 0; idIndex < rowIds.length; ++idIndex){
-            if (rowIds[idIndex] == "0"){oper = "add";}
+           if (rowIds[idIndex] == "0"){oper = "add";}
         }
         //新增
         if (oper == 'add')
         {     
             saveparameters = {
-                        "successfunc":null,
-                        "url":'GrindingOven/AddandUpdate/'+0,
+                        "successfunc" : null,
+                        "url" : 'ContainerSPEC/AddandUpdate/'+0,
                         "extraparam" : {
-                            "oper":oper
+                            "oper": oper,
+                            "table": table,
+                            "caption": caption,
                         },
-                        "aftersavefunc":function(){ window.location.reload() }, //重新整理頁面
-                        "errorfunc":null,
+                        "aftersavefunc" : function( response ) { window.location.reload() }, //重新整理頁面    
+                        "errorfunc": null,
                         "afterrestorefunc" : null,
                         "restoreAfterError" : true,
                         "mtype" : "POST"
                 }
-                $("#dg").jqGrid('saveRow', 0, saveparameters);
-        }    
+                $("#" + table ).jqGrid('saveRow', 0, saveparameters);
+        }
         //修改
         else
         {                   
             var result = [];               
-            var ret = $("#dg").jqGrid('getRowData',target_id);
+            var ret = $("#" + table ).jqGrid('getRowData',target_id);
             var cellvalue='';
-            
+          
             for(var key in selectRowData )
             {
                 var elem = $("#" + target_id + "_" + key);
-                
+                   
                 if (elem.is(':checkbox'))
                 {
-                    cellvalue = elem.is(':checked') ? 'True' : 'False';
+                    cellvalue = elem.is(':checked') ? 'TRUE' : 'FALSE';
                 }
                 // Check if elem type is Select and display value as text
                 else if (elem.is('select'))
                 {
                     cellvalue = elem.find(":selected").text();
-                    
+                   
                 }
                 // Check if elem is jqxComboBox and get value from input inside div
                 // Because if jqxComboBox autoComplete set to true, it will not fill Null when input value wiped after selected items (forced to select first item)
                 else if (elem.attr('role') === 'combobox')
                 {
-                    cellvalue = elem.find("input").val();
+                    cellvalue = elem.find("input").val();               
                 }
                 else
                 {
                     cellvalue = elem.val();       
                 }
-                
+               
                 // Check if column value is not undefined (editable input) and if value was changed by user
                 // Also use .trim() to avoid jqGrid display Null as " " and cause a mistaken compare result
                 if (cellvalue !== undefined && cellvalue !== selectRowData[key][1].trim())
@@ -709,17 +802,18 @@
                     // Fill (column name, column original value, column changed vaue) into array
                     result[key] = Array(selectRowData[key][0], selectRowData[key][1], cellvalue);
                     // Set boolean to false if there are results
-                    //empty_result = false;
+                    // empty_result = false;
                 }
 
 
             }
-        
+           
             var htmlStr = "<br />您變更的值如下：<br /><br />";
             var addstring = "";    
             // Display changed title:value in confirm dialog
             for (var key in result)
-            {               
+            {
+                
                 // Transform Null values to 'Empty' string for display
                 var value_before = (result[key][1] === "") ? 'Null' : result[key][1];
                 var value_after = (result[key][2] === "") ? 'Null' : result[key][2];
@@ -731,7 +825,7 @@
                 addString = "<strong>" + result[key][0] + "</strong>" + "：變更 " + "<strong>" + value_before + "</strong>" + " 為 " + "<strong>" + value_after + "</strong><br />";
                 htmlStr += addString;
             }
-            
+                
             htmlStr += "<br />確定要修改所選的資料嗎?<br /><br />";
 
             $("#confirmDialog").html(htmlStr);
@@ -745,10 +839,12 @@
                                 $(this).dialog("close");
                                 saveparameters = {
                                 "successfunc" : null,
-                                "url" : 'GrindingOven/AddandUpdate/'+ret.id,
+                                "url" : 'ContainerSPEC/AddandUpdate/'+ret.id,
                                 "extraparam" : {                                   
                                     "id" : ret.id,
-                                    "oper" : oper,                                  
+                                    "oper" : oper,
+                                    "table": table,
+                                    "caption": caption,                                 
                                 },
                                 "aftersavefunc" : function( response ) {
                                                 },
@@ -757,101 +853,64 @@
                                 "restoreAfterError" : true,
                                 "mtype" : "POST"
                         }
-                        $("#dg").jqGrid('saveRow',target_id, saveparameters);
+                        $("#" + table ).jqGrid('saveRow',target_id, saveparameters);
                         target_id = 'none';
-                        $("#dg").jqGrid('resetSelection');
+                        $("#" + table ).jqGrid('resetSelection');
                         button_Control('after_Save');                                            
                     },
                     "取消" : function() {
                         $(this).dialog("close");                     
                         target_id = 'none';
-                        var rowIds = $('#dg').jqGrid('getDataIDs'); 
+                        var rowIds = $('#' + table ).jqGrid('getDataIDs'); 
                         for(idIndex = 0; idIndex < rowIds.length; ++idIndex){
-                            $("#dg").jqGrid('restoreRow',rowIds[idIndex], true); 
+                            $("#" + table).jqGrid('restoreRow',rowIds[idIndex], true); 
                         }
                         button_Control('after_Cancel');
                     }
                 }
             });                                      
         }
-    });
+     });
 
-    //取消
-    $("#Cancel").click( function(){
-    target_id = 'none';
-    var rowIds = $('#dg').jqGrid('getDataIDs'); 
-    for(idIndex = 0; idIndex < rowIds.length; ++idIndex){           
-        $("#dg").jqGrid('restoreRow',rowIds[idIndex], true); 
-    }
-    button_Control('after_Cancel');    
-    });
+     $("#Cancel").click( function(){
+        var table = "dg" +  getColumnNameFromChineseToDatabase($("#Gridtabs .ui-tabs-active").text()); //呈現此table的title
+        $("#" + table).jqGrid('setFrozenColumns');   
+        target_id = 'none';
+        var rowIds = $('#' + table ).jqGrid('getDataIDs'); 
+        for(idIndex = 0; idIndex < rowIds.length; ++idIndex){           
+            $("#" + table ).jqGrid('restoreRow',rowIds[idIndex], true); 
+        }
+        button_Control('after_Cancel');    
+     });
 
-    //刪除    
-    $("#Delete").click( function() {
-         var s = $("#dg").jqGrid('getGridParam','selrow');      
+      //獲取目前選取的資料    
+      $("#Delete").click( function() {
+        var table = "dg" +  getColumnNameFromChineseToDatabase($("#Gridtabs .ui-tabs-active").text()); //呈現此table的title
+        var caption = $('#' + table ).jqGrid("getGridParam", "caption");
+         var s = $("#" + table ).jqGrid('getGridParam','selrow');      
          if (s)	{
-             var ret = $("#dg").jqGrid('getRowData',s);
+             var ret = $("#" + table ).jqGrid('getRowData',s);
              console.log(ret);           
              var answer = window.confirm("確認刪除此筆資料?");
              if (answer)
              {
                 $.ajax({
-                    url: "GrindingOven/delete/" + ret.id ,//路徑
-                    type: "DELETE",                   
+                    url: "ContainerSPEC/delete/" + ret.id ,//路徑
+                    type: "DELETE",           
                     data:{
                         "id": ret.id,
+                        "table": table,
+                        "caption": caption,
                     },
-                    success: function (){                  
-                        $('#dg').trigger( 'reloadGrid' );
-                    }                                                  
+                    success: function (){
+                        $('#' + table ).trigger( 'reloadGrid' );
+                    }                               
                 });
              }        
          }
          else        
              alert("Please select a row...");     
         });  
-    
-    //回填   
-    $("#BackFill").click( function() {
-        var s = $("#dg").jqGrid('getGridParam','selrow');      
-        if (s)	{
-            var ret = $("#dg").jqGrid('getRowData',s);
-            var selectedRows =  $("#dg").jqGrid('getGridParam', 'selarrrow');          
-            
-            var answer = window.confirm("確認回填所選資料?");
-            if (answer)
-            {
-                for (var i = 0; i < selectedRows.length; i++) 
-                {                              
-                    setTimeout((function (i) {                      
-                        return function () {                
-                            $.ajax({
-                                async:false,
-                                url: "GrindingOven/BackFill/" + selectedRows[i] ,//路徑
-                                type: "POST",             
-                                data:{
-                                    "id": selectedRows[i],
-                                    "count": i
-                                },
-                                success: function (response){ 
-                                    if (response.success == selectedRows.length - 1) { 
-                                        $('#loadingImg').hide();
-                                        $('#dg').trigger( 'reloadGrid' );
-                                    }                    
-                                },
-                                beforeSend:function(){
-                                    $('#loadingImg').show();
-                                }                               
-                            });
-                        }
-                    })(i), 2);
-                }
-            }    
-        }
-        else        
-            alert("Please select a row...");     
-    });
-
     //Buttons control function
     function button_Control(state)
     {
@@ -908,12 +967,15 @@
 </script>
 {{-- 表單送出方法 inline End --}}
 
+
 {{-- 表單輸出、輸入功能 Start--}}
 <script type="text/javascript">
-     $("#ExportExcel").click(function(){
+    $("#ExportExcel").click(function(){        
+    
+        var table = "dg" +  getColumnNameFromChineseToDatabase($("#Gridtabs .ui-tabs-active").text()); //呈現此table的title
         
-        var o = $("#dg");
-
+        var o = $("#" + table);
+        
         var columnNames = o.jqGrid('getGridParam', 'colNames');//從grid獲得colnames
 
         var rowNumber = o.jqGrid('getGridParam', 'records');//獲得搜尋後的紀錄筆數
@@ -922,23 +984,25 @@
 
         var getData = o.jqGrid('getGridParam', 'data');//獲得所有jqgrid的資料
         
-        //o.jqGrid('setGridParam', { rowNum: rowNumber }).trigger('reloadGrid', [{current:true}]);//此方式可能會lag                  
-        
         var rowData = o.jqGrid('getRowData');//獲得目前顯示在表格上的資料
+
+        var caption = o.jqGrid("getGridParam", "caption");
 
         $.ajax({
                 async:false,
-                url: "GrindingOven/export" ,//路徑
+                url: "ContainerSPEC/export" ,//路徑
                 type: "POST",           
                 data:{
                     "postData": postData,
+                    "table":table,
+                    "caption": caption,
                 },
                 success: function (DownLoadValue){
+                    console.log(DownLoadValue);
                     var dataExport = DownLoadValue.success;
                     //產生要寫入excel的data
                     var i = 1;
-                    var dataToExcel = [];
-                    columnNames.splice(0,1);   //因在多選的grid中，第一項為checkbox     
+                    var dataToExcel = [];    
                     dataToExcel.push(columnNames);
 
                     for(var key in dataExport)
@@ -954,7 +1018,7 @@
                     var myDate = new Date().toISOString().slice(0,10); 
 
                     //檔名
-                    var filename = myDate + '-' + 'GrindingOven.xlsx';
+                    var filename = myDate + '-' + $("#Gridtabs .ui-tabs-active").text()+ '-'+ 'ContainerSPEC.xlsx';
 
                     //表名
                     var sheetname = 'Sheet';
@@ -963,14 +1027,15 @@
                     downloadxlsx(filename, sheetname, dataToExcel);
                                             
                     }                               
-                });                     
+                });    
+       
     });
 
     function Import(e) {         
         if (e.files.length  ==  0 ){return;} //檢查是否有輸入資料
         
         var fileType = e.files[0].name.split('.').pop();
-        var fileName = e.files[0].name;    
+        var fileName = e.files[0].name;     
         var allowdtypes = 'xls,xlsx';
         if (allowdtypes.indexOf(fileType) < 0) 
         {          
@@ -999,50 +1064,52 @@
             for (var jsonVal in _upLoadData[0]) {
                 jsonKey.push(jsonVal);
             }
-     
-            //舊key到新key的映射   //同樣字符不須寫兩次，會被刪除
+
+            //舊key到新key的映射
             var oldkey = {
-                "編號": "id",      
-                "Filling Date": "Filling_Date",                
-                "sap batch": "sap_batch", 
-                "sap batch actual assay": "sap_batch_actual_assay",
-                "sap batch actual meo": "sap_batch_actual_meo",
-                "Op.": "Op",
-                "serial number": "serial_number",
-                "Main bubbler tank": "Main_bubbler_tank",
-                "1st bulk batch": "1st_bulk_batch",
-                "1st bulk wt.": "1st_bulk_wt",
-                "1st tank batch": "1st_tank_batch",
-                "2nd bulk batch": "2nd_bulk_batch",
-                "2nd bulk wt.": "2nd_bulk_wt",
-                "2nd tank batch": "2nd_tank_batch",
-                "3rd bulk batch": "3rd_bulk_batch",
-                "3rd bulk wt.": "3rd_bulk_wt",
-                "3rd tank batch": "3rd_tank_batch",
-                "1st bulk assay": "1st_bulk_assay",              
-                "1st bulk meo": "1st_bulk_meo",
-                "2nd bulk assay": "2nd_bulk_assay",              
-                "2nd bulk meo": "2nd_bulk_meo",
-                "3rd bulk assay": "3rd_bulk_assay",              
-                "3rd bulk meo": "3rd_bulk_meo",                
-                "expect assay": "expect_assay",
-                "expect meo": "expect_meo",             
-                "PDMAT (g)": "PDMAT_g",
-                "<75um (%)": "s_75um",
-                "grinding time (h)": "grinding_time_h",
-                "glove box": "glove_box",
-                "input system oxygen": "input_system_oxygen",
-                "output system oxygen": "output_system_oxygen",
-                "input system moisture": "input_system_moisture",
-                "output system moisture": "output_system_moisture",               
-                "Q Time": "Q_Time",
-                //"Oven": "Oven",
-                "anneal seat": "anneal_seat",
-                "0.0 ppm": "0_0_ppm",
-                //"Remark": "Remark",
-                //"Material": "Material",
-                "pressure Drop Via bypass": "pressure_Drop_Via_bypass",
-                "pressure Drop Via body": "pressure_Drop_Via_body",
+                "鋼瓶型號": "container_model",
+                "瓶號": "bottle_number",
+                "清洗-導電度": "Conductivity",
+                "組裝測試-烘箱溫度": "Oven_Temperature",
+                "組裝測試-烘箱時間": "Oven_Time",
+                "Outbound-M1": "Outbound_M1",
+                "Outbound-M2": "Outbound_M2",
+                "Outbound-A1": "Outbound_A1",
+                "Outbound-A2": "Outbound_A2",
+                "Outbound-A3": "Outbound_A3",
+                "壓降-Bypass-1": "CPD_Bypass_1",
+                "壓降-Bypass-2": "CPD_Bypass_2",
+                "壓降-Body-1": "CPD_Body_1",
+                "壓降-Body-2": "CPD_Body_2",
+                "Inbound-VCR": "Inbound_VCR",
+                "Inbound-Fill Port": "Inbound_FillPort",
+                "Inbound-M1": "Inbound_M1",
+                "Inbound-M2": "Inbound_M2",
+                "Inbound-A1": "Inbound_A1",
+                "Inbound-A2": "Inbound_A2",
+                "Inbound-A3": "Inbound_A3",
+                "Inbound-M1 Valve": "Inbound_M1_Valve",
+                "Inbound-M2 Valve": "Inbound_M2_Valve",
+                "Inbound-A1 Valve": "Inbound_A1_Valve",
+                "Inbound-A2 Valve": "Inbound_A2_Valve",
+                "Inbound-A3 Valve": "Inbound_A3_Valve",
+                "Inbound-IN-1": "Inbound_IN_1",
+                "Inbound-IN-2": "Inbound_IN_2",
+                "Inbound-OUT": "Inbound_OUT",
+                "PP-Pump": "PP_Pump",
+                "PP-時間": "PP_Time",
+                "PP-循環": "PP_Cycle",
+                "RGA-真空值": "RGA_Vacuum",
+                "RGA-H2O": "RGA_H2O",
+                "RGA-O2": "RGA_O2",
+                "RGA-CO2": "RGA_CO2",
+                "RGA-丙酮": "RGA_Acetone",
+                "RGA-戊烷": "RGA_Pentane",
+                "RGA-He": "RGA_He",
+                "HotN2-露點值": "HotN2_DewPoint",
+                "HotN2-含水量": "HotN2_WaterContent",
+                "建立時間" : "created_at",
+                "更新時間" : "updated_at" ,
             };
             //新物件被刪除時，對應的物件也會一起刪掉，並產生新物件
             for(var i = 0;i < _upLoadData.length; i++){
@@ -1056,15 +1123,14 @@
                     }
             }
 
-            var data = JSON.parse(dataImport);  //解析為Json對象
-            var table = "import_preview";
-            var pcontent = '<span style="font-weight:bold; color:#2e6e9e;">《 檔案資料預覽 File data preview 》</span><br /><br />' + '<table id= '+ table + '></table><div id="import_previewPager"></div>';   
+
+            var data = JSON.parse(dataImport);  //解析為Json對象   
 
             //建立動態表格
-            $("#confirmDialog").html(pcontent);
+            $("#confirmDialog").html('<span style="font-weight:bold; color:#2e6e9e;">《 檔案資料預覽 File data preview 》</span><br /><br /><table id="import_preview"></table><div id="import_previewPager"></div>');
             var colNames = [];
             var colModel = [];
-
+            
             for ( var colName in data[0])
             {
                 colNames.push(colName);
@@ -1073,7 +1139,7 @@
             for ( var colName in data[0])
             {
                 
-                if (colName === '編號')
+                if (colName === 'id')
                 {
                     colModel.push({name:colName, index:colName, align:"center", width:84, frozen:true, sortable:true, sorttype:"int"});
                 }
@@ -1083,14 +1149,14 @@
                 }
             }
             
-            $("#" + table).jqGrid({
+            $("#import_preview").jqGrid({      
                 datatype: "local",
                 data:data,
                 colNames: colNames,
                 colModel: colModel,
                 width: 896,
-                height: '100%',
-                sortname: '編號',
+                height: 'auto',
+                sortname: 'id',
                 sortorder: "asc",
                 hidegrid: false,
                 cmTemplate: { title: false },   // Hide Tooltip
@@ -1099,80 +1165,73 @@
                 rowNum:10,
                 rowList:[10,20,50],
                 pager: '#import_previewPager',
-                caption: fileName,
-                loadComplete: function (){ fixPositionsOfFrozenDivs.call(this); }, // Fix column's height are different after enable frozen column feature  
-                gridComplete: function() { $("#" + table).jqGrid('setFrozenColumns');}
+                caption: fileName, 
+    
+                loadComplete: function (){ fixPositionsOfFrozenDivs.call(this); }, // Fix column's height are different after enable frozen column feature 
             });
             
-            //增加Tool bar        
-            $("#" + table).jqGrid('navGrid','#import_previewPager', { search:true, edit:false, add:false, del:false, refresh:true } );
-        
-            // Hide caption
-            // $("#gview_import_preview > .ui-jqgrid-titlebar").hide();
+            $("#import_preview").jqGrid('setFrozenColumns');
+             //增加Tool bar        
+            $("#import_preview").jqGrid('navGrid','#import_previewPager', { search:true, edit:false, add:false, del:false, refresh:true } );
+
 
             $("#confirmDialog").dialog({
-                width:'auto', height:'auto', autoResize:true, modal:true, closeText:"關閉", 
-                resizable:true, closeOnEscape:true, dialogClass:'top-dialog',
-                //width:'auto', height:'auto', autoResize:true, modal:true, closeText:"關閉", resizable:true,
+                width:'900', height:'auto', autoResize:true, modal:true, closeText:"關閉", 
+                resizable:true, closeOnEscape:true, dialogClass:'top-dialog',position:['center',168],
                 show:{effect: "fade", duration: 140},
                 hide:{effect: "clip", duration: 140},
                 focus: function() { $(".ui-dialog").focus(); }, // Unfocus the default focus elem
-                buttons :[ 
-                {
-                    id:"button-OK",
-                    text:"確認",
-                    click:function()
+                buttons : [
                     {
-                        //$(this).dialog("close");
-                        $("#confirmDialog").html('<span style="font-weight:bold; color:#2e6e9e;">《 上傳進度 》</span><br /><br /><div id="progressbar"></div>');                                                                                                        
-                        $("#confirmDialog").next(".ui-dialog-buttonpane button:contains('確定')").attr("disabled", true);
-                        $("#button-OK").button("disable");
-                        $("#button-cancel").button("disable");
-                        for (var i = 0; i < data.length; i++) {                              
+                        id:"button-OK",
+                        text:"確認",
+                        click:function()
+                        { 
+                            //$(this).dialog("close");
+                            var table = "dg" +  getColumnNameFromChineseToDatabase($("#Gridtabs .ui-tabs-active").text()); //呈現此table的title
+
+                            var o = $("#" + table);
+
+                            var caption = o.jqGrid("getGridParam", "caption");
+                        
+                            $("#confirmDialog").html('<span style="font-weight:bold; color:#2e6e9e;">《 上傳進度 》</span><br /><br /><div id="progressbar"></div>');                                                                                                        
+                            $("#confirmDialog").next(".ui-dialog-buttonpane button:contains('確定')").attr("disabled", true);
+                            $("#button-OK").button("disable");
+                            $("#button-cancel").button("disable");
+                            for (var i = 0; i < data.length; i++) 
+                            {                              
                                 setTimeout((function (i) {                      
                                     return function () {                                                                       
+
                                         $.ajax({
-                                            url: 'GrindingOven/FileUpload/' + data[i].編號,
+                                            url: 'ContainerSPEC/FileUpload/' + data[i].id,
                                             method: 'post',
                                             async: false,//同步請求資料
+                                            //datatype:"json",
                                             data: {
                                                 UploadData:_upLoadData[i],
-                                                count:i                              
+                                                table:table,
+                                                caption: caption                              
                                             },
                                             success: function (response) {                                                   
-                                                if (response.message != undefined && i == 0)
-                                                {   
-                                                    alert("Upload Fail!! Please check file: " + response.message);
-                                                    
-                                                    for(var j = 0; j < data.length; j++)
+                                                $( function() 
                                                     {
-                                                        clearTimeout(j);
-                                                    }                                           
-                                                    window.location.reload();                                     
+                                                        $( "#progressbar" ).progressbar
+                                                        ({
+                                                            value: (i/data.length) * 100
+                                                        });
+                                                    });      
+                                                if (response.success == data[data.length-1].id){                                                    
+                                                    $(confirmDialog).dialog("close");
+                                                    $("#progressbar").remove();
+                                                    o.trigger( 'reloadGrid' );
                                                 }
-                                                else
-                                                {                
-                                                    if(response.message == undefined ) 
-                                                    {                                                                         
-                                                        $(function() 
-                                                            {
-                                                                $( "#progressbar" ).progressbar
-                                                                ({
-                                                                    value: (i/data.length) * 100
-                                                                });
-                                                            });      
-                                                        if (response.count == data.length - 1)
-                                                        {                                                    
-                                                            $(confirmDialog).dialog("close");
-                                                            $("#progressbar").remove();
-                                                            $('#dg').trigger( 'reloadGrid' );
-                                                        }
-                                                    }
-                                                }                                    
                                             },
+                                            failure: function (response) {                              
+                                            }
                                         });
                                     }
-                                })(i), 2);
+                                })(i), 10);
                             }
                         }                                                        
                     },
@@ -1181,7 +1240,7 @@
                         text: "取消",
                         click: function() {
                             $(this).dialog("close");
-                        }                       
+                        }
                     }
                 ]
             });                                       
@@ -1194,11 +1253,11 @@
 <script>
     /*關閉Chart*/
     $("#CloseChart").click( function(){
-       document.getElementById("canvas_div").style.display="none"; //關閉Chart
-       document.getElementById("tabs").style.display="none"; //關閉Chart tab
+        document.getElementById("canvas_div").style.display="none"; //關閉Chart
+        document.getElementById("tabs").style.display="none"; //關閉Chart tab
     })
 
-   /*產生圖表*/
+    /*產生圖表*/
    $("#ExportChart").click( function(){
        //初始圖表時不產生"無資料"的提醒
        var initial = 'false';
@@ -1254,8 +1313,8 @@
            LSLGroup.push(tLSL);
            UCLGroup.push(tUCL);
            LCLGroup.push(tLCL);
-           LabelItem.push("sap_batch");
-           DateItem.push("Filling_Date");
+           LabelItem.push("bottle_number");
+           DateItem.push("working_date");
            
            //獲得Toolbar的資料 
            var toolsBarChartRange = $("#jqxToolBarChartRange" + ( j + 1 )).jqxToolBar("getTools");
@@ -1274,30 +1333,38 @@
         if (_checkChartWithGroup !==''){alert(_checkChartWithGroup); return;}
 
        //獲得資料
-       var o = $("#dg");
 
-       var columnNames = o.jqGrid('getGridParam', 'colNames');//從grid獲得colnames
+        var table = "dg" +  getColumnNameFromChineseToDatabase($("#Gridtabs .ui-tabs-active").text()); //呈現此table的title
+        
+        var o = $("#" + table);
+        
+        var columnNames = o.jqGrid('getGridParam', 'colNames');//從grid獲得colnames
 
-       var rowNumber = o.jqGrid('getGridParam', 'records');//獲得搜尋後的紀錄筆數
+        var rowNumber = o.jqGrid('getGridParam', 'records');//獲得搜尋後的紀錄筆數
+        
+        var postData = o.jqGrid('getGridParam', 'postData');//獲得搜尋條件
 
-       var postData = o.jqGrid('getGridParam', 'postData');//獲得搜尋條件
+        var getData = o.jqGrid('getGridParam', 'data');//獲得所有jqgrid的資料
+        
+        var rowData = o.jqGrid('getRowData');//獲得目前顯示在表格上的資料
 
-       // var getData = o.jqGrid('getGridParam', 'data');//獲得所有jqgrid的資料
-
-       // var dataLo = (lastSearchData == null)? getData: lastSearchData;
+        var caption = o.jqGrid("getGridParam", "caption");
+       
 
        $.ajax({
                async:false,
-               url: "GrindingOven/export" ,//路徑
+               url: "ContainerSPEC/export" ,//路徑
                type: "POST",           
                data:{
-                   "postData": postData,
+                    "postData": postData,
+                    "table":table,
+                    "caption": caption,
                },
                success: function (DownLoadValue){
                    var dataLo = DownLoadValue.success;
                  //產生要寫入excel的data
                    //參數格式: original data -> toolbar data -> toolbar control data 
-                   DrowChart( 'Grinding Oven', dataLo, 
+                   DrowChart( 'Container Record', dataLo, 
                            chartTypeGroup, dataXaxisGroup, dataYaxisGroup, 
                            columnNameGroup, itemGroup, 
                            USLGroup, LSLGroup, UCLGroup, LCLGroup, LabelItem, DateItem,
@@ -1307,152 +1374,151 @@
                });    
              
    })
-   
 </script>
-
 {{-- Chart.js End --}}
 
 {{-- Show outlier Log Start --}}
 <script type="text/javascript">
 
-   $("button#view-outlier").click(
-       function() 
-       {
-           var outlier_data = [];
-           for(var i=0;i<sessionStorage.length;i++){
-               var key=sessionStorage.key(i);
-               var value=sessionStorage[key];
-               if(key.indexOf("restoreID") != -1)
-               {
-                   outlier_data.push(value);
-               }
-           }
-   
-           if(outlier_data.length == 0)
-           {
-               alert("There is no outlier data.");
-               return;
-           }
-   
-           
-           $.ajax({
-                   async:false,
-                   url: "GrindingOven/GetDataFromID" ,//路徑
-                   type: "POST",           
-                   data:{
-                       "postData": outlier_data,
-                   },
-                   success: function (DownLoadValue){
-                       var data = DownLoadValue.success;
-                       //產生要寫入excel的data
-                       var table = "import_preview";
-                       var pcontent = '<span style="font-weight:bold; color:#2e6e9e;">《 極端值 view outlier  》</span><br /><br />' + '<table id= '+ table + '></table><div id="import_previewPager"></div>';
-                       
-                       //建立動態表格
-                       $("#confirmDialog").html(pcontent);
-                       var colNames = [];
-                       var colModel = [];
-                       
-                       for ( var colName in data[0])
-                       {
-                           colNames.push(getColumnNameFromDatabaseToChinese(colName));
-                       }
-   
-                       for ( var colName in data[0])
-                       {           
-                           if (colName === 'id')
-                           {
-                               colModel.push({name:colName, index:colName, align:"center", width:84, frozen:true, sortable:true, sorttype:"int"});
-                           }
-                           else
-                           {
-                               colModel.push({name:colName, index:colName, align:"center", width:112});
-                           }
-                       }
-                       
-                       $("#" + table).jqGrid({      
-                           datatype: "local",
-                           data:data,
-                           colNames: colNames,
-                           colModel: colModel,
-                           width: 896,
-                           height: 'auto',
-                           sortname: 'id',
-                           sortorder: "asc",
-                           hidegrid: false,
-                           cmTemplate: { title: false },   // Hide Tooltip
-                           gridview: true,
-                           shrinkToFit: false,
-                           rowNum:10,
-                           rowList:[10,20,50],
-                           pager: '#import_previewPager',
-                           caption: "極端值紀錄 Outlier Log", 
-                           loadComplete: function (){ fixPositionsOfFrozenDivs.call(this); }, // Fix column's height are different after enable frozen column feature 
-                           gridComplete: function() { $("#" + table).jqGrid('setFrozenColumns');}
-                       });
-                       
-                       
-                       //$("#" + table).jqGrid('setFrozenColumns');
-                       //增加Tool bar        
-                       $("#" + table).jqGrid('navGrid','#import_previewPager', { search:true, edit:false, add:false, del:false, refresh:true } );
-                           
-   
-                       $("#confirmDialog").dialog({
-                           width:'auto', height:'auto', autoResize:true, modal:true, closeText:"關閉", 
-                           resizable:true, closeOnEscape:true, dialogClass:'top-dialog',position:['center',168],
-                           show:{effect: "fade", duration: 140},
-                           hide:{effect: "clip", duration: 140},
-                           focus: function() { $(".ui-dialog").focus(); }, // Unfocus the default focus elem
-                           buttons : {
-                               "關閉" : function() {
-                                   $(this).dialog("close");
-                                                                                      
-                               },
-                               "清除極端值" : function() {
-                                   var answer = window.confirm("確認清除極端值?");
-                                   if (answer)
-                                   {
-                                       clearoutlierChartData();
-                                       $(this).dialog("close");
-                                   }
-                                                                                      
-                               },
-                               "下載": function(){
-                                   var dataExport = DownLoadValue.success;
-                                   //產生要寫入excel的data
-                                   var i = 1;
-                                   var dataToExcel = [];    
-                                   dataToExcel.push(colNames);
-   
-                                   for(var key in dataExport)
-                                   {
-                                       var tmp = [];
-                                       for (var p in dataExport[key])
-                                       {
-                                           tmp.push(dataExport[key][p]);
-                                       }
-                                       dataToExcel.push(tmp);
-                                   }
-                                   
-                                   var myDate = new Date().toISOString().slice(0,10); 
-   
-                                   //檔名
-                                   var filename = myDate + '-' + 'OutlierLog.xlsx';
-   
-                                   //表名
-                                   var sheetname = 'Sheet';
-   
-                                   //下載
-                                   downloadxlsx(filename, sheetname, dataToExcel);             
-                                           }
-                           }
-                       });                                                   
-                   }                               
-               });     
-       }
-   );
-   
-   /*得到Chart上的data*/ 
+$("button#view-outlier").click(
+    function() 
+    {
+        var outlier_data = [];
+        for(var i=0;i<sessionStorage.length;i++){
+            var key=sessionStorage.key(i);
+            var value=sessionStorage[key];
+            if(key.indexOf("restoreID") != -1)
+            {
+                outlier_data.push(value);
+            }
+        }
+
+        if(outlier_data.length == 0)
+        {
+            alert("There is no outlier data.");
+            return;
+        }
+
+        var table = getColumnNameFromChineseToDatabase($("#Gridtabs .ui-tabs-active").text()); //呈現此table的title
+        
+        
+        $.ajax({
+                async:false,
+                url: "ContainerSPEC/GetDataFromID/"+table ,//路徑
+                type: "POST",           
+                data:{
+                    "postData": outlier_data,
+                },
+                success: function (DownLoadValue){
+                    var data = DownLoadValue.success;
+                    //產生要寫入excel的data
+                    var table = "import_preview";
+                    var pcontent = '<span style="font-weight:bold; color:#2e6e9e;">《 極端值 view outlier  》</span><br /><br />' + '<table id= '+ table + '></table><div id="import_previewPager"></div>';
+                    
+                    //建立動態表格
+                    $("#confirmDialog").html(pcontent);
+                    var colNames = [];
+                    var colModel = [];
+                    
+                    for ( var colName in data[0])
+                    {
+                        colNames.push(getColumnNameFromDatabaseToChinese(colName));
+                    }
+
+                    for ( var colName in data[0])
+                    {           
+                        if (colName === 'id')
+                        {
+                            colModel.push({name:colName, index:colName, align:"center", width:84, frozen:true, sortable:true, sorttype:"int"});
+                        }
+                        else
+                        {
+                            colModel.push({name:colName, index:colName, align:"center", width:112});
+                        }
+                    }
+                    
+                    $("#" + table).jqGrid({      
+                        datatype: "local",
+                        data:data,
+                        colNames: colNames,
+                        colModel: colModel,
+                        width: 896,
+                        height: 'auto',
+                        sortname: 'id',
+                        sortorder: "asc",
+                        hidegrid: false,
+                        cmTemplate: { title: false },   // Hide Tooltip
+                        gridview: true,
+                        shrinkToFit: false,
+                        rowNum:10,
+                        rowList:[10,20,50],
+                        pager: '#import_previewPager',
+                        caption: "極端值紀錄 Outlier Log", 
+                        loadComplete: function (){ fixPositionsOfFrozenDivs.call(this); }, // Fix column's height are different after enable frozen column feature 
+                        gridComplete: function() { $("#" + table).jqGrid('setFrozenColumns');}
+                    });
+                    
+                    
+                    //$("#" + table).jqGrid('setFrozenColumns');
+                    //增加Tool bar        
+                    $("#" + table).jqGrid('navGrid','#import_previewPager', { search:true, edit:false, add:false, del:false, refresh:true } );
+                        
+
+                    $("#confirmDialog").dialog({
+                        width:'auto', height:'auto', autoResize:true, modal:true, closeText:"關閉", 
+                        resizable:true, closeOnEscape:true, dialogClass:'top-dialog',position:['center',168],
+                        show:{effect: "fade", duration: 140},
+                        hide:{effect: "clip", duration: 140},
+                        focus: function() { $(".ui-dialog").focus(); }, // Unfocus the default focus elem
+                        buttons : {
+                            "關閉" : function() {
+                                $(this).dialog("close");
+                                                                                    
+                            },
+                            "清除極端值" : function() {
+                                var answer = window.confirm("確認清除極端值?");
+                                if (answer)
+                                {
+                                    clearoutlierChartData();
+                                    $(this).dialog("close");
+                                }
+                                                                                    
+                            },
+                            "下載": function(){
+                                var dataExport = DownLoadValue.success;
+                                //產生要寫入excel的data
+                                var i = 1;
+                                var dataToExcel = [];    
+                                dataToExcel.push(colNames);
+
+                                for(var key in dataExport)
+                                {
+                                    var tmp = [];
+                                    for (var p in dataExport[key])
+                                    {
+                                        tmp.push(dataExport[key][p]);
+                                    }
+                                    dataToExcel.push(tmp);
+                                }
+                                
+                                var myDate = new Date().toISOString().slice(0,10); 
+
+                                //檔名
+                                var filename = myDate + '-' + 'OutlierLog.xlsx';
+
+                                //表名
+                                var sheetname = 'Sheet';
+
+                                //下載
+                                downloadxlsx(filename, sheetname, dataToExcel);             
+                                        }
+                        }
+                    });                                                   
+                }                               
+            });     
+    }
+);
+/*得到Chart上的data*/ 
 function viewChartData( ){
     var $menu = $('#Chartmenu');
     $menu.hide();
@@ -1461,10 +1527,12 @@ function viewChartData( ){
     var outlier = window.myLine.data.datasets[dataSetIndex].data[index];
     var outlier_data = [];
     outlier_data.push(outlier["id"]);
+
+    var table = getColumnNameFromChineseToDatabase($("#Gridtabs .ui-tabs-active").text()); //呈現此table的title
   
     $.ajax({
             async:false,
-            url: "GrindingOven/GetDataFromID" ,//路徑
+            url: "ContainerSPEC/GetDataFromID/"+table ,//路徑
             type: "POST",           
             data:{
                 "postData": outlier_data,
@@ -1505,7 +1573,7 @@ function viewChartData( ){
                     width: 896,
                     height: 'auto',
                     sortname: 'id',
-                    sortorder: "asc",
+                    sortorder: "desc",
                     hidegrid: false,
                     cmTemplate: { title: false },   // Hide Tooltip
                     gridview: true,
@@ -1576,9 +1644,9 @@ function viewChartData( ){
                 });                                                   
             }                               
         });     
-}
-   </script>
-   
-   {{-- Show outlier Log End --}}
+}      
+    </script>
+    
+    {{-- Show outlier Log End --}}
 
 @endsection

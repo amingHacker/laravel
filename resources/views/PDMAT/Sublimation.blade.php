@@ -44,19 +44,19 @@
     {{-- 使用擴充的datePicker --}}
 <script type="text/javascript" src="{{asset('js/jqgrid/jquery-ui-timepicker-addon.js')}}"></script>  
 
-    {{-- jQWidgets --}}
-    <link rel="stylesheet" type="text/css" href="{{asset('css/jQWidget/jqx.base.css')}}" />
-    <link rel="stylesheet" type="text/css" href="{{asset('css/jQWidget/jqx.bootstrap.css')}}" />
-    
-    <script type="text/javascript" src="{{asset('js/jQWidget/jqxcore.js')}}"></script>
-    <script type="text/javascript" src="{{asset('js/jQWidget/jqxcombobox.js')}}"></script>
-    <script type="text/javascript" src="{{asset('js/jQWidget/jqxscrollbar.js')}}"></script>
-    <script type="text/javascript" src="{{asset('js/jQWidget/jqxlistbox.js')}}"></script>
-    <script type="text/javascript" src="{{asset('js/jQWidget/jqxbuttons.js')}}"></script>
-    
-    <script type="text/javascript" src="{{asset('js/jQWidget/jqxdropdownlist.js')}}"></script>
-    <script type="text/javascript" src="{{asset('js/jQWidget/jqxinput.js')}}"></script>
-    <script type="text/javascript" src="{{asset('js/jQWidget/jqxtoolbar.js')}}"></script>
+{{-- jQWidgets --}}
+<link rel="stylesheet" type="text/css" href="{{asset('css/jQWidget/jqx.base.css')}}" />
+<link rel="stylesheet" type="text/css" href="{{asset('css/jQWidget/jqx.bootstrap.css')}}" />
+
+<script type="text/javascript" src="{{asset('js/jQWidget/jqxcore.js')}}"></script>
+<script type="text/javascript" src="{{asset('js/jQWidget/jqxcombobox.js')}}"></script>
+<script type="text/javascript" src="{{asset('js/jQWidget/jqxscrollbar.js')}}"></script>
+<script type="text/javascript" src="{{asset('js/jQWidget/jqxlistbox.js')}}"></script>
+<script type="text/javascript" src="{{asset('js/jQWidget/jqxbuttons.js')}}"></script>
+
+<script type="text/javascript" src="{{asset('js/jQWidget/jqxdropdownlist.js')}}"></script>
+<script type="text/javascript" src="{{asset('js/jQWidget/jqxinput.js')}}"></script>
+<script type="text/javascript" src="{{asset('js/jQWidget/jqxtoolbar.js')}}"></script>
 {{-- Include combobox, DatePicker End --}}
 
 {{-- ajax同步 This is for es5 (ie11)--}}
@@ -301,7 +301,7 @@
                             "man Tapes (end)", "main Coolant (end)", "main Turbo (end)", "main Oxygen (end)"
                         ];
         var _GroupSource = ["1st crude batch", "1st tank batch", "2nd crude batch", "2nd tank batch", "3rd crude batch", "3rd tank batch", "bulk batch", "judge", "glove box", 
-                            "PLC status"
+                            "PLC status", "ALL"
                         ];
 
         //建立ToolBar
@@ -1476,7 +1476,7 @@
                 });     
         }
     );
-    /*得到Chart上的data*/ 
+/*得到Chart上的data*/ 
 function viewChartData( ){
     var $menu = $('#Chartmenu');
     $menu.hide();

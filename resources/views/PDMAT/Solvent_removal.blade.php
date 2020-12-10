@@ -288,7 +288,7 @@
                             "cycle Time", "solid yield", "output system oxygen", "output time spent", "solid consumed 1", 
                             "solid consumed 2", "solid consumed 3", "solid consumed 4", "solid consumed 5"
                         ];
-        var _GroupSource = ["tank batch", "crude batch", "Line", "glove box"
+        var _GroupSource = ["tank batch", "crude batch", "Line", "glove box", "ALL"
                         ];
 
         //建立ToolBar

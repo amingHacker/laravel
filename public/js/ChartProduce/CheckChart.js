@@ -8,6 +8,8 @@ function XAxisDataTransLate(data)
 {
     var XAxisData = {
         "sampling_date" : "typeDate",
+        "Sampling_date" : "typeDate", 
+        "working_date" : "typeDate",
         "次數" : "typeCount",
         "batch_number" : "typeLabel",
         "solid_Started" : "typeDate",
@@ -33,7 +35,8 @@ function XAxisDataTransLate(data)
         "3rd_tank_batch" : "typeLabel",
         "Oven" : "typeLabel",
         "Material" : "typeLabel",
-        "Sampling_date" : "typeDate", 
+        "container_model": "typeLabel",
+        "bottle_number": "typeLabel",
     };
 
     return XAxisData[data];
@@ -63,11 +66,11 @@ function DrowChart( ChartTitle, dataLo, chartTypeGroup, dataXaxisGroup, dataYaxi
     {    
         for( var key in dataLo)
         {
-            for( var p in dataLo[key])
-            {
-                if (p == columnNameGroup[i])
-                {
-                    if (itemGroup[i] == dataLo[key][p])
+            // for( var p in dataLo[key])
+            // {
+                //if (p == columnNameGroup[i])
+                //{
+                    if (itemGroup[i] == dataLo[key][columnNameGroup[i]] || columnNameGroup[i] == "ALL")
                     {
                         var tmX = '', tmY ='';
                         var tID = '', tLabelItem = '', tSamplingTime;
@@ -124,32 +127,20 @@ function DrowChart( ChartTitle, dataLo, chartTypeGroup, dataXaxisGroup, dataYaxi
                             tSamplingTime = dataLo[key][DateItem[0]];
                         }
 
-                        // var tmyRevpatern = [];
-                        // if (tmY.indexOf("<")!= -1)
-                        // {
-                        //     tmyRevpatern = tmY.split("<");
-                        // }
-                        // else if (tmY.indexOf(">")!= -1)
-                        // {
-                        //     tmyRevpatern = tmY.split(">");
-                        // }
-                        // else 
-                        // {
-                        //     tmyRevpatern = tmY.split("<");
-                        // }
-                        
-                        // tmY = parseFloat(tmyRevpatern[tmyRevpatern.length - 1]);
-
                         dataToChartXGroup[i].push(tmX);
                         dataToChartYGroup[i].push(tmY);
                         dataToChartIDGroup[i].push(tID);
                         dataToChartLabelItemGroup[i].push(tLabelItem);
                         dataToChartSampleTimeGroup[i].push(tSamplingTime);
                     }
-                }     
-            }           
+
+                    
+                //}
+            //}           
         }
     }
+
+    //
 
     //檢查Data是否正確
     var check = checkDataToChart( dataToChartYGroup, dataToChartIDGroup);

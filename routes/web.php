@@ -222,7 +222,41 @@ Route::any('/Container_GdSp/AddandUpdate/{todo}', 'Container_GdSp_Controller@Add
 //Grid 刪除
 Route::any('/Container_GdSp/delete/{todo}', 'Container_GdSp_Controller@destroy')->name('Container_GdSp.destroy');
 
+/*************************** ContainerRecord *****************************/
+//資料呈現
+Route::get('/ContainerRecord', 'ContainerRecordController@index');
+Route::get('/ContainerRecord/show/{todo}', 'ContainerRecordController@show');
+Route::post('/ContainerRecord/export', 'ContainerRecordController@export');
+Route::get('/ContainerRecord/GetTable/{todo}', 'ContainerRecordController@GetTable');
+Route::get('/ContainerRecord/GetComboboxItem', 'ContainerRecordController@ComboboxItem');
+Route::post('/ContainerRecord/GetDataFromID/{todo}', 'ContainerRecordController@GetDataFromID');
 
+//File 大量新增和修改
+Route::post('/ContainerRecord/FileUpload/{todo}', 'ContainerRecordController@FileUpload')->name('ContainerRecord.FileUpload');
+
+//Grid inline 新增和修改
+Route::any('/ContainerRecord/AddandUpdate/{todo}', 'ContainerRecordController@AddandUpdate')->name('ContainerRecord.AddandUpdate');
+
+//Grid 刪除
+Route::delete('/ContainerRecord/delete/{todo}', 'ContainerRecordController@destroy')->name('ContainerRecord.destroy');
+
+/*************************** ContainerRecord *****************************/
+//資料呈現
+Route::get('/ContainerSPEC', 'ContainerSPECController@index');
+Route::get('/ContainerSPEC/show/{todo}', 'ContainerSPECController@show');
+Route::post('/ContainerSPEC/export', 'ContainerSPECController@export');
+Route::get('/ContainerSPEC/GetTable/{todo}', 'ContainerSPECController@GetTable');
+Route::get('/ContainerSPEC/GetComboboxItem', 'ContainerSPECController@ComboboxItem');
+Route::post('/ContainerSPEC/GetDataFromID/{todo}', 'ContainerSPECController@GetDataFromID');
+
+//File 大量新增和修改
+Route::post('/ContainerSPEC/FileUpload/{todo}', 'ContainerSPECController@FileUpload')->name('ContainerSPEC.FileUpload');
+
+//Grid inline 新增和修改
+Route::any('/ContainerSPEC/AddandUpdate/{todo}', 'ContainerSPECController@AddandUpdate')->name('ContainerSPEC.AddandUpdate');
+
+//Grid 刪除
+Route::delete('/ContainerSPEC/delete/{todo}', 'ContainerSPECController@destroy')->name('ContainerSPEC.destroy');
 
 /********* Todo ***********/
 //資料呈現

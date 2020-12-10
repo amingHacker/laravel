@@ -17,6 +17,8 @@ return array(
     'App\\Http\\Controllers\\Auth\\RegisterController' => $baseDir . '/app/Http/Controllers/Auth/RegisterController.php',
     'App\\Http\\Controllers\\Auth\\ResetPasswordController' => $baseDir . '/app/Http/Controllers/Auth/ResetPasswordController.php',
     'App\\Http\\Controllers\\AuthorityController' => $baseDir . '/app/Http/Controllers/AuthorityController.php',
+    'App\\Http\\Controllers\\ContainerRecordController' => $baseDir . '/app/Http/Controllers/ContainerRecordController.php',
+    'App\\Http\\Controllers\\ContainerSPECController' => $baseDir . '/app/Http/Controllers/ContainerSPECController.php',
     'App\\Http\\Controllers\\Container_GdSp_controller' => $baseDir . '/app/Http/Controllers/Container_GdSp_controller.php',
     'App\\Http\\Controllers\\Controller' => $baseDir . '/app/Http/Controllers/Controller.php',
     'App\\Http\\Controllers\\GrindingOvenController' => $baseDir . '/app/Http/Controllers/GrindingOvenController.php',

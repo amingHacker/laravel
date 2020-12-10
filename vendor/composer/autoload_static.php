@@ -426,6 +426,8 @@ class ComposerStaticInit62cf1d4417f54ef64500d713a5326269
         'App\\Http\\Controllers\\Auth\\RegisterController' => __DIR__ . '/../..' . '/app/Http/Controllers/Auth/RegisterController.php',
         'App\\Http\\Controllers\\Auth\\ResetPasswordController' => __DIR__ . '/../..' . '/app/Http/Controllers/Auth/ResetPasswordController.php',
         'App\\Http\\Controllers\\AuthorityController' => __DIR__ . '/../..' . '/app/Http/Controllers/AuthorityController.php',
+        'App\\Http\\Controllers\\ContainerRecordController' => __DIR__ . '/../..' . '/app/Http/Controllers/ContainerRecordController.php',
+        'App\\Http\\Controllers\\ContainerSPECController' => __DIR__ . '/../..' . '/app/Http/Controllers/ContainerSPECController.php',
         'App\\Http\\Controllers\\Container_GdSp_controller' => __DIR__ . '/../..' . '/app/Http/Controllers/Container_GdSp_controller.php',
         'App\\Http\\Controllers\\Controller' => __DIR__ . '/../..' . '/app/Http/Controllers/Controller.php',
         'App\\Http\\Controllers\\GrindingOvenController' => __DIR__ . '/../..' . '/app/Http/Controllers/GrindingOvenController.php',

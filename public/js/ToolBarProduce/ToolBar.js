@@ -24,7 +24,6 @@ function PrepareToToolbar(_ChartTypeSource, _xAxisSource, _yAxisSource, _GroupSo
                 + "<h1 class ='my-1'></h1>"
                 + "<div id='jqxToolBarChartRange" + num_tabs + "' style = 'margin:0px auto; text-align:justify' ></div>"
                 + "</div>");
-            
             createToolbar(num_tabs, _ChartTypeSource, _xAxisSource, _yAxisSource, _GroupSource);
             $("#jqxToolBar" + num_tabs).jqxToolBar('render');
 
@@ -44,7 +43,7 @@ function PrepareToToolbar(_ChartTypeSource, _xAxisSource, _yAxisSource, _GroupSo
         }
     );               
 }
-//);
+
 
 function createToolbar(num_tabs, _ChartTypeSource, _xAxisSource, _yAxisSource, _GroupSource, _spcSource){
  
@@ -71,7 +70,9 @@ function createToolbar(num_tabs, _ChartTypeSource, _xAxisSource, _yAxisSource, _
                     tool.text("X axis:");
                     break;
                 case 3:
-                    tool.jqxDropDownList({ width: 120, source: _xAxisSource, selectedIndex: -1});
+                    tool.jqxDropDownList({ width: 120, source: _xAxisSource, 
+                        selectedIndex: -1,
+                    });
                     //tool.jqxComboBox({ width: 130, source: _xAxisSource, selectedIndex: 0 });
                     break;  
                 case 4:
@@ -79,8 +80,11 @@ function createToolbar(num_tabs, _ChartTypeSource, _xAxisSource, _yAxisSource, _
                     tool.text("Y axis:");
                     break;                 
                 case 5:
-                    //     tool.jqxDropDownList({ width: 130, source: _yAxisSource, selectedIndex:  -1});
-                    tool.jqxComboBox({ width: 120, source: _yAxisSource, selectedIndex: -1, searchMode: 'containsignorecase', autoComplete: true });
+                    //tool.jqxDropDownList({ width: 130, source: _yAxisSource, selectedIndex:  -1});
+                    tool.jqxComboBox({ 
+                        width: 120, source: _yAxisSource, selectedIndex: -1, 
+                        searchMode: 'containsignorecase', autoComplete: true,
+                    });
                     break;
                 case 6:
                     tool.jqxToggleButton({ width: 80, toggled: true });
@@ -184,5 +188,62 @@ function createToolbar(num_tabs, _ChartTypeSource, _xAxisSource, _yAxisSource, _
             }
         }
     });
+}
+
+function addToolbar(toolbarName, type, index, source, separator){
+    switch(type)
+    {
+        case "combobox":
+            $("#" + toolbarName).jqxToolBar("addTool", "combobox", index, separator, 
+                function (type, tool, menuToolIninitialization) {          
+                {
+                    var width;
+                    if (menuToolIninitialization) {
+                        // specific setting for minimized tool
+                        width = "100%";
+                    } else {
+                        width = 120;
+                    }
+                    tool.jqxComboBox({ width: width, source: source, selectedIndex: -1, searchMode: 'containsignorecase', autoComplete: true});
+                }    
+            });            
+            break;
+        case "toggle":
+            $("#" + toolbarName).jqxToolBar("addTool", "toggleButton", index, separator, 
+                function (type, tool, menuToolIninitialization) {          
+                {
+                    var width;
+                    if (menuToolIninitialization) {
+                        // specific setting for minimized tool
+                        width = "100%";
+                    } else {
+                        width = 80;
+                    }
+                    tool.jqxToggleButton({ width: width, toggled: true });
+                    tool.text(source);
+                }    
+            });            
+            break;
+        case "input":
+            $("#" + toolbarName ).jqxToolBar("addTool", "input", index, separator, 
+                function (type, tool, menuToolIninitialization) {          
+                {
+                    var width;
+                    if (menuToolIninitialization) {
+                        // specific setting for minimized tool
+                        width = "100%";
+                    } else {
+                        width = 120;
+                    }
+                    tool.jqxInput({ width: 120, placeHolder: "Type here..." })
+                }    
+            });            
+            break;
+    }
+}
+
+function destoryToolbar( toolbarName, index) 
+{
+    $("#" + toolbarName).jqxToolBar("destroyTool", index);     
 }
 
