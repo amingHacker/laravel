@@ -487,7 +487,7 @@
         //重新整理功能
         $('.ui-icon-refresh').click(function(){
             lastSearchData = null;
-            $("#load_" + table).show();
+            //$("#load_" + table).show();
         });
     
         },i * 20);  
@@ -535,7 +535,8 @@
         $("#Gridtabs").tabs({
             select: function(event, ui) {
                 //alert(ui.tab.innerHTML);
-                ChangeToolbar(ui.tab.innerHTML); 
+                ChangeToolbar(ui.tab.innerHTML);
+                refreshGrid(ui.tab.innerHTML);
             }
         });
     });
@@ -593,6 +594,12 @@
         }
         
     }
+
+    /*****切換tab標籤時重新整理Grid*****/
+    function refreshGrid(process){
+        var table = "dg" + getColumnNameFromChineseToDatabase(process) ;
+        $('#' + table ).trigger( 'reloadGrid' );
+    }
 
     /*****獲得item內容包含的方法*****/
     var selectItemJson; //用來存放item包含的值

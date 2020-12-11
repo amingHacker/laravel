@@ -303,7 +303,6 @@
         //重新整理功能
         $('.ui-icon-refresh').click(function(){
             lastSearchData = null;
-            $("#load_dg").show();
         });
 
         

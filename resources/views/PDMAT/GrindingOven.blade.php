@@ -271,7 +271,6 @@
         //重新整理功能
         $('.ui-icon-refresh').click(function(){
             lastSearchData = null;
-            $("#load_dg").show();
         });
         
         //獲得combobox的內容

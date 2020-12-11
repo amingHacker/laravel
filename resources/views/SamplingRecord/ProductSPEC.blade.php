@@ -246,7 +246,6 @@
         //重新整理功能
         $('.ui-icon-refresh').click(function(){
             lastSearchData = null;
-            $("#load_" + table).show();
         });
         },i * 20);  
     }

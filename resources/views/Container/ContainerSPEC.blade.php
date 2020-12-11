@@ -397,7 +397,6 @@
         //重新整理功能
         $('.ui-icon-refresh').click(function(){
             lastSearchData = null;
-            $("#load_" + table).show();
         });
     
         },i * 20);  
@@ -442,67 +441,20 @@
         $( "#Chartmenu" ).menu();
         $( "#RightClickmenu" ).menu();
 
-        // $("#Gridtabs").tabs({
-        //     select: function(event, ui) {
-        //         //alert(ui.tab.innerHTML);
-        //         ChangeToolbar(ui.tab.innerHTML); 
-        //     }
-        // });
+        $("#Gridtabs").tabs({
+            select: function(event, ui) {
+                //alert(ui.tab.innerHTML);
+                refreshGrid(ui.tab.innerHTML);
+            }
+        });
     });
 
-    /*動態修改toolbar source*/
-    function ChangeToolbar(process) {
-        
-        var SourceY = [], SourceCol = ["型號", "瓶號", "ALL"];
-        switch (process) {
-            case "清洗":
-                SourceY = ["導電度"];
-                break;
-            case "組裝測試":
-                SourceY = ["烘箱溫度", "烘箱時間"];
-                break;
-            case "Outbound":
-                SourceY = ["M1", "M2", "A1", "A2", "A3", "M1-Fail紀錄", "M2-Fail紀錄", "A1-Fail紀錄", 
-                "A2-Fail紀錄", "A3-Fail紀錄"];
-                break;
-            case "壓降測漏":
-                SourceY = ["管路校正", "管路校正-Fail紀錄", "By pass-1", "By pass-2", "By pass-Fail紀錄", 
-                "Body-1", "Body-2", "Body-Fail紀錄"];
-                break;
-            case "Inbound":
-                SourceY = ["VCR", "Fill Port", "VCR-Fail紀錄", "Fill Port-Fail紀錄", "M1", "M2", 
-                "A1", "A2", "A3", "M1-Fail紀錄", "M2-Fail紀錄", "A1-Fail紀錄", "A2-Fail紀錄",
-                "A3-Fail紀錄", "M1 Valve", "M2 Valve", "A1 Valve", "A2 Valve", "A3 Valve",
-                "M1 Valve-Fail紀錄", "M2 Valve-Fail紀錄", "A1 Valve-Fail紀錄", "A2 Valve-Fail紀錄", 
-                "A3 Valve-Fail紀錄", "In-1", "In-2", "OUT", "In-1-Fail紀錄", "In-2-Fail紀錄", 
-                "OUT-Fail紀錄"];
-                break;
-            case "PP測試":
-                SourceY = ["Pump", "花費時間"];
-                break;
-            case "RGA測試":
-                SourceY = ["真空值", "H2O", "N2", "O2", "CO2", "戊烷", "He"];
-                break;
-            case "熱氮氣":
-                SourceY = ["露點值", "含水量"];
-                break;
-        }
-        //修改ToolBary source
-        var num_tabs = $("#tabs ul li").length + 1;
-        for(var i = 1; i < num_tabs; i++)
-        {
-            destoryToolbar("jqxToolBar" + i, 8);
-            destoryToolbar("jqxToolBar" + i, 7);
-            destoryToolbar("jqxToolBar" + i, 6);
-            destoryToolbar("jqxToolBar" + i, 5);
-            
-            addToolbar("jqxToolBar" + i, "combobox", "last", SourceY, true);
-            addToolbar("jqxToolBar" + i, "toggle", "last", "Column:", false);
-            addToolbar("jqxToolBar" + i, "combobox", "last", SourceCol, false);
-            addToolbar("jqxToolBar" + i, "input", "last", "", false); 
-        }
-        
-    }
+    /*****切換tab標籤時重新整理Grid*****/
+    function refreshGrid(process){
+        var table = "dg" + process ;
+        $('#' + table ).trigger( 'reloadGrid' );
+    }
+    
 
     /*****獲得item內容包含的方法*****/
     var selectItemJson; //用來存放item包含的值
