@@ -895,7 +895,11 @@
                             "table": table,
                             "caption": caption,
                         },
-                        "aftersavefunc" : function( response ) { window.location.reload() }, //重新整理頁面    
+                        "aftersavefunc" : function( response ) { 
+                            $('#' + table).trigger( 'reloadGrid' );
+                            button_Control('after_Save');
+                            //window.location.reload() 
+                        }, //重新整理頁面    
                         "errorfunc": null,
                         "afterrestorefunc" : null,
                         "restoreAfterError" : true,

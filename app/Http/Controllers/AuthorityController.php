@@ -226,14 +226,14 @@ class AuthorityController extends Controller
             }
             $Record = $query->count();
             //var_dump($Record);
-            $DownLoadValue = $query->orderBy( $sidx, $order)->get();           
+            $DownLoadValue = $query->orderBy( $sidx, 'asc')->get();           
         } 
        
         else
         {     
             
             //dd($Record);
-            $DownLoadValue = DB::table($table)->limit(10000)->orderBy($sidx,$order)->get();
+            $DownLoadValue = DB::table($table)->limit(10000)->orderBy($sidx, 'asc')->get();
              
         } 
         //dd($DownLoadValue);
