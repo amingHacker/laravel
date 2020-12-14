@@ -95,6 +95,9 @@
         padding-top:2px;
     }
     .ui-jqgrid-hdiv { overflow-y: hidden; }
+    .myAltRowClassEven {
+        background: #fafafa;
+    }
 </style>
 
 {{-- CSS設定 End --}}
@@ -274,6 +277,7 @@
 
             loadComplete: function (){ 
                 fixPositionsOfFrozenDivs.call(this);
+                $(this).find(">tbody>tr.jqgrow:odd").addClass("myAltRowClassEven");
                
             }, // Fix column's height are different after enable frozen column feature
             gridComplete: function(){
