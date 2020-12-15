@@ -991,7 +991,8 @@
                                     "caption": caption,                                 
                                 },
                                 "aftersavefunc" : function( response ) {
-                                                },
+                                        $('#' + table ).trigger( 'reloadGrid' );                      
+                                },
                                 "errorfunc": null,
                                 "afterrestorefunc" : null,
                                 "restoreAfterError" : true,

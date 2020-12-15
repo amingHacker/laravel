@@ -291,6 +291,14 @@ class ContainerRecordController extends Controller
     
         $uploadData = $request->all();
 
+        //從model裡面撈出鋼瓶的型號
+        if ($uploadData["UploadData"]["bottle_number"] !='')
+        {
+            $tmp = DB::table("container_records_model")->select('container_model')
+            ->where("bottle_number", $uploadData["UploadData"]["bottle_number"])->first();
+            $uploadData["UploadData"]["container_model"] = $tmp->container_model;
+        }
+
         $table = '';
         switch ($uploadData["table"]){ 
             case 'dgClean':
@@ -385,6 +393,14 @@ class ContainerRecordController extends Controller
     public function AddandUpdate(Request $request)
     {      
         $AddParameter = $request->all();
+
+        //從model裡面撈出鋼瓶的型號
+        if ($AddParameter["bottle_number"] !='')
+        {
+            $tmp = DB::table("container_records_model")->select('container_model')
+            ->where("bottle_number", $AddParameter["bottle_number"])->first();
+            $AddParameter["container_model"] = $tmp->container_model;
+        }
         
         $table = '';
         switch ($AddParameter["table"]){

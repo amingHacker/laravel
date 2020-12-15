@@ -301,7 +301,6 @@ class ContainerSPECController extends Controller
     public function AddandUpdate(Request $request)
     {      
         $AddParameter = $request->all();
-        
         $table = '';
         switch ($AddParameter["table"]){
             case 'dgSPEC':
