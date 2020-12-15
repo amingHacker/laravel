@@ -296,7 +296,10 @@ class ContainerRecordController extends Controller
         {
             $tmp = DB::table("container_records_model")->select('container_model')
             ->where("bottle_number", $uploadData["UploadData"]["bottle_number"])->first();
-            $uploadData["UploadData"]["container_model"] = $tmp->container_model;
+            if ($tmp!=null)
+            {
+                $uploadData["UploadData"]["container_model"] = $tmp->container_model;
+            }   
         }
 
         $table = '';
@@ -398,8 +401,11 @@ class ContainerRecordController extends Controller
         if ($AddParameter["bottle_number"] !='')
         {
             $tmp = DB::table("container_records_model")->select('container_model')
-            ->where("bottle_number", $AddParameter["bottle_number"])->first();
-            $AddParameter["container_model"] = $tmp->container_model;
+            ->where("bottle_number", $AddParameter["bottle_number"])->first(); 
+            if ($tmp!=null)
+            {
+                $AddParameter["container_model"] = $tmp->container_model;
+            }   
         }
         
         $table = '';
