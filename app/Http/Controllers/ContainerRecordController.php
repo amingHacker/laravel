@@ -299,6 +299,10 @@ class ContainerRecordController extends Controller
             if ($tmp!=null)
             {
                 $uploadData["UploadData"]["container_model"] = $tmp->container_model;
+            }
+            else
+            {
+                $uploadData["UploadData"]["container_model"] = '';
             }   
         }
 
@@ -405,6 +409,10 @@ class ContainerRecordController extends Controller
             if ($tmp!=null)
             {
                 $AddParameter["container_model"] = $tmp->container_model;
+            }
+            else
+            {
+                $AddParameter["container_model"] = '';
             }   
         }
         
