@@ -1005,7 +1005,7 @@
                     }
             }
 
-            var data = JSON.parse(dataImport);  //解析為Json對象         
+            var data = JSON.parse(dataImport);  //解析為Json對象      
             var table = "import_preview";
             var pcontent = '<span style="font-weight:bold; color:#2e6e9e;">《 檔案資料預覽 File data preview 》</span><br /><br />' + '<table id= '+ table + '></table><div id="import_previewPager"></div>';
             
@@ -1025,10 +1025,29 @@
                 {
                     colModel.push({name:colName, index:colName, align:"center", width:84, frozen:true, sortable:true, sorttype:"int"});
                 }
+                
                 else
                 {
                     colModel.push({name:colName, index:colName, align:"center", width:112});
                 }
+            }
+
+            //修正solid_yield這個欄位的%值
+            for( var i = 0; i < data.length; i++)
+            {
+                if(data[i]["solid yield"].indexOf("%") != -1)
+                {
+                    data[i]["solid yield"] = parseFloat(data[i]["solid yield"]) / 100;
+                    _upLoadData[i]["solid_yield"]= parseFloat(_upLoadData[i]["solid_yield"]) / 100;
+                }
+
+                if (data[i]["solid yield"]!='')
+                {
+                    
+                    data[i]["solid yield"]= (parseFloat(data[i]["solid yield"])* 100).toFixed(2).toString()+ "%";
+                    _upLoadData[i]["solid_yield"]= (parseFloat(_upLoadData[i]["solid_yield"])* 100).toFixed(2).toString()+ "%";
+                } 
+
             }
             
             $("#" + table).jqGrid({

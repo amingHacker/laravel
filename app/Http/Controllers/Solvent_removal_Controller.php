@@ -286,7 +286,7 @@ class Solvent_removal_Controller extends Controller
     {       
         $AddParameter = $request->all();
         if ($AddParameter["solid_Started"] ==''){$AddParameter["solid_Started"] = NULL;}
-           
+        
         if ($request->oper =='add')
         {
             $this->CreateRowData($AddParameter);

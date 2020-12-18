@@ -190,6 +190,7 @@ Route::get('/AbnormalEvent/show/{todo}', 'AbnormalEventController@show');
 Route::post('/AbnormalEvent/export', 'AbnormalEventController@export');
 Route::get('/AbnormalEvent/GetTable/{todo}', 'AbnormalEventController@GetTable');
 Route::get('/AbnormalEvent/GetComboboxItem', 'AbnormalEventController@GetComboboxItem');
+Route::post('/AbnormalEvent/GetDataFromID', 'AbnormalEventController@GetDataFromID');
 
 
 //File 大量新增和修改

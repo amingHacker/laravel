@@ -65,6 +65,10 @@
 <script type="text/javascript" src="{{asset('js/chart/utils.js')}}"></script>
 {{-- 圖表生成 Chart.js End --}}
 
+{{-- RightClick Action Start--}}
+<script type="text/javascript" src="{{asset('js/RightClick/RightClick.js')}}"></script>
+{{-- RightClick Action End--}}
+
 {{-- CSS設定 Start--}}
 <style type="text/css">
     .ui-jqgrid-hdiv { overflow-y: hidden; }
@@ -305,6 +309,29 @@
                         var winwidth= parseInt($(window).width()) * 0.7;     
                         $("#" + table).jqGrid('setGridWidth', winwidth);
                     });
+                },
+                onRightClickRow:function(rowid, irow, icol, e){
+                    var item_data = [];
+                    item_data.push(rowid);
+                    $.ajax({
+                                async:false,
+                                url: "AbnormalEvent/GetDataFromID",//路徑
+                                type: "Post",
+                                data:
+                                    {
+                                        "postData": item_data,
+                                    },
+                            }).done(function(data){
+                                var abnormalEvent = data.success[0];
+                               
+                                showRightClick(abnormalEvent["SamplingRecords_ID"], e);
+                            
+                            });
+                    
+                    
+                },
+                onSelectRow:function(rowid,status,e){
+                    handleClickMouseDown(e);
                 },                                                           
             }).jqGrid('setFrozenColumns'); 
 
@@ -451,6 +478,13 @@
         // Because if jqxComboBox autoComplete set to true, it will not fill Null when input value wiped after selected items (forced to select first item)    
         return elem.find("input").val();
     }
+
+
+    /*初始化選單*/
+    $(function() 
+    {
+        $( "#RightClickmenu" ).menu();
+    });
 </script>
 
 {{-- Data資料呈現 End --}}
@@ -496,6 +530,13 @@
             <input type="button" onclick="file.click()" class="btn btn-outline-info btn-space" id="Import" style="display: none" value="上傳" />
         {{-- </div>     --}}
 </div>
+
+{{-- RightClick選單 Start --}}
+<ul id="RightClickmenu" style="display:none;" >
+    <li><a href="#" onclick="viewChartData();return false;"><span class="ui-icon ui-icon-document"></span>View Records</a></li>
+</ul>
+{{-- RightClick選單 End --}}
+
 <h1 class="my-4"></h1>
 
 {{-- 表單送出方法 inline Start --}}
@@ -1009,4 +1050,181 @@
     }
 </script>
 {{-- 表單輸出、輸入功能 End--}}
+
+{{-- 得到Sampling Record的資料 Start --}}
+<script type="text/javascript">
+/*得到Chart上的data*/
+/*輸入Database ColumnName 輸出中文 ColumnName*/
+function getColumnNameFromDatabaseToChinese(ColumnName)
+    {
+        var Result = '';
+         //舊key到新key的映射，colName的轉換
+        var oldkey = {
+            id: "編號",
+            urgent: "急件",  
+            sampling_date: "取樣日期",
+            product_name: "品名",
+            level: "等級",
+            bottle_number: "瓶號",
+            batch_number: "批號",
+            Assay: "Assay (Purity)",
+            sampler: "取樣者",
+            sample_source: "樣品來源",
+            analytical_item: "分析項目",
+            analyst: "分析者",
+            completion_date: "完成日",
+            determination: "判定",
+            remarks: "備註",
+            Parameter_A: "Parameter A",
+            Impurity_A: "Impurity A",
+            Impurity_B: "Impurity B",
+            Impurity_C: "Impurity C",
+            Impurity_D: "Impurity D",
+            Impurity_E: "Impurity E",
+            Impurity_F: "Impurity F",
+            "1H_NMR": "1H NMR",
+            Other_Metals: "Other Metals",
+            Parameter_B: "Parameter B",
+            Parameter_C: "Parameter C",
+            Parameter_D: "Parameter D",
+            Organic_impurity: "Organic impurity",
+            "0_0ppm":"[δ0.0ppm]",
+            "2_2ppm":"[δ2.2ppm]",
+            "3_8ppm":"[δ3.8ppm]",
+            "4_0ppm":"[δ4.0ppm]",
+            Sum223840:"Sum[2.2+3.8+4.0]",
+            IR_A:"IR A",
+            "equipment_name":"設備名稱",
+            "standard_solution":"標準液批號", 
+            "sampling_kind": "取樣類別",
+            "Quattro_id" : "Quattro編號",
+            created_at: "建立時間",
+            updated_at: "更新時間",
+        };
+        for(var key in oldkey)
+        {        
+            if (ColumnName == key)
+            {
+                Result = oldkey[key];
+            }
+        }
+        return Result = (Result == '')?  ColumnName : Result;
+    }
+
+
+function viewChartData(){
+    var $menu = $('#RightClickmenu');
+    $menu.hide();
+    var outlier = sessionStorage.getItem('RightClickID');;
+    var outlier_data = [];
+    outlier_data.push(outlier);
+  
+    $.ajax({
+            async:false,
+            url: "SamplingRecord/GetDataFromID" ,//路徑
+            type: "POST",           
+            data:{
+                "postData": outlier_data,
+            },
+            success: function (DownLoadValue){
+                var data = DownLoadValue.success;
+                //產生要寫入excel的data
+                var table = "import_preview";
+                var pcontent = '<span style="font-weight:bold; color:#2e6e9e;">《  Sampling Records 資料  》</span><br /><br />' + '<table id= '+ table + '></table><div id="import_previewPager"></div>';
+                
+                //建立動態表格
+                $("#confirmDialog").html(pcontent);
+                var colNames = [];
+                var colModel = [];
+                
+                for ( var colName in data[0])
+                {
+                    colNames.push(getColumnNameFromDatabaseToChinese(colName));
+                }
+
+                for ( var colName in data[0])
+                {           
+                    if (colName === 'id')
+                    {
+                        colModel.push({name:colName, index:colName, align:"center", width:84, frozen:true, sortable:true, sorttype:"int"});
+                    }
+                    else
+                    {
+                        colModel.push({name:colName, index:colName, align:"center", width:112});
+                    }
+                }
+                
+                $("#" + table).jqGrid({      
+                    datatype: "local",
+                    data:data,
+                    colNames: colNames,
+                    colModel: colModel,
+                    width: 896,
+                    height: 'auto',
+                    sortname: 'id',
+                    sortorder: "asc",
+                    hidegrid: false,
+                    cmTemplate: { title: false },   // Hide Tooltip
+                    gridview: true,
+                    shrinkToFit: false,
+                    rowNum:10,
+                    rowList:[10,20,50],
+                    pager: '#import_previewPager',
+                    caption: "Sampling Records 資料", 
+                    loadComplete: function (){ fixPositionsOfFrozenDivs.call(this); }, // Fix column's height are different after enable frozen column feature 
+                    gridComplete: function() { $("#" + table).jqGrid('setFrozenColumns');}
+                });
+                
+                
+                //$("#" + table).jqGrid('setFrozenColumns');
+                //增加Tool bar        
+                $("#" + table).jqGrid('navGrid','#import_previewPager', { search:true, edit:false, add:false, del:false, refresh:true } );
+                    
+
+                $("#confirmDialog").dialog({
+                    width:'auto', height:'auto', autoResize:true, modal:true, closeText:"關閉", 
+                    resizable:true, closeOnEscape:true, dialogClass:'top-dialog',position:['center',168],
+                    show:{effect: "fade", duration: 140},
+                    hide:{effect: "clip", duration: 140},
+                    focus: function() { $(".ui-dialog").focus(); }, // Unfocus the default focus elem
+                    buttons : {
+                        "關閉" : function() {
+                            $(this).dialog("close");
+                                                                               
+                        },
+                        "下載": function(){
+                            var dataExport = DownLoadValue.success;
+                            //產生要寫入excel的data
+                            var i = 1;
+                            var dataToExcel = [];    
+                            dataToExcel.push(colNames);
+
+                            for(var key in dataExport)
+                            {
+                                var tmp = [];
+                                for (var p in dataExport[key])
+                                {
+                                    tmp.push(dataExport[key][p]);
+                                }
+                                dataToExcel.push(tmp);
+                            }
+                            
+                            var myDate = new Date().toISOString().slice(0,10); 
+
+                            //檔名
+                            var filename = myDate + '-' + 'OutlierLog.xlsx';
+
+                            //表名
+                            var sheetname = 'Sheet';
+
+                            //下載
+                            downloadxlsx(filename, sheetname, dataToExcel);             
+                        }
+                    }
+                });                                                   
+            }                               
+        });     
+}
+</script>
+{{-- 得到Sampling Record的資料 End --}}
 @endsection

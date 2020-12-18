@@ -365,6 +365,22 @@ class AbnormalEventController extends Controller
         ]);     
     }
 
+     //從ID中獲取資料庫相對應的內容
+     public function GetDataFromID( Request $request )
+     {    
+         $Data = $request->all();
+         $DownLoadValue = [];
+         $query = DB::table("sampling_records_abnormalevent");
+         foreach ($Data["postData"] as $i)
+         {              
+             $query = $query->orwhere('id', '=', $i); 
+         }
+         $DownLoadValue = $query->orderBy( 'id', 'asc')->get();    
+         return response()->json([
+             'success' => $DownLoadValue,        
+         ]);     
+     }
+
 
     //回填方法
     public function BackFill($id)
