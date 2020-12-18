@@ -70,7 +70,7 @@ function DrowChart( ChartTitle, dataLo, chartTypeGroup, dataXaxisGroup, dataYaxi
             // {
                 //if (p == columnNameGroup[i])
                 //{
-                    if (itemGroup[i] == dataLo[key][columnNameGroup[i]] || columnNameGroup[i] == "ALL")
+                    if ((itemGroup[i] != '' && itemGroup[i] == dataLo[key][columnNameGroup[i]]) || (itemGroup[i] == '' && columnNameGroup[i] == "ALL"))
                     {
                         var tmX = '', tmY ='';
                         var tID = '', tLabelItem = '', tSamplingTime;
