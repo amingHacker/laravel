@@ -30,6 +30,8 @@ class CreateContainerRecordsRgatestTable extends Migration
             $table->string('He',100);
             $table->string('spectro_equipment_limit',100);
             $table->string('spectro_equipment_spec',100);
+            $table->string('work_id',100);
+            $table->string('table_id',100);
             $table->timestamps();
         });
     }

@@ -21,6 +21,7 @@ class CreateContainerRecordsCleanTable extends Migration
             $table->string('conductivity_test',100);
             $table->string('equipment_limit',100);
             $table->string('spec',100);
+            $table->string('work_id',100);
             $table->timestamps();
         });
     }

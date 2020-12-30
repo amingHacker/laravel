@@ -21,6 +21,8 @@ class CreateContainerRecordsPumppurgetestTable extends Migration
             $table->string('pump',100);
             $table->string('spend_time',100);
             $table->string('cycle',100);
+            $table->string('work_id',100);
+            $table->string('table_id',100);
             $table->timestamps();
         });
     }

@@ -22,6 +22,8 @@ class CreateContainerRecordsAssemblingtestTable extends Migration
             $table->string('oven_time',100);
             $table->dateTime('start_time')->nullable()->default(null);
             $table->dateTime('end_time')->nullable()->default(null);
+            $table->string('work_id',100);
+            $table->string('table_id',100);
             $table->timestamps();
         });
     }

@@ -48,6 +48,8 @@ class CreateContainerRecordsInboundTable extends Migration
             $table->string('IN_1_fail',100);
             $table->string('IN_2_fail',100);
             $table->string('OUT_fail',100);
+            $table->string('work_id',100);
+            $table->string('table_id',100);
             $table->timestamps();
         });
     }

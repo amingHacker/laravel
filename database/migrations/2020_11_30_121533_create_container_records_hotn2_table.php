@@ -24,6 +24,8 @@ class CreateContainerRecordsHotn2Table extends Migration
             $table->string('water_content',100);
             $table->string('dew_point_equipment_limit_trans',100);
             $table->string('dew_point_equipment_spec_trans',100);
+            $table->string('work_id',100);
+            $table->string('table_id',100);
             $table->timestamps();
         });
     }

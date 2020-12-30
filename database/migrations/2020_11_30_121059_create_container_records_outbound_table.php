@@ -28,6 +28,8 @@ class CreateContainerRecordsOutboundTable extends Migration
             $table->string('A1_fail',100);
             $table->string('A2_fail',100);
             $table->string('A3_fail',100);
+            $table->string('work_id',100);
+            $table->string('table_id',100);
             $table->timestamps();
         });
     }

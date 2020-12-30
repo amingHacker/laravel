@@ -26,6 +26,8 @@ class CreateContainerRecordsCpdTable extends Migration
             $table->string('body_1',100);
             $table->string('body_2',100);
             $table->string('body_fail',100);
+            $table->string('work_id',100);
+            $table->string('table_id',100);
             $table->timestamps();
         });
     }
