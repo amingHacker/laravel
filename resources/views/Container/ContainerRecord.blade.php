@@ -346,11 +346,28 @@
                         {name:colName, index:colName, width:80, align:"center",sortable:true, sorttype:"int", frozen: true, editable:false, cellattr: addCellAttrID}
                     );
             }
-            else if (colName === 'container_model' || colName === 'bottle_number')
+            else if (colName === 'container_model')
             {
                 colModel.push(
                     {
-                        name:colName, index:colName, width:150, align:"center",sortable:true, editable:true, cellattr: addCellAttr, frozen: true,
+                        name:colName, index:colName, width:120, align:"center",sortable:true, editable:true, cellattr: addCellAttr, frozen: true,
+                        stype:'text',
+                        edittype:'custom', editoptions:
+                        {
+                            custom_element: combobox_elem, custom_value:combobox_value
+                        }, 
+                        stype:'custom', searchoptions:
+                        {
+                            custom_element: combobox_elem, custom_value:combobox_value                   
+                        },
+                    }
+                );
+            }
+            else if (colName === 'bottle_number')
+            {
+                colModel.push(
+                    {
+                        name:colName, index:colName, width:100, align:"center",sortable:true, editable:true, cellattr: addCellAttr, frozen: true,
                         stype:'text',
                         edittype:'custom', editoptions:
                         {
