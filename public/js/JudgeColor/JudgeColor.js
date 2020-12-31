@@ -65,6 +65,9 @@ function addCellAttr(rowId, val, rawObject, cm, rdata)
                     case 'SE':
                         product_level = 'TMG_SE';
                         break;
+                    case 'LEDUM':
+                        product_level = 'TMG_LEDUM';
+                        break;
                 }
                 break;
             case 'TMIN':
