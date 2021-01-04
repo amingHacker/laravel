@@ -232,6 +232,9 @@ Route::get('/ContainerRecord/GetTable/{todo}', 'ContainerRecordController@GetTab
 Route::get('/ContainerRecord/GetComboboxItem', 'ContainerRecordController@ComboboxItem');
 Route::post('/ContainerRecord/GetDataFromID/{todo}', 'ContainerRecordController@GetDataFromID');
 
+//自動更新
+Route::get('/ContainerRecord/AutoUpdate', 'ContainerRecordController@AutoUpdate');
+
 //File 大量新增和修改
 Route::post('/ContainerRecord/FileUpload/{todo}', 'ContainerRecordController@FileUpload')->name('ContainerRecord.FileUpload');
 
@@ -241,7 +244,7 @@ Route::any('/ContainerRecord/AddandUpdate/{todo}', 'ContainerRecordController@Ad
 //Grid 刪除
 Route::delete('/ContainerRecord/delete/{todo}', 'ContainerRecordController@destroy')->name('ContainerRecord.destroy');
 
-/*************************** ContainerRecord *****************************/
+/*************************** ContainerSPEC*****************************/
 //資料呈現
 Route::get('/ContainerSPEC', 'ContainerSPECController@index');
 Route::get('/ContainerSPEC/show/{todo}', 'ContainerSPECController@show');

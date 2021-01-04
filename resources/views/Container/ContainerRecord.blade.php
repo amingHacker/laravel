@@ -792,6 +792,7 @@
     {{-- </div>     --}}
     <input type="BUTTON" class="btn btn-outline-info btn-space" id="ExportChart" value="圖表" />
     <input type="BUTTON" class="btn btn-outline-info btn-space" id="CloseChart" value="收合" />
+    <input type="BUTTON" class="btn btn-outline-info btn-space" id="AutoUpdate" value="更新" />
 </div>
 <h1 class="my-4"></h1>
 
@@ -1045,34 +1046,46 @@
         button_Control('after_Cancel');    
      });
 
-      //獲取目前選取的資料    
-      $("#Delete").click( function() {
-        var table = "dg" +  getColumnNameFromChineseToDatabase($("#Gridtabs .ui-tabs-active").text()); //呈現此table的title
-        var caption = $('#' + table ).jqGrid("getGridParam", "caption");
-         var s = $("#" + table ).jqGrid('getGridParam','selrow');      
-         if (s)	{
-             var ret = $("#" + table ).jqGrid('getRowData',s);
-             console.log(ret);           
-             var answer = window.confirm("確認刪除此筆資料?");
-             if (answer)
-             {
-                $.ajax({
-                    url: "ContainerRecord/delete/" + ret.id ,//路徑
-                    type: "DELETE",           
-                    data:{
-                        "id": ret.id,
-                        "table": table,
-                        "caption": caption,
-                    },
-                    success: function (){
-                        $('#' + table ).trigger( 'reloadGrid' );
-                    }                               
-                });
-             }        
-         }
-         else        
-             alert("Please select a row...");     
-        });  
+    //獲取目前選取的資料    
+    $("#Delete").click( function() {
+    var table = "dg" +  getColumnNameFromChineseToDatabase($("#Gridtabs .ui-tabs-active").text()); //呈現此table的title
+    var caption = $('#' + table ).jqGrid("getGridParam", "caption");
+        var s = $("#" + table ).jqGrid('getGridParam','selrow');      
+        if (s)	{
+            var ret = $("#" + table ).jqGrid('getRowData',s);
+            console.log(ret);           
+            var answer = window.confirm("確認刪除此筆資料?");
+            if (answer)
+            {
+            $.ajax({
+                url: "ContainerRecord/delete/" + ret.id ,//路徑
+                type: "DELETE",           
+                data:{
+                    "id": ret.id,
+                    "table": table,
+                    "caption": caption,
+                },
+                success: function (){
+                    $('#' + table ).trigger( 'reloadGrid' );
+                }                               
+            });
+            }        
+        }
+        else        
+            alert("Please select a row...");     
+    });
+    
+    //自動更新    
+    $("#AutoUpdate").click( function() {
+        $.ajax({
+            url: "ContainerRecord/AutoUpdate", //路徑
+            type: "Get",           
+            data:{
+            },                              
+        });
+    });        
+      
+
     //Buttons control function
     function button_Control(state)
     {

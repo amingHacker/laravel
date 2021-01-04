@@ -68,6 +68,20 @@ return [
             'sslmode' => 'prefer',
         ],
 
+        'pgsql_container_remote' => [
+            // 'driver' => 'pgsql',
+            'driver' => env('DB_CONNECTION_CONTAINER_REMOTE'),
+            'host' => env('DB_HOST_CONTAINER_REMOTE', '10.86.83.144'),
+            'port' => env('DB_PORT_CONTAINER_REMOTE', '5432'),
+            'database' => env('DB_DATABASE_CONTAINER_REMOTE', 'BubblerDB'),
+            'username' => env('DB_USERNAME_CONTAINER_REMOTE', 'postgres'),
+            'password' => env('DB_PASSWORD_CONTAINER_REMOTE', 'postgres'),
+            'charset' => 'utf8',
+            'prefix' => '',
+            'schema' => 'public',
+            'sslmode' => 'prefer',
+        ],
+
         'sqlsrv' => [
             'driver' => 'sqlsrv',
             'host' => env('DB_HOST', 'localhost'),
