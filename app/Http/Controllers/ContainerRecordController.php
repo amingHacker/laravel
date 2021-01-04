@@ -621,46 +621,49 @@ class ContainerRecordController extends Controller
         //->whereDate('type_time', '=',  '2020/04/06')
         ->whereDate('type_time', '>=', '2020-03-01')
         ->orderBy( 'id', 'asc')->get();
-    
-        foreach($rgaStation as $object)
+        
+        if( $rgaStation->all() !=NULL)
         {
-            $key = (array)$object;
-            //獲得鋼瓶型號
-            $containerGetModel = DB::connection($connectionHost)->table('container_records_model')->
-            where('bottle_number', $key["bubbler_id"])->first();
-            $containerModel = ($containerGetModel!=NULL)? $containerGetModel->container_model: "";
-        
-            $insert = [
-                //"id" => $key["id"],
-                "working_date" => $key["start_time"],
-                "container_model" => $containerModel,
-                "bottle_number" => $key["bubbler_id"],
-                "vacuum_value" => $key["vacuum_value"],
-                "vacuum_equipment_limit" => '',
-                "spec" => '',
-                "H2O" => $key["h2o_value"],
-                "N2" => $key["n2_value"],
-                "O2" => $key["o2_value"],
-                "CO2" => $key["co2_value"],
-                "Acetone" => '',
-                "Pentane" => '',
-                "He" => '',
-                "spectro_equipment_limit" =>'',
-                "spectro_equipment_spec" =>'',
-                "work_id" => $key["work_id"],
-                "table_id"=> $key["id"],
-                "created_at" =>date('Y-m-d H:i:s'),
-                "updated_at" => date('Y-m-d H:i:s'),  
-            ];
+            foreach($rgaStation as $object)
+            {
+                $key = (array)$object;
+                //獲得鋼瓶型號
+                $containerGetModel = DB::connection($connectionHost)->table('container_records_model')->
+                where('bottle_number', $key["bubbler_id"])->first();
+                $containerModel = ($containerGetModel!=NULL)? $containerGetModel->container_model: "";
+            
+                $insert = [
+                    //"id" => $key["id"],
+                    "working_date" => $key["start_time"],
+                    "container_model" => $containerModel,
+                    "bottle_number" => $key["bubbler_id"],
+                    "vacuum_value" => $key["vacuum_value"],
+                    "vacuum_equipment_limit" => '',
+                    "spec" => '',
+                    "H2O" => $key["h2o_value"],
+                    "N2" => $key["n2_value"],
+                    "O2" => $key["o2_value"],
+                    "CO2" => $key["co2_value"],
+                    "Acetone" => '',
+                    "Pentane" => '',
+                    "He" => '',
+                    "spectro_equipment_limit" =>'',
+                    "spectro_equipment_spec" =>'',
+                    "work_id" => $key["work_id"],
+                    "table_id"=> $key["id"],
+                    "created_at" =>date('Y-m-d H:i:s'),
+                    "updated_at" => date('Y-m-d H:i:s'),  
+                ];
 
 
-            $Result = DB::connection($connectionHost)->table('container_records_rgatest')->insert(
-                $insert
-            );
+                $Result = DB::connection($connectionHost)->table('container_records_rgatest')->insert(
+                    $insert
+                );
 
-            //var_dump($Result);
+                //var_dump($Result);
+            }
         }
-        
+           
     }
 
     //壓降測漏
@@ -694,7 +697,7 @@ class ContainerRecordController extends Controller
         $_work_id = '';           //工單
         $_input_time = '';        //輸出時間
         
-        if ($CPDStation!= NULL)
+        if ($CPDStation->all()!= NULL)
         {
             $Group = 1;
             $dictionaryCPD = [];
@@ -1137,65 +1140,65 @@ class ContainerRecordController extends Controller
 
         //var_dump($CollectionInsert);
         
-        
-        foreach($CollectionInsert as $key)
+        if(count($CollectionInsert)!= 0)
         {
-            //獲得鋼瓶型號
-            $containerGetModel = DB::connection($connectionHost)->table('container_records_model')->
-            where('bottle_number', $key["bubbler_id"])->first();
-            $containerModel = ($containerGetModel!=NULL)? $containerGetModel->container_model: "";
-        
-            $insert = [
-                //"id" => $key["id"],
-                "working_date" => $key["type_time"],
-                "container_model" => $containerModel,
-                "bottle_number" => $key["bubbler_id"],
-                "vcr" => $key["InsertInboundOut"]["vcr"],
-                "vcr_fail" => $key["InsertInboundOut"]["vcr_fail"],
-                "fill_port" => $key["InsertInboundOut"]["fill_port"],
-                "fill_port_fail" => $key["InsertInboundOut"]["fill_port_fail"],
-                "M1" => $key["InsertInboundOut"]["M1"],
-                "M2" => $key["InsertInboundOut"]["M2"],
-                "A1" => $key["InsertInboundOut"]["A1"],
-                "A2" => $key["InsertInboundOut"]["A2"],
-                "A3" => $key["InsertInboundOut"]["A3"],
-                "M1_fail" => $key["InsertInboundOut"]["M1_fail"],
-                "M2_fail" => $key["InsertInboundOut"]["M2_fail"],
-                "A1_fail" => $key["InsertInboundOut"]["A1_fail"],
-                "A2_fail" => $key["InsertInboundOut"]["A2_fail"],
-                "A3_fail" => $key["InsertInboundOut"]["A3_fail"],
-                
-                "M1_valve" => $key["InsertInboundIn"]["M1"],
-                "M2_valve" => $key["InsertInboundIn"]["M2"],
-                "A1_valve" => $key["InsertInboundIn"]["A1"],
-                "A2_valve" => $key["InsertInboundIn"]["A2"],
-                "A3_valve" => $key["InsertInboundIn"]["A3"],
-                "M1_valve_fail" => $key["InsertInboundIn"]["M1_fail"],
-                "M2_valve_fail" => $key["InsertInboundIn"]["M2_fail"],
-                "A1_valve_fail" => $key["InsertInboundIn"]["A1_fail"],
-                "A2_valve_fail" => $key["InsertInboundIn"]["A2_fail"],
-                "A3_valve_fail" => $key["InsertInboundIn"]["A3_fail"],
-                "IN_1" => "",
-                "IN_2" => "",
-                "OUT" => "",
-                "IN_1_fail" => "",
-                "IN_2_fail" => "",
-                "OUT_fail" => "",
-                "work_id" => $key["work_id"],
-                "table_id"=> $key["id"],
-                "created_at" =>date('Y-m-d H:i:s'),
-                "updated_at" => date('Y-m-d H:i:s'),  
-            ];
-
-            //var_dump($insert);
-
-            $Result = DB::connection($connectionHost)->table('container_records_inbound')->insert(
-                $insert
-            );
-        }
+            foreach($CollectionInsert as $key)
+            {
+                //獲得鋼瓶型號
+                $containerGetModel = DB::connection($connectionHost)->table('container_records_model')->
+                where('bottle_number', $key["bubbler_id"])->first();
+                $containerModel = ($containerGetModel!=NULL)? $containerGetModel->container_model: "";
             
-        
-        //var_dump($Result);
+                $insert = [
+                    //"id" => $key["id"],
+                    "working_date" => $key["type_time"],
+                    "container_model" => $containerModel,
+                    "bottle_number" => $key["bubbler_id"],
+                    "vcr" => $key["InsertInboundOut"]["vcr"],
+                    "vcr_fail" => $key["InsertInboundOut"]["vcr_fail"],
+                    "fill_port" => $key["InsertInboundOut"]["fill_port"],
+                    "fill_port_fail" => $key["InsertInboundOut"]["fill_port_fail"],
+                    "M1" => $key["InsertInboundOut"]["M1"],
+                    "M2" => $key["InsertInboundOut"]["M2"],
+                    "A1" => $key["InsertInboundOut"]["A1"],
+                    "A2" => $key["InsertInboundOut"]["A2"],
+                    "A3" => $key["InsertInboundOut"]["A3"],
+                    "M1_fail" => $key["InsertInboundOut"]["M1_fail"],
+                    "M2_fail" => $key["InsertInboundOut"]["M2_fail"],
+                    "A1_fail" => $key["InsertInboundOut"]["A1_fail"],
+                    "A2_fail" => $key["InsertInboundOut"]["A2_fail"],
+                    "A3_fail" => $key["InsertInboundOut"]["A3_fail"],
+                    
+                    "M1_valve" => $key["InsertInboundIn"]["M1"],
+                    "M2_valve" => $key["InsertInboundIn"]["M2"],
+                    "A1_valve" => $key["InsertInboundIn"]["A1"],
+                    "A2_valve" => $key["InsertInboundIn"]["A2"],
+                    "A3_valve" => $key["InsertInboundIn"]["A3"],
+                    "M1_valve_fail" => $key["InsertInboundIn"]["M1_fail"],
+                    "M2_valve_fail" => $key["InsertInboundIn"]["M2_fail"],
+                    "A1_valve_fail" => $key["InsertInboundIn"]["A1_fail"],
+                    "A2_valve_fail" => $key["InsertInboundIn"]["A2_fail"],
+                    "A3_valve_fail" => $key["InsertInboundIn"]["A3_fail"],
+                    "IN_1" => "",
+                    "IN_2" => "",
+                    "OUT" => "",
+                    "IN_1_fail" => "",
+                    "IN_2_fail" => "",
+                    "OUT_fail" => "",
+                    "work_id" => $key["work_id"],
+                    "table_id"=> $key["id"],
+                    "created_at" =>date('Y-m-d H:i:s'),
+                    "updated_at" => date('Y-m-d H:i:s'),  
+                ];
+
+                //var_dump($insert);
+
+                $Result = DB::connection($connectionHost)->table('container_records_inbound')->insert(
+                    $insert
+                );
+            }   
+            //var_dump($Result);
+        }   
         
     }
 
@@ -1218,88 +1221,89 @@ class ContainerRecordController extends Controller
                         ->get();
         //var_dump($outboundStation);
         
-        foreach( $outboundStation as $object )
+        if($outboundStation->all()!= NULL)
         {
-            $key = (array)$object;
-            
-            //獲得leakage value
-            $getLeakageValue = DB::connection($connectionContainer)->table('tb_leakage_value')->
-                    where('bubbler_id', '=' ,$key["bubbler_id"])->where('input_time', '=', $key["type_time"])->get();
-            //var_dump($getLeakageValue);
-
-            $insertOutbound = [];
-            foreach( $getLeakageValue as $tmp )
+            foreach( $outboundStation as $object )
             {
-                $value = (array)$tmp;
-                switch ($value["joint_id"])
+                $key = (array)$object;
+                
+                //獲得leakage value
+                $getLeakageValue = DB::connection($connectionContainer)->table('tb_leakage_value')->
+                        where('bubbler_id', '=' ,$key["bubbler_id"])->where('input_time', '=', $key["type_time"])->get();
+                //var_dump($getLeakageValue);
+
+                $insertOutbound = [];
+                foreach( $getLeakageValue as $tmp )
                 {
-                    case "1":
-                        $insertOutbound["FillPort_fail"] = ($value["status"] == 'F') ?  $value["value"] : "";
-                        $insertOutbound["FillPort"] = ($value["status"] == 'F') ? "" :$value["value"];
-                        break;
-                    case "2":
-                        $insertOutbound["A1_fail"] = ($value["status"] == 'F') ?  $value["value"] : "";
-                        $insertOutbound["A1"] = ($value["status"] == 'F') ? "" :$value["value"];
-                        break;
-                    case "3":
-                        $insertOutbound["A2_fail"] = ($value["status"] == 'F') ?  $value["value"] : "";
-                        $insertOutbound["A2"] = ($value["status"] == 'F') ? "" :$value["value"];
-                        break;
-                    case "4":
-                        $insertOutbound["A3_fail"] = ($value["status"] == 'F') ?  $value["value"] : "";
-                        $insertOutbound["A3"] = ($value["status"] == 'F') ? "" :$value["value"];
-                        break;
-                    case "5":
-                        $insertOutbound["M1_fail"] = ($value["status"] == 'F') ?  $value["value"] : "";
-                        $insertOutbound["M1"] = ($value["status"] == 'F') ? "" :$value["value"];
-                        break;
-                    case "6":
-                        $insertOutbound["M2_fail"] = ($value["status"] == 'F') ?  $value["value"] : "";
-                        $insertOutbound["M2"] = ($value["status"] == 'F') ? "" :$value["value"];
-                        break;
-                    case "7":
-                        $insertOutbound["VCR_fail"] = ($value["status"] == 'F') ?  $value["value"] : "";
-                        $insertOutbound["VCR"] = ($value["status"] == 'F') ? "" :$value["value"];
-                        break;
+                    $value = (array)$tmp;
+                    switch ($value["joint_id"])
+                    {
+                        case "1":
+                            $insertOutbound["FillPort_fail"] = ($value["status"] == 'F') ?  $value["value"] : "";
+                            $insertOutbound["FillPort"] = ($value["status"] == 'F') ? "" :$value["value"];
+                            break;
+                        case "2":
+                            $insertOutbound["A1_fail"] = ($value["status"] == 'F') ?  $value["value"] : "";
+                            $insertOutbound["A1"] = ($value["status"] == 'F') ? "" :$value["value"];
+                            break;
+                        case "3":
+                            $insertOutbound["A2_fail"] = ($value["status"] == 'F') ?  $value["value"] : "";
+                            $insertOutbound["A2"] = ($value["status"] == 'F') ? "" :$value["value"];
+                            break;
+                        case "4":
+                            $insertOutbound["A3_fail"] = ($value["status"] == 'F') ?  $value["value"] : "";
+                            $insertOutbound["A3"] = ($value["status"] == 'F') ? "" :$value["value"];
+                            break;
+                        case "5":
+                            $insertOutbound["M1_fail"] = ($value["status"] == 'F') ?  $value["value"] : "";
+                            $insertOutbound["M1"] = ($value["status"] == 'F') ? "" :$value["value"];
+                            break;
+                        case "6":
+                            $insertOutbound["M2_fail"] = ($value["status"] == 'F') ?  $value["value"] : "";
+                            $insertOutbound["M2"] = ($value["status"] == 'F') ? "" :$value["value"];
+                            break;
+                        case "7":
+                            $insertOutbound["VCR_fail"] = ($value["status"] == 'F') ?  $value["value"] : "";
+                            $insertOutbound["VCR"] = ($value["status"] == 'F') ? "" :$value["value"];
+                            break;
+                    }
+                    
                 }
-                
-            }
 
-            //var_dump($insertOutbound);
+                //var_dump($insertOutbound);
+                
+                //獲得鋼瓶型號
+                $containerGetModel = DB::connection($connectionHost)->table('container_records_model')->
+                where('bottle_number', $key["bubbler_id"])->first();
+                $containerModel = ($containerGetModel!=NULL)? $containerGetModel->container_model: "";
             
-            //獲得鋼瓶型號
-            $containerGetModel = DB::connection($connectionHost)->table('container_records_model')->
-            where('bottle_number', $key["bubbler_id"])->first();
-            $containerModel = ($containerGetModel!=NULL)? $containerGetModel->container_model: "";
-          
-            $insert = [
-                //"id" => $key["id"],
-                "working_date" => $key["type_time"],
-                "container_model" => $containerModel,
-                "bottle_number" => $key["bubbler_id"],
-                "M1" => $insertOutbound["M1"],
-                "M2" => $insertOutbound["M2"],
-                "A1" => $insertOutbound["A1"],
-                "A2" => $insertOutbound["A2"],
-                "A3" => $insertOutbound["A3"],
-                "M1_fail" => $insertOutbound["M1_fail"],
-                "M2_fail" => $insertOutbound["M2_fail"],
-                "A1_fail" => $insertOutbound["A1_fail"],
-                "A2_fail" => $insertOutbound["A2_fail"],
-                "A3_fail" => $insertOutbound["A3_fail"],
-                "work_id" => $key["work_id"],
-                "table_id"=> $key["id"],
-                "created_at" =>date('Y-m-d H:i:s'),
-                "updated_at" => date('Y-m-d H:i:s'),
-                
-            ];
-            $Result = DB::connection($connectionHost)->table('container_records_outbound')->insert(
-                $insert
-            );
-            //var_dump($Result);
+                $insert = [
+                    //"id" => $key["id"],
+                    "working_date" => $key["type_time"],
+                    "container_model" => $containerModel,
+                    "bottle_number" => $key["bubbler_id"],
+                    "M1" => $insertOutbound["M1"],
+                    "M2" => $insertOutbound["M2"],
+                    "A1" => $insertOutbound["A1"],
+                    "A2" => $insertOutbound["A2"],
+                    "A3" => $insertOutbound["A3"],
+                    "M1_fail" => $insertOutbound["M1_fail"],
+                    "M2_fail" => $insertOutbound["M2_fail"],
+                    "A1_fail" => $insertOutbound["A1_fail"],
+                    "A2_fail" => $insertOutbound["A2_fail"],
+                    "A3_fail" => $insertOutbound["A3_fail"],
+                    "work_id" => $key["work_id"],
+                    "table_id"=> $key["id"],
+                    "created_at" =>date('Y-m-d H:i:s'),
+                    "updated_at" => date('Y-m-d H:i:s'),
+                    
+                ];
+                $Result = DB::connection($connectionHost)->table('container_records_outbound')->insert(
+                    $insert
+                );
+                //var_dump($Result);
+            }
         }
-
-
     }
 
     //組裝測試
@@ -1318,42 +1322,46 @@ class ContainerRecordController extends Controller
         $ovenStation = DB::connection($connectionContainer)->table('tb_oven')->where('id', '>', $last_table_id)->orderBy( 'id', 'asc')->get();
         //var_dump($ovenStation);
         
-        foreach( $ovenStation as $object)
+        if($ovenStation->all()!= NULL)
         {
-            $key = (array)$object;
- 
-            $containerGetModel = DB::connection($connectionHost)->table('container_records_model')->
-                    where('bottle_number', $key["bubbler_id"])->first();
-            $containerModel = ($containerGetModel!=NULL)? $containerGetModel->container_model: "";
-            if (trim($key["start_time"]) == "")
+            foreach( $ovenStation as $object)
             {
-                $key["start_time"] = NULL;
-            }
-            if (trim($key["end_time"]) == "")
-            {
-                $key["end_time"] = NULL;
-            }
+                $key = (array)$object;
+    
+                $containerGetModel = DB::connection($connectionHost)->table('container_records_model')->
+                        where('bottle_number', $key["bubbler_id"])->first();
+                $containerModel = ($containerGetModel!=NULL)? $containerGetModel->container_model: "";
+                if (trim($key["start_time"]) == "")
+                {
+                    $key["start_time"] = NULL;
+                }
+                if (trim($key["end_time"]) == "")
+                {
+                    $key["end_time"] = NULL;
+                }
 
-            $insert = [
-                //"id" => $key["id"],
-                "working_date" => $key["type_time"],
-                "container_model" => $containerModel,
-                "bottle_number" => $key["bubbler_id"],
-                "oven_temperature" => $key["temp_setpoint"],
-                "oven_time" => $key["time_period"],
-                "start_time" => $key["start_time"],
-                "end_time" => $key["end_time"],
-                "work_id" => $key["work_id"],
-                "table_id"=> $key["id"],
-                "created_at" =>date('Y-m-d H:i:s'),
-                "updated_at" => date('Y-m-d H:i:s'),
-                
-            ];
-            $Result = DB::connection($connectionHost)->table('container_records_assemblingtest')->insert(
-                $insert
-            );
-            // var_dump($Result);
+                $insert = [
+                    //"id" => $key["id"],
+                    "working_date" => $key["type_time"],
+                    "container_model" => $containerModel,
+                    "bottle_number" => $key["bubbler_id"],
+                    "oven_temperature" => $key["temp_setpoint"],
+                    "oven_time" => $key["time_period"],
+                    "start_time" => $key["start_time"],
+                    "end_time" => $key["end_time"],
+                    "work_id" => $key["work_id"],
+                    "table_id"=> $key["id"],
+                    "created_at" =>date('Y-m-d H:i:s'),
+                    "updated_at" => date('Y-m-d H:i:s'),
+                    
+                ];
+                $Result = DB::connection($connectionHost)->table('container_records_assemblingtest')->insert(
+                    $insert
+                );
+                // var_dump($Result);
+            }
         }
+        
     }
 
 }
