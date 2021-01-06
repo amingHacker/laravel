@@ -402,8 +402,25 @@ function compareCellAttr(rowId, val, rawObject, cm, rdata)
     // {
     //     judgeComment = judgeComment.slice(0,-2);   
     // }
-
-    
     return sty;
+}
 
+function SearchContainer()
+{
+    var $menu = $('#RightClickmenu');
+    $menu.hide();
+    var pcontent = '<span style="font-weight:bold; color:#2e6e9e;">《 產品規格 ProductSPEC 》</span><br /><br />'
+    + '<div id="jqxcombobox_SPEC" ></div>' 
+    + '<div id="jqxToolBar_SPEC" style = margin:0px auto; text-align:justify ></div>'
+    + '</br>'
+    + '<table id= "ProductSPEC"></table>'
+    + '</br>'
+    + '<table id= '+ table + '></table>'
+    +'</br>'
+    + '<div id="judge_result" >判定: </div>' 
+    + '</br></br>';     
+    
+    //建立動態表格
+    $("#confirmDialog").html(pcontent);
+    
 }

@@ -634,7 +634,7 @@ class ContainerRecordController extends Controller
             
                 $insert = [
                     //"id" => $key["id"],
-                    "working_date" => $key["start_time"],
+                    "working_date" => $key["type_time"],
                     "container_model" => $containerModel,
                     "bottle_number" => $key["bubbler_id"],
                     "vacuum_value" => $key["vacuum_value"],

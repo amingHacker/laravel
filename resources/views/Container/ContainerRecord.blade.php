@@ -79,6 +79,10 @@
 <script type="text/javascript" src="{{asset('js/ToolBarProduce/ToolBar.js')}}"></script>
 {{-- ToolBar End--}}
 
+{{-- RightClick Action Start--}}
+<script type="text/javascript" src="{{asset('js/RightClick/RightClick.js')}}"></script>
+{{-- RightClick Action End--}}
+
 {{-- CSS設定 Start--}}
 <style type="text/css">
     .ui-jqgrid-hdiv { overflow-y: hidden; }
@@ -477,7 +481,14 @@
                     var winwidth= parseInt($(window).width()) * 0.7;     
                     $("#" + table).jqGrid('setGridWidth', winwidth);
                 });
-            },                                                           
+            },
+            onRightClickRow:function(rowid, irow, icol, e){
+                    
+                showRightClick(rowid, e);
+            },
+            onSelectRow:function(rowid,status,e){
+                handleClickMouseDown(e);
+            },                                                          
         }).jqGrid('setFrozenColumns'); 
 
 
@@ -834,7 +845,7 @@
 
 {{-- RightClick選單 Start --}}
 <ul id="RightClickmenu" style="display:none;" >
-<li><a href="#" onclick="showSelectSPEC();return false;"><span class="ui-icon ui-icon-document"></span>View SPEC</a></li>
+<li><a href="#" onclick="SearchContainer();return false;"><span class="ui-icon ui-icon-document"></span>查詢</a></li>
 </ul>
 {{-- RightClick選單 End --}}
 
@@ -1057,18 +1068,18 @@
             var answer = window.confirm("確認刪除此筆資料?");
             if (answer)
             {
-            $.ajax({
-                url: "ContainerRecord/delete/" + ret.id ,//路徑
-                type: "DELETE",           
-                data:{
-                    "id": ret.id,
-                    "table": table,
-                    "caption": caption,
-                },
-                success: function (){
-                    $('#' + table ).trigger( 'reloadGrid' );
-                }                               
-            });
+                $.ajax({
+                    url: "ContainerRecord/delete/" + ret.id ,//路徑
+                    type: "DELETE",           
+                    data:{
+                        "id": ret.id,
+                        "table": table,
+                        "caption": caption,
+                    },
+                    success: function (){
+                        $('#' + table ).trigger( 'reloadGrid' );
+                    }                               
+                });
             }        
         }
         else        
