@@ -590,6 +590,46 @@ class ContainerRecordController extends Controller
         ]);     
     }
 
+    //從選定日期尋找製程是否完成更新資訊
+    public function ContainerComplete(Request $request)
+    {
+        $Data = $request->all();
+        //先找RGA日期為選擇日的鋼瓶資訊和工單
+        $query = DB::table("container_records_rgatest");
+                     
+        $RGA = $query->whereDate('working_date', '=',  $Data["postData"])->get();  
+        // var_dump($RGA);
+
+        $Complete = [];
+
+        if ($RGA != NULL){
+            foreach ($RGA as $i){
+                $tmp = [];
+                $_assemblingtest = DB::table("container_records_assemblingtest")->where('work_id', '=', $i->work_id)->get();
+                $_CPD = DB::table("container_records_cpd")->where('work_id', '=', $i->work_id)->get();
+                $_inbound = DB::table("container_records_inbound")->where('work_id', '=', $i->work_id)->get();
+                $_outbound = DB::table("container_records_outbound")->where('work_id', '=', $i->work_id)->get();
+
+                $tmp["working_date"] = $i->working_date;
+                $tmp["bottle_number"] = $i->bottle_number;
+                $tmp["assemblingtest"] = ($_assemblingtest->all() == NULL)? "X":"O";
+                $tmp["outbound"] = ($_outbound->all() == NULL)? "X":"O";
+                $tmp["CPD"] = ($_CPD->all() == NULL)? "X":"O";
+                $tmp["inbound"] = ($_inbound->all() == NULL)? "X":"O";
+                $tmp["RGA"] = "O";
+                $tmp["work_id"] = $i->work_id;
+                array_push($Complete, $tmp);
+            }
+        }
+
+        // dd($Complete);
+        
+        return response()->json([
+            'success' => $Complete,        
+        ]);     
+        
+    }
+
     //自動更新container records資訊
     public function AutoUpdate()
     {

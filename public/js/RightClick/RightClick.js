@@ -409,18 +409,172 @@ function SearchContainer()
 {
     var $menu = $('#RightClickmenu');
     $menu.hide();
-    var pcontent = '<span style="font-weight:bold; color:#2e6e9e;">《 產品規格 ProductSPEC 》</span><br /><br />'
-    + '<div id="jqxcombobox_SPEC" ></div>' 
-    + '<div id="jqxToolBar_SPEC" style = margin:0px auto; text-align:justify ></div>'
+    var pcontent = '<span style="font-weight:bold; color:#2e6e9e;">《  鋼瓶資訊 Container Information 》</span><br /><br />'
+    + '<center><p>日期: <input type="text" id="dateStartFrom"> <input type="BUTTON"  onclick="ShowContainerComplete()" id="QueryContainer" value="確定" /></p></center>'
     + '</br>'
-    + '<table id= "ProductSPEC"></table>'
+    + '<table id= "tb_ShowContainerComplete"></table><div id="tb_ShowContainerCompletePager"></div>'
     + '</br>'
-    + '<table id= '+ table + '></table>'
-    +'</br>'
-    + '<div id="judge_result" >判定: </div>' 
     + '</br></br>';     
     
     //建立動態表格
     $("#confirmDialog").html(pcontent);
+
+    var table = "tb_ShowContainerComplete";
+    var colNames = [];
+    var colModel = [];
+    var data = [];
     
+    $("#tb_ShowContainerComplete").jqGrid('GridUnload');
+
+    // for ( var colName in data[0])
+    // {
+    //     colNames.push(colName);
+    // }
+
+    // for ( var colName in data[0])
+    // {           
+    //     if (colName === 'id')
+    //     {
+    //         colModel.push({name:colName, index:colName, align:"center", width:84, frozen:true, sortable:true, sorttype:"int"});
+    //     }
+    //     else
+    //     {
+    //         colModel.push({name:colName, index:colName, align:"center", width:112, cellattr: compareCellAttr});
+    //     }
+    // }
+    
+    $("#" + table).jqGrid({      
+        datatype: "local",
+        data:data,
+        colNames: colNames,
+        colModel: colModel,
+        width: 896,
+        height: 'auto',
+        sortname: 'id',
+        sortorder: "asc",
+        hidegrid: false,
+        cmTemplate: { title: false },   // Hide Tooltip
+        gridview: true,
+        shrinkToFit: false,
+        rowNum:10,
+        rowList:[10,20,50],
+        pager: '#tb_ShowContainerCompletePager',
+        caption: "流程進度", 
+        loadComplete: function (){ fixPositionsOfFrozenDivs.call(this); }, // Fix column's height are different after enable frozen column feature 
+        gridComplete: function() { $("#" + table).jqGrid('setFrozenColumns');}
+    });
+    
+
+    $("#confirmDialog").dialog({
+        width:'auto', height:'auto', autoResize:true, modal:true, closeText:"關閉", 
+        resizable:true, closeOnEscape:true, dialogClass:'top-dialog',position:['center',168],
+        show:{effect: "fade", duration: 140},
+        hide:{effect: "clip", duration: 140},
+        focus: function() { $(".ui-dialog").focus(); }, // Unfocus the default focus elem
+        buttons : {
+            "關閉" : function() {
+                $(this).dialog("close");
+                                                                
+            },          
+        }
+    });
+
+    $( "#dateStartFrom" ).datepicker(
+        {
+            dateFormat: 'yy-mm-dd',                                 
+            changeYear: true,
+            changeMonth: true,
+            showOn: 'focus',
+            autoclose:1
+        }
+    );
+}
+
+function ShowContainerComplete(){
+    var _SelectDate =  document.getElementById('dateStartFrom').value;
+    $.ajax({
+        async:false,
+        url:"/ContainerRecord/ContainerComplete",
+        type: "Post",           
+        data:{
+            "postData": _SelectDate,
+        },
+        success: function (rga){
+            var data = rga.success;
+
+            var table = "tb_ShowContainerComplete";
+            var colNames = [];
+            var colModel = [];
+            
+            $("#tb_ShowContainerComplete").jqGrid('GridUnload');
+
+            for ( var colName in data[0])
+            {
+                colNames.push(_CompleteContainerTrans(colName));
+            }
+        
+            for ( var colName in data[0])
+            {           
+                if (colName === 'work_id')
+                {
+                    colModel.push({name:colName, index:colName, align:"center", width:120, frozen:true, sortable:true, sorttype:"int"});
+                }
+                else if (colName === 'working_date')
+                {
+                    colModel.push({name:colName, index:colName, align:"center", width:130, frozen:true, sortable:true, sorttype:"int"});
+                }
+                else
+                {
+                    colModel.push({name:colName, index:colName, align:"center", width:100, cellattr: compareCellAttr});
+                }
+            }
+            
+            $("#" + table).jqGrid({      
+                datatype: "local",
+                data:data,
+                colNames: colNames,
+                colModel: colModel,
+                width: 896,
+                height: 'auto',
+                sortname: 'id',
+                sortorder: "asc",
+                hidegrid: false,
+                cmTemplate: { title: false },   // Hide Tooltip
+                gridview: true,
+                shrinkToFit: false,
+                rowNum:10,
+                rowList:[10,20,50],
+                pager: '#tb_ShowContainerCompletePager',
+                caption: "流程進度", 
+                loadComplete: function (){ fixPositionsOfFrozenDivs.call(this); }, // Fix column's height are different after enable frozen column feature 
+                gridComplete: function() { $("#" + table).jqGrid('setFrozenColumns');}
+            });
+            
+        
+         
+        }                                   
+    });  
+}
+
+function _CompleteContainerTrans(ColumnName) {
+    var Result = '';
+     //舊key到新key的映射，colName的轉換
+    var oldkey = {
+        "working_date": "日期",
+        "bottle_number":"瓶號",
+        "assemblingtest":"組裝測試",
+        "outbound":"Outbound",
+        "CPD":"壓降測漏",
+        "inbound":"Inbound",
+        "RGA":"RGA測試",
+        "work_id":"單號",    
+    };
+    for(var key in oldkey)
+    {        
+        if (ColumnName == key)
+        {
+            Result = oldkey[key];
+        }
+    }
+    return Result = (Result == '')?  ColumnName : Result;
 }

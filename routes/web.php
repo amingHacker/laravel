@@ -235,6 +235,9 @@ Route::post('/ContainerRecord/GetDataFromID/{todo}', 'ContainerRecordController@
 //自動更新
 Route::get('/ContainerRecord/AutoUpdate', 'ContainerRecordController@AutoUpdate');
 
+//從選定日期尋找製程是否完成更新資訊
+Route::post('/ContainerRecord/ContainerComplete', 'ContainerRecordController@ContainerComplete');
+
 //File 大量新增和修改
 Route::post('/ContainerRecord/FileUpload/{todo}', 'ContainerRecordController@FileUpload')->name('ContainerRecord.FileUpload');
 
