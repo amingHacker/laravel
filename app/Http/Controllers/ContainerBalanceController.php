@@ -275,6 +275,56 @@ class ContainerBalanceController extends Controller
         //     }   
         // }
 
+        //在鋼瓶秤重紀錄表裏操作
+        if ($uploadData["table"] == 'dgContainer_Balance')
+        {
+            //從鋼瓶空重裡面撈出鋼瓶的空重
+            if ($uploadData["UploadData"]["bottle_number"] !='')
+            {
+                $tmp = DB::connection('mysqlbalance')->table("container_baseweight")->select('bottle_weight')
+                ->where("bottle_number", $uploadData["UploadData"]["bottle_number"])->first(); 
+                if ($tmp!=null)
+                {
+                    $uploadData["UploadData"]["container_base_weight_ideal"] = $tmp->bottle_weight;
+                }
+                else
+                {
+                    $uploadData["UploadData"]["container_model"] = '';
+                }   
+            }
+            //從料號重量裡面撈出料號對應的訂購重量、淨重
+            if ($uploadData["UploadData"]["material_number"] !='')
+            {
+                $tmp = DB::connection('mysqlbalance')->table("material_order_weight")->select('order_weight')
+                ->where("material_number", $uploadData["UploadData"]["material_number"])->first(); 
+                if ($tmp!=null)
+                {
+                    $uploadData["UploadData"]["order_weight"] = $tmp->order_weight;
+                    $uploadData["UploadData"]["container_packaging_weight_ideal"] = $tmp->order_weight;
+                }
+                else
+                {
+                    $uploadData["UploadData"]["order_weight"] = '';
+                    $uploadData["UploadData"]["container_packaging_weight_ideal"] = '';
+                }   
+            }
+
+            //從包材重量裡面撈出包材的重量
+            if ($uploadData["UploadData"]["material_number"] !='')
+            {
+                $tmp = DB::connection('mysqlbalance')->table("packaging_material_weight")->select('packaging_weight')
+                ->where("material_number", $uploadData["UploadData"]["material_number"])->first(); 
+                if ($tmp!=null)
+                {
+                    $uploadData["UploadData"]["container_addpackaging_weight_ideal"] = $tmp->packaging_weight;
+                }
+                else
+                {
+                    $uploadData["UploadData"]["container_addpackaging_weight_ideal"] = '';
+                }   
+            }
+        }
+
         $table = '';
         switch ($uploadData["table"]){ 
             case 'dgContainer_Balance':
