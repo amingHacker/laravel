@@ -265,6 +265,32 @@ Route::any('/ContainerSPEC/AddandUpdate/{todo}', 'ContainerSPECController@Addand
 //Grid 刪除
 Route::delete('/ContainerSPEC/delete/{todo}', 'ContainerSPECController@destroy')->name('ContainerSPEC.destroy');
 
+/*************************** ContainerBalance *****************************/
+//資料呈現
+Route::get('/ContainerBalance', 'ContainerBalanceController@index');
+Route::get('/ContainerBalance/show/{todo}', 'ContainerBalanceController@show');
+Route::post('/ContainerBalance/export', 'ContainerBalanceController@export');
+Route::get('/ContainerBalance/GetTable/{todo}', 'ContainerBalanceController@GetTable');
+Route::get('/ContainerBalance/GetComboboxItem', 'ContainerBalanceController@ComboboxItem');
+Route::post('/ContainerBalance/GetDataFromID/{todo}', 'ContainerBalanceController@GetDataFromID');
+
+//自動更新
+Route::get('/ContainerBalance/AutoUpdate', 'ContainerBalanceController@AutoUpdate');
+
+//從選定日期尋找製程是否完成更新資訊
+Route::post('/ContainerBalance/ContainerComplete', 'ContainerBalanceController@ContainerComplete');
+
+//File 大量新增和修改
+Route::post('/ContainerBalance/FileUpload/{todo}', 'ContainerBalanceController@FileUpload')->name('ContainerBalance.FileUpload');
+
+//Grid inline 新增和修改
+Route::any('/ContainerBalance/AddandUpdate/{todo}', 'ContainerBalanceController@AddandUpdate')->name('ContainerBalance.AddandUpdate');
+
+//Grid 刪除
+Route::delete('/ContainerBalance/delete/{todo}', 'ContainerBalanceController@destroy')->name('ContainerBalance.destroy');
+
+
+
 /********* Todo ***********/
 //資料呈現
 Route::get('/todo', 'TodoController@index');

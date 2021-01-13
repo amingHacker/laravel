@@ -134,7 +134,11 @@
                 <li><a class="dropdown-item" href="ContainerRecord">Container Record</a>
                 <li><a class="dropdown-item" href="ContainerSPEC">Container SPEC</a>
               </ul>
-        
+            </li>
+            <li><a class="dropdown-item dropdown-toggle" href="#">Balance </a>
+              <ul class="submenu dropdown-menu">
+                <li><a class="dropdown-item" href="ContainerBalance">鋼瓶重量紀錄</a>
+              </ul>
             </li>
         
             </ul>
