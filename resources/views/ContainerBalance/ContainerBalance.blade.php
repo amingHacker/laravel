@@ -317,7 +317,7 @@
             {
                 colModel.push(
                     {
-                        name:colName, index:colName, width:110, align:"center",sortable:true, editable:true, cellattr: addCellAttr, frozen: false,
+                        name:colName, index:colName, width:125, align:"center",sortable:true, editable:true, cellattr: addCellAttr, frozen: false,
                         stype:'text',
                         edittype:'custom', editoptions:
                         {
@@ -622,17 +622,19 @@
         // Calculate the "rowid" string length and remove "rowid" and "_" to get name
         //var name = options.id.substr(options.id.split("_")[0].length + 1);
         
+        var table = getColumnNameFromChineseToDatabase($("#Gridtabs .ui-tabs-active").text()); //呈現此table的title
+
         var name = options.name; //獲得column name
 
         if (name == undefined){name = options.searchColName;}
         
         // Get column width value and calculate for JQWidgets combobox
-        var width = $("#dg_" + name).width() - 2;       
+        var width = $("#dg" + table + "_" + name).width() - 2;       
         
         // Get column width value and calculate for JQWidgets combobox
-        var height = $("#dg_" + name).height() - 2;       
+        var height = $("#dg" + table + "_" + name).height() - 2;       
 
-        if (width < 0 ){width = 100;}
+        if (width < 0 ){width = 120;}
 
         //Get items from combobox_items array 
         //獲得預選值的陣列
