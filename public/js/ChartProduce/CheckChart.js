@@ -686,8 +686,11 @@ function removeChartData()
                             window.myLine.data.datasets[removeDataSetIndex].data._chartjs.listeners[0].chart.options.horizontalLine[i].text = "LCL=" + result["LCL"];
                         }
                     }
+                    //若有指定UCL or LCL 則須將原本的UCL LCL設定回去
+                    if( tUCL != ""){result["UCL"] = tUCL;}
+                    if( tLCL != ""){result["UCL"] = tLCL;}
+        
                     //重新給予Y軸Data顏色
-                    
                     changeBorderColor(_newYdata,  result["UCL"],  result["LCL"], tSPCRule);
 
                     window.myLine.data.datasets[removeDataSetIndex].data._chartjs.listeners[0].chart.options.addTextOnChart[removeDataSetIndex]["Item"] = result["Item"];
