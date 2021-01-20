@@ -431,10 +431,10 @@
             },
             onRightClickRow:function(rowid, irow, icol, e){
                     
-                showRightClick(rowid, e);
+                //showRightClick(rowid, e);
             },
             onSelectRow:function(rowid,status,e){
-                handleClickMouseDown(e);
+                //handleClickMouseDown(e);
             },                                                          
         }); 
 
