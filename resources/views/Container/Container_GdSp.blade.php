@@ -269,10 +269,10 @@
             },
             onRightClickRow:function(rowid, irow, icol, e){
                     
-                showRightClick(rowid, e);
+                // showRightClick(rowid, e);
             },
             onSelectRow:function(rowid,status,e){
-                handleClickMouseDown(e);
+                // handleClickMouseDown(e);
             },
             rowattr: function (rd){if (rd.determination === 'Fail'){ return {"class": "failRow"};}}                                                            
         }).jqGrid('setFrozenColumns'); 
