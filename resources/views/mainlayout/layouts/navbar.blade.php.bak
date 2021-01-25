@@ -6,11 +6,11 @@
   .navbar{
     margin: 0px;
   }
-  
 </style>
+
 <script type="text/javascript">
-  
-function findUser(){    
+   
+ function findUser(){    
       var User = "<?php echo $_SERVER['REMOTE_USER']; ?>";
       var UserName = []; 
       $.ajax({
@@ -29,9 +29,9 @@ function findUser(){
       
       
   }
-</script>
+ </script>
 
-  {{-- Bootstrap TreeView --}}
+ {{-- Bootstrap TreeView --}}
 <script type="text/javascript">
   // jquery ready start
   $(document).ready(function() {
@@ -100,7 +100,7 @@ function findUser(){
 
  <!-- Navigation -->
  {{-- fixed-top --}}
- <nav class="navbar  fixed-top navbar-expand-lg navbar-dark bg-info  ">
+ <nav class="navbar navbar-expand-lg navbar-dark bg-info  ">
   <div class="container" >
     {{-- <a class="navbar-brand" href="/">Merck</a> --}}
     <a href="/">
@@ -113,6 +113,7 @@ function findUser(){
     <div class="collapse navbar-collapse" id="navbarResponsive" >
       <ul class="navbar-nav ml-auto">
         <li class="nav-item dropdown">
+          {{-- <a class="nav-link" href="SamplingRecord">Sampling Records</a> --}}
           <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownPortfolio" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             SamplingRecords
           </a>
@@ -131,21 +132,21 @@ function findUser(){
           <ul class="dropdown-menu">
             <li><a class="dropdown-item dropdown-toggle" href="#"> PDMAT </a>
                 <ul class="submenu dropdown-menu">
-                  <li><a class="dropdown-item" href="SolventRemoval">SolventRemoval</a></li>
-                  <li><a class="dropdown-item" href="Sublimation">Sublimation</a></li>
-                  <li><a class="dropdown-item" href="GrindingOven">Grinding&Oven</a></li>
+                  <li><a class="dropdown-item" href="SolventRemoval">SolventRemoval</a>
+                  <li><a class="dropdown-item" href="Sublimation">Sublimation</a>
+                  <li><a class="dropdown-item" href="GrindingOven">Grinding&Oven</a>
                 </ul>
             </li>
             <li><a class="dropdown-item dropdown-toggle" href="#">Container </a>
                 <ul class="submenu dropdown-menu">
-                  <li><a class="dropdown-item" href="Container_GdSp">GoldenSample</a></li>
-                  <li><a class="dropdown-item" href="ContainerRecord">Container Record</a></li>
-                  <li><a class="dropdown-item" href="ContainerSPEC">Container SPEC</a></li>
+                  <li><a class="dropdown-item" href="Container_GdSp">GoldenSample</a>
+                  <li><a class="dropdown-item" href="ContainerRecord">Container Record</a>
+                  <li><a class="dropdown-item" href="ContainerSPEC">Container SPEC</a>
                 </ul>
             </li>
             <li><a class="dropdown-item dropdown-toggle" href="#">Balance </a>
                 <ul class="submenu dropdown-menu">
-                  <li><a class="dropdown-item" href="ContainerBalance">鋼瓶重量紀錄</a></li>
+                  <li><a class="dropdown-item" href="ContainerBalance">鋼瓶重量紀錄</a>
                 </ul>
             </li>
           </ul>

@@ -1,17 +1,16 @@
 <style>
-.navbar-custom {
-  /* background-color: #4292ca; */
-  background-color: #6fa7d1;
-}
-.navbar{
-  margin: 0px;
-}
-
+  .navbar-custom {
+    /* background-color: #4292ca; */
+    background-color: #6fa7d1;
+  }
+  .navbar{
+    margin: 0px;
+  }
+  
 </style>
-
 <script type="text/javascript">
-   
- function findUser(){    
+  
+function findUser(){    
       var User = "<?php echo $_SERVER['REMOTE_USER']; ?>";
       var UserName = []; 
       $.ajax({
@@ -30,9 +29,9 @@
       
       
   }
- </script>
+</script>
 
- {{-- Bootstrap TreeView --}}
+  {{-- Bootstrap TreeView --}}
 <script type="text/javascript">
   // jquery ready start
   $(document).ready(function() {
@@ -51,12 +50,20 @@
               $(this).next('.submenu').toggle();
             }
             $('.dropdown').on('hide.bs.dropdown', function () {
-           $(this).find('.submenu').hide();
-        })
+              $(this).find('.submenu').hide();
+            })
         });
-    }
+        
+        $('.dropdown-item').click( function(e) {
+            e.preventDefault();
+            window.location.href = $(this).attr('href');
+        })
+      }
     
+     
   }); // jquery end
+
+  
   </script>
 
 <style type="text/css">
@@ -106,60 +113,59 @@
     <div class="collapse navbar-collapse" id="navbarResponsive" >
       <ul class="navbar-nav ml-auto">
         <li class="nav-item dropdown">
-          {{-- <a class="nav-link" href="SamplingRecord">Sampling Records</a> --}}
           <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownPortfolio" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             SamplingRecords
           </a>
-          <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownPortfolio"> 
-            <a class="dropdown-item" href="SamplingRecord">SamplingRecords</a>  
-            <a class="dropdown-item" href="ProductSPEC">ProductSPEC</a>   
-            <a class="dropdown-item" href="AbnormalEvent">AbnormalEvent</a>
-            <a class="dropdown-item" href="MyCharts">MyFavoriteChart</a>       
-          </div>
+          <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownPortfolio"> 
+            <li><a class="dropdown-item" href="SamplingRecord">SamplingRecords</a></li>  
+            <li><a class="dropdown-item" href="ProductSPEC">ProductSPEC</a></li>   
+            <li><a class="dropdown-item" href="AbnormalEvent">AbnormalEvent</a></li>
+            <li><a class="dropdown-item" href="MyCharts">MyFavoriteChart</a></li>       
+          </ul>
         </li>
         
         <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown">  Production  </a>
-            <ul class="dropdown-menu">
+          <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown">  
+            Production  
+          </a>
+          <ul class="dropdown-menu">
             <li><a class="dropdown-item dropdown-toggle" href="#"> PDMAT </a>
-               <ul class="submenu dropdown-menu">
-                <li><a class="dropdown-item" href="SolventRemoval">SolventRemoval</a>
-                <li><a class="dropdown-item" href="Sublimation">Sublimation</a>
-                <li><a class="dropdown-item" href="GrindingOven">Grinding&Oven</a>
-             </ul>
+                <ul class="submenu dropdown-menu">
+                  <li><a class="dropdown-item" href="SolventRemoval">SolventRemoval</a></li>
+                  <li><a class="dropdown-item" href="Sublimation">Sublimation</a></li>
+                  <li><a class="dropdown-item" href="GrindingOven">Grinding&Oven</a></li>
+                </ul>
             </li>
             <li><a class="dropdown-item dropdown-toggle" href="#">Container </a>
-              <ul class="submenu dropdown-menu">
-                <li><a class="dropdown-item" href="Container_GdSp">GoldenSample</a>
-                <li><a class="dropdown-item" href="ContainerRecord">Container Record</a>
-                <li><a class="dropdown-item" href="ContainerSPEC">Container SPEC</a>
-              </ul>
+                <ul class="submenu dropdown-menu">
+                  <li><a class="dropdown-item" href="Container_GdSp">GoldenSample</a></li>
+                  <li><a class="dropdown-item" href="ContainerRecord">Container Record</a></li>
+                  <li><a class="dropdown-item" href="ContainerSPEC">Container SPEC</a></li>
+                </ul>
             </li>
             <li><a class="dropdown-item dropdown-toggle" href="#">Balance </a>
-              <ul class="submenu dropdown-menu">
-                <li><a class="dropdown-item" href="ContainerBalance">鋼瓶重量紀錄</a>
-              </ul>
+                <ul class="submenu dropdown-menu">
+                  <li><a class="dropdown-item" href="ContainerBalance">鋼瓶重量紀錄</a></li>
+                </ul>
             </li>
-        
-            </ul>
+          </ul>
         </li>
   
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownBlog" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             Authority
           </a>
-          <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownBlog">
-            <a class="dropdown-item" href="Authority">SamplingRecordsAuthority</a>
-           
-          </div>
+          <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownBlog">
+            <li><a class="dropdown-item" href="Authority">SamplingRecordsAuthority</a></li>
+          </ul>
         </li>
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownBlog" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             Training Material
           </a>
-          <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownBlog">
-            <a class="dropdown-item" href="ShowVideo">SamplingRecordsCharts</a>       
-          </div>
+          <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownBlog">
+            <li><a class="dropdown-item" href="ShowVideo">SamplingRecordsCharts</a></li>       
+          </ul>
         </li>
       </ul>
     </div>

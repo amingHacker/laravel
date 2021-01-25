@@ -131,26 +131,26 @@ function findUser(){
           <ul class="dropdown-menu">
             <li><a class="dropdown-item dropdown-toggle" href="#"> PDMAT </a>
                 <ul class="submenu dropdown-menu">
-                  <li><a class="dropdown-item" href="SolventRemoval">SolventRemoval</a></li>
-                  <li><a class="dropdown-item" href="Sublimation">Sublimation</a></li>
-                  <li><a class="dropdown-item" href="GrindingOven">Grinding&Oven</a></li>
+                  <li><a class="dropdown-item" href="SolventRemoval">SolventRemoval</a>
+                  <li><a class="dropdown-item" href="Sublimation">Sublimation</a>
+                  <li><a class="dropdown-item" href="GrindingOven">Grinding&Oven</a>
                 </ul>
             </li>
             <li><a class="dropdown-item dropdown-toggle" href="#">Container </a>
                 <ul class="submenu dropdown-menu">
-                  <li><a class="dropdown-item" href="Container_GdSp">GoldenSample</a></li>
-                  <li><a class="dropdown-item" href="ContainerRecord">Container Record</a></li>
-                  <li><a class="dropdown-item" href="ContainerSPEC">Container SPEC</a></li>
+                  <li><a class="dropdown-item" href="Container_GdSp">GoldenSample</a>
+                  <li><a class="dropdown-item" href="ContainerRecord">Container Record</a>
+                  <li><a class="dropdown-item" href="ContainerSPEC">Container SPEC</a>
                 </ul>
             </li>
             <li><a class="dropdown-item dropdown-toggle" href="#">Balance </a>
-                <ul class="submenu dropdown-menu">
-                  <li><a class="dropdown-item" href="ContainerBalance">鋼瓶重量紀錄</a></li>
-                </ul>
-            </li>
+              <ul class="submenu dropdown-menu">
+                <li><a class="dropdown-item" href="ContainerBalance">鋼瓶重量紀錄</a></li>
+              </ul>
+            </li> 
           </ul>
         </li>
-  
+        
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownBlog" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             Authority
