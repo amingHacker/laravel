@@ -5,6 +5,7 @@
   }
   .navbar{
     margin: 0px;
+    background-image: linear-gradient(to bottom, #17a2b8, #59b9cb);
   }
   
 </style>
