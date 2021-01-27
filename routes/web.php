@@ -294,6 +294,7 @@ Route::delete('/ContainerBalance/delete/{todo}', 'ContainerBalanceController@des
 Route::get('/ContainerInput', 'ContainerInputController@index');
 
 
+
 /********* Todo ***********/
 //資料呈現
 Route::get('/todo', 'TodoController@index');

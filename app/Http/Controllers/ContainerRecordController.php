@@ -580,6 +580,7 @@ class ContainerRecordController extends Controller
         $Data = $request->all();
         $DownLoadValue = [];
         $query = DB::table($table);
+
         foreach ($Data["postData"] as $i)
         {              
             $query = $query->orwhere('id', '=', $i); 
