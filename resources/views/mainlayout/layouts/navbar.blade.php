@@ -29,6 +29,30 @@ function findUser(){
       
       
   }
+  function RandomNewYear(){
+    var word = '';
+    var rr = Math.floor(Math.random()*(5-1+1))+1;
+    switch(rr)
+    {
+      case 1:
+        word = '鴻運當牛';
+        break;
+      case 2:
+        word = '金牛報喜';
+        break;
+      case 3:
+        word = '牛轉錢坤';
+        break;
+      case 4:
+        word = '鴻運當牛';
+        break;
+      case 5:
+        word = '玉牛迎春';
+        break;
+    }
+      
+    document.write(word);            
+  }
 </script>
 
   {{-- Bootstrap TreeView --}}
@@ -106,7 +130,7 @@ function findUser(){
     <a href="/">
       <img class = "navbar-brand" src="img/RichPurple.png"  >
     </a>
-    <a class="nav-link">Hi, <?php echo $_SERVER['REMOTE_USER'] ?>( <script language="javascript">findUser(); </script> )</a>
+    <a class="nav-link">Hi, <?php echo $_SERVER['REMOTE_USER'] ?>( <script language="javascript">findUser(); </script> )( <script language="javascript">RandomNewYear(); </script> )</a>
     <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
