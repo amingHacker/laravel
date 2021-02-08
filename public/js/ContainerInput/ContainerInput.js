@@ -1,10 +1,10 @@
 /*Show Container Input Information*/
 function ShowContainerSelect(label){
     var tmp = document.getElementById("InputForm");
-    var ptt = document.getElementById("InputFormTable");
-    if (ptt != null)
+    var originalTable = document.getElementById("InputFormTable");
+    if (originalTable != null)
     {
-        tmp.removeChild(ptt);
+        tmp.removeChild(originalTable);
     }
     
     var _id = [1]; //取表的第一筆資料，得到其欄位，須以陣列型態傳遞參數
@@ -25,6 +25,7 @@ function ShowContainerSelect(label){
         _table.setAttribute("style", "border:3px #cccccc solid");
         _table.setAttribute("cellpadding", "10");
         _table.setAttribute("border", "1");
+        _table.setAttribute("font-size", "26px")
         for(var i = 0; i < key.length; i++)
         {
             var row = 0;
@@ -44,16 +45,19 @@ function ShowContainerSelect(label){
             {
                 r = _table.insertRow(row); 
                 c = r.insertCell(0);
-                c.innerHTML = getColumnNameFromDatabaseToChinese(key[i]);
+                c.innerHTML = '<span style="font-size:26px;">' + getColumnNameFromDatabaseToChinese(key[i]);
                 c = r.insertCell(1);
-                c.innerHTML = '<input type="text" style="width: 150px;" >';
+                c.innerHTML = '<input type="text" style="width: 500px; height: 50px; font-size: 26px" >';
                 row++;
             }     
         }
         
         document.getElementById("InputForm").appendChild(_table);
-    });
-    
-    
-    
+    }); 
+}
+
+/*Show Container Input Information*/
+function ShowContainerStatus(label){
+    document.getElementById("Station1").style.background = 'blue';
+   
 } 

@@ -401,6 +401,7 @@ class ContainerRecordController extends Controller
     {      
         $AddParameter = $request->all();
 
+        
         //從model裡面撈出鋼瓶的型號
         if ($AddParameter["bottle_number"] !='')
         {

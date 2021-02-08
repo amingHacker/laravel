@@ -94,6 +94,23 @@
     {
         width:72%;
     }
+    /* .img-responsive{
+        width:100px;
+    }
+    @media screen and (min-width:900px){
+        .img-responsive{
+            width:768px;
+        }
+    } */
+
+    .jqx-dropdownlist-content { font-size : 26px;}
+    .jqx-listitem-state-selected { font-size : 26px; }
+    .jqx-listitem-state-normal {font-size : 26px; }
+    .btn-space{
+        width:120px;
+        height: 50px;
+
+    }
 </style>
 
 {{-- CSS設定 End --}}
@@ -266,42 +283,31 @@
 {{-- Data資料呈現 Start --}}
 <script type="text/javascript">
 
-    var Clean = @json($todosClean);
-    var Assemblingtest = @json($todosAssemblingtest);
-    var Outbound = @json($todosOutbound);
-    var CPD = @json($todosCPD);
-    var Inbound = @json($todosInbound);
-    var Pumppurgetest = @json($todosPumppurgetest);
-    var RGAtest = @json($todosRGAtest);
-    var Hotn2 = @json($todosHotn2);
-    var _todoList = {
-            Clean: Clean,
-            Assemblingtest: Assemblingtest, 
-            Outbound: Outbound, 
-            CPD: CPD, 
-            Inbound: Inbound,
-            Pumppurgetest: Pumppurgetest,
-            RGAtest: RGAtest,
-            Hotn2: Hotn2
-        };
-    var combobox_items = [];  //用來儲存colName內容選項
 
     $(document).ready(function () {      
       
         getAuthority();
         var _StationType = ["清洗", "PP測試", "熱氮氣"];
         //站別
-        $("#jqxcombobox_Station").jqxComboBox({ source: _StationType, selectedIndex: -1, width: '200px', height: '20' });
+        $("#jqxcombobox_Station").jqxComboBox({ source: _StationType, arrowSize: 50, selectedIndex: -1, 
+            width: '50%', height: '50', autoDropDownHeight: true });
         $("#jqxcombobox_Station").bind('select', function (event) {
                 var args = event.args;
                 var item = $('#jqxcombobox_Station').jqxComboBox('getItem', args.index);
                 ShowContainerSelect(getColumnNameFromChineseToDatabase(item.label));  
             });  
-
+        jqxComboBox_font_size('Station', 26); // font-size: 26px;
+        
         var _StationType = ["X12345", "X54321", "X67890"];
         //站別
-        $("#jqxcombobox_Bottle").jqxComboBox({ source: _StationType, selectedIndex: -1, width: '200px', height: '20' });
-         
+        $("#jqxcombobox_Bottle").jqxComboBox({ source: _StationType, arrowSize: 50, selectedIndex: -1, width: '50%', height: '50' });
+        jqxComboBox_font_size('Bottle', 26); // font-size: 26px;
+        $("#jqxcombobox_Bottle").bind('select', function (event) {
+                var args = event.args;
+                var item = $('#jqxcombobox_Bottle').jqxComboBox('getItem', args.index);
+                ShowContainerStatus(item.label);  
+            });  
+        
     });
     
 
@@ -324,16 +330,7 @@
             }
             else
             {
-                // if (Authority["ProductSPEC"] == 1)
-                // {     
-                    // document.getElementById("New").style.display="";
-                    // document.getElementById("Save").style.display="";
-                    // document.getElementById("Cancel").style.display="";        
-                    // document.getElementById("Edit").style.display="";
-                    // document.getElementById("Delete").style.display=""; 
-                    // document.getElementById("Import").style.display="";
-                    // document.getElementById("ExportExcel").style.display="";
-                //}            
+               
             }
         });
     }
@@ -347,15 +344,25 @@
             newWidth = 0;
         }
         //由於設定關係，寬度受到變動時，高度也會跟著改變
-        document.getElementById("pageImg").width = newWidth * 0.513;    
+        // document.getElementById("pageImg").width = newWidth * 0.513;    
     }
     
-    $(function()
-        {
-            window.onresize = WinResize();
-            window.onload= WinResize();
-        }
-    );
+    // $(function()
+    //     {
+    //         window.onresize = WinResize();
+    //         window.onload= WinResize();
+    //     }
+    // );
+
+    // function jqxComboBox_select() {
+    //     $('#jqxcombobox_Station').parent().find('[type="textarea"]').select();
+    // }
+    function jqxComboBox_font_size(id, size) {
+        $('#jqxcombobox_' + id).parent().find('[type="textarea"]').css('font-size', size + 'px');
+    }
+    // function jqxComboBox_font_family() {
+    //     $('#jqxcombobox_Station').parent().find('[type="textarea"]').css('font-family', font);
+    // } 
 
 </script>
 
@@ -368,28 +375,33 @@
     </div>
    
     <div align="center">
-        <table border="0" cellspacing="0" cellpadding="0" style="table-layout: fixed;">
-            <tr>
-                <td style="height:30px;">
-                    站別:
-                </td>
-                <td>
-                    <div style = "margin:0px auto;" id="jqxcombobox_Station" >
-                </td>
-            </tr>
-            <tr>
-                <td style="height:30px;">
-                    瓶號:
-                </td>
-                <td>
-                    <div style = "margin:0px auto;" id="jqxcombobox_Bottle" >
-                </td>
-            </tr>
-        </table>
-        <h1 class="my-2"></h1>
+        <input type="BUTTON" class="btn btn-outline-info btn-space" disabled="disabled" id="Station1" style="display: " value="1.維修室" />
+        <input type="BUTTON" class="btn btn-outline-info btn-space" disabled="disabled" id="Station2" style="display: " value="2.清洗室" />
+        <input type="BUTTON" class="btn btn-outline-info btn-space" disabled="disabled" id="Station3" style="display: " value="3.HF室" />
+        <input type="BUTTON" class="btn btn-outline-info btn-space" disabled="disabled" id="Station4" style="display: " value="4.無塵室" />
+        <input type="BUTTON" class="btn btn-outline-info btn-space" disabled="disabled" id="Station5" style="display: " value="5.無塵室" />
+        <input type="BUTTON" class="btn btn-outline-info btn-space" disabled="disabled" id="Station6" style="display: " value="6.無塵室" />
+        <input type="BUTTON" class="btn btn-outline-info btn-space" disabled="disabled" id="Station7" style="display: " value="7.無塵室" />
+        <input type="BUTTON" class="btn btn-outline-info btn-space" disabled="disabled" id="Station8" style="display: " value="8.無塵室" />
+        <input type="BUTTON" class="btn btn-outline-info btn-space" disabled="disabled" id="Station9" style="display: " value="9.無塵室" />
+        <input type="BUTTON" class="btn btn-outline-info btn-space" disabled="disabled" id="Station10" style="display: " value="10.無塵室" />
+        <input type="BUTTON" class="btn btn-outline-info btn-space" disabled="disabled" id="Station11" style="display: " value="11.無塵室" />
+        <input type="BUTTON" class="btn btn-outline-info btn-space" disabled="disabled" id="Station12" style="display: " value="12.無塵室" />
+        <input type="BUTTON" class="btn btn-outline-info btn-space" disabled="disabled" id="Station13" style="display: " value="13.無塵室" />
+        <input type="BUTTON" class="btn btn-outline-info btn-space" disabled="disabled" id="Station14" style="display: " value="14.分裝作業" />
+
+        <div style = "margin:0px auto"><h3>瓶號:</h3></div>
+        <div style = "margin:0px auto;" id="jqxcombobox_Bottle" ></div>
+        <h1 class="my-4"></h1>
+
+        <div style = "margin:0px auto"><h3>站別:</h3></div>
+        <div style = "margin:0px auto;" id="jqxcombobox_Station" ></div>
+        <h1 class="my-4"></h1>
+        
         <div id = "InputForm"></div>
         <h1 class="my-4"></h1>
-        <input type="BUTTON" class="btn btn-outline-info btn-space" id="Sure" style="display: " value="確定" />     
+        <input type="BUTTON" class="btn btn-outline-info btn-space" id="Sure" style="display: " value="確定" />
+        <input type="BUTTON" class="btn btn-outline-info btn-space" id="Cancel" style="display: " value="取消" />     
     </div>
-
+    <h1 class="my-4"></h1>
 @endsection
