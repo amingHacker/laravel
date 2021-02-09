@@ -35,7 +35,7 @@ function findUser(){
     switch(rr)
     {
       case 1:
-        word = '鴻運當牛';
+        word = '好運犇放';
         break;
       case 2:
         word = '金牛報喜';
@@ -44,10 +44,10 @@ function findUser(){
         word = '牛轉錢坤';
         break;
       case 4:
-        word = '鴻運當牛';
+        word = '財運犇騰';
         break;
       case 5:
-        word = '玉牛迎春';
+        word = '牛市迎春';
         break;
     }
       
