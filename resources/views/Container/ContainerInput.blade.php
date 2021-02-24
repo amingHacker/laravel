@@ -298,9 +298,9 @@
             });  
         jqxComboBox_font_size('Station', 26); // font-size: 26px;
         
-        var _StationType = ["X12345", "X54321", "X67890"];
-        //站別
-        $("#jqxcombobox_Bottle").jqxComboBox({ source: _StationType, arrowSize: 50, selectedIndex: -1, width: '50%', height: '50' });
+        var _BottleNumber = ["X12345", "X54321", "X67890"];
+        //瓶號
+        $("#jqxcombobox_Bottle").jqxComboBox({ source: _BottleNumber, arrowSize: 50, selectedIndex: -1, width: '50%', height: '50' });
         jqxComboBox_font_size('Bottle', 26); // font-size: 26px;
         $("#jqxcombobox_Bottle").bind('select', function (event) {
                 var args = event.args;

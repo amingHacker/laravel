@@ -293,7 +293,29 @@ Route::delete('/ContainerBalance/delete/{todo}', 'ContainerBalanceController@des
 //資料呈現
 Route::get('/ContainerInput', 'ContainerInputController@index');
 
+/*************************** Container Process *****************************/
+//資料呈現
+Route::get('/ContainerProcess', 'ContainerProcessController@index');
+Route::get('/ContainerProcess/show/{todo}', 'ContainerProcessController@show');
+Route::post('/ContainerProcess/export', 'ContainerProcessController@export');
+Route::get('/ContainerProcess/GetTable/{todo}', 'ContainerProcessController@GetTable');
+Route::get('/ContainerProcess/GetComboboxItem', 'ContainerProcessController@ComboboxItem');
+Route::post('/ContainerProcess/GetDataFromID/{todo}', 'ContainerProcessController@GetDataFromID');
 
+//自動更新
+Route::get('/ContainerProcess/AutoUpdate', 'ContainerProcessController@AutoUpdate');
+
+//從選定日期尋找製程是否完成更新資訊
+Route::post('/ContainerProcess/ContainerComplete', 'ContainerProcessController@ContainerComplete');
+
+//File 大量新增和修改
+Route::post('/ContainerProcess/FileUpload/{todo}', 'ContainerProcessController@FileUpload')->name('ContainerProcess.FileUpload');
+
+//Grid inline 新增和修改
+Route::any('/ContainerProcess/AddandUpdate/{todo}', 'ContainerProcessController@AddandUpdate')->name('ContainerProcess.AddandUpdate');
+
+//Grid 刪除
+Route::delete('/ContainerProcess/delete/{todo}', 'ContainerProcessController@destroy')->name('ContainerProcess.destroy');
 
 /********* Todo ***********/
 //資料呈現

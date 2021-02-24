@@ -102,41 +102,59 @@
         var Result = '';
          //舊key到新key的映射，colName的轉換
         var oldkey = {
-            "鋼瓶秤重紀錄": "Container_Balance",
-            "鋼瓶空重": "Container_Baseweight",  
-            "料號重量": "Material_Order",  
-            "包材重量": "Packaging_Weight",
-
-            "日期":"working_date",
-            "建立人":"founder",
-            "料號":"material_number",
-            "客戶名稱":"customer",
-            "原料鋼瓶":"original_container",
-            "添加物批號":"additives_number",
-            "TSMC持壓":"TSMC_remark",
-            "訂購重量(G)":"order_weight",
-            "成品分裝批號":"product_batch_number",
+            "鋼瓶流程紀錄": "Container_Process",
+           
+            "公司":"Company",            
             "瓶號":"bottle_number",
-            "鋼瓶空重(G)":"container_base_weight_ideal",
-            "實秤空重(G)":"container_base_weight_real",
-            "實秤空重操作人員":"container_base_weight_operator",
-            "總重量(G)":"container_doing_weight_ideal",
-            "實秤總重量(G)":"container_doing_weight_real",
-            "氣室重量(G)":"container_doing_weight_air",
-            "實秤總重操作人員":"container_doing_weight_operator",
-
-            "淨重(G)":"container_packaging_weight_ideal",
-            "實秤總重量(包裝)(G)":"container_packaging_weight_real",
-            "實秤總重操作人員(包裝)":"container_packaging_weight_operator",
-
-            "包材重(G)":"container_addpackaging_weight_ideal",
-            "實秤總重量(含包材)(G)":"container_addpackaging_weight_real",
-            "實秤總重操作人員(包材)":"container_addpackaging_weight_operator",
-
-            "鋼瓶基礎值":"bottle_weight",
-            "包材基準值" :"packaging_weight",
-
-            "備註":"remark",       
+            "回廠日期":"Return_Date",
+            "殘重":"Residual_Wt",
+            "工作日期":"Working_Date",
+            "第1站(驗收)":"Station1_Checked",
+            "第1站(人員)":"member1",
+            "第1站(時間)":"time1",
+            "第2站(拆模)":"Station2_Checked",
+            "第2站(人員)":"member2",
+            "第2站(時間)":"time2",
+            "第3站(導電度)":"Station3_TypeInValue",
+            "第3站(人員)":"member3",
+            "第3站(時間)":"time3",
+            "第4站(檢查seat)":"Station4_Checked",
+            "第4站(人員)":"member4",
+            "第4站(時間)":"time4",
+            "第5站(鋼瓶烘乾)":"Station5_Checked",
+            "第5站(花費時間)":"working_period",
+            "第5站(人員)":"member5",
+            "第5站(時間)":"time5",
+            "第6站(Outbound)":"Station6_Value",
+            "第6站(人員)":"member6",
+            "第6站(時間)":"time6",
+            "第7站(壓降測試)":"Station7_Value",
+            "第7站(人員)":"member7",
+            "第7站(時間)":"time7",
+            "第8站(Inbound)":"Station8_Value",
+            "第8站(人員)":"member8",
+            "第8站(時間)":"time8",
+            "第9站(Pump)":"Station9_Pump",
+            "第9站(花費時間)":"Station9_TakenTime",
+            "第9站(人員)":"member9",
+            "第9站(時間)":"time9",
+            "第10站(RGA自動填入)":"Station10_Value",
+            "第10站(RGA人員填入)":"Station10_TypeInValue",
+            "第10站(人員)":"member10",
+            "第10站(時間)":"time10",
+            "第11站(下線鋼瓶)":"Station11_Checked",
+            "第11站(人員)":"member11",
+            "第11站(時間)":"time11",
+            "第12站(熱氮氣)":"Station12_TypeInValue",
+            "第12站(人員)":"member12",
+            "第12站(時間)":"time12",
+            "第13站(補正壓)":"Station13_Checked",
+            "第13站(人員)":"member13",
+            "第13站(時間)":"time13",
+            "第14站(分裝作業)":"Station14_Checked",
+            "第14站(人員)":"member14",
+            "第14站(時間)":"time14",
+            
             "建立時間" : "created_at",
             "更新時間" : "updated_at" ,
         };
@@ -156,41 +174,59 @@
         var Result = '';
          //舊key到新key的映射，colName的轉換
         var oldkey = {
-            "Container_Balance" : "鋼瓶秤重紀錄",
-            "Container_Baseweight": "鋼瓶空重",
-            "Material_Order" : "料號重量",  
-            "Packaging_Weight" : "包材重量",
+            "Container_Process":"鋼瓶流程紀錄",
+           
+            "Company":"公司",            
+            "bottle_number":"瓶號",
+            "Return_Date":"回廠日期",
+            "Residual_Wt":"殘重",
+            "Working_Date":"工作日期",
+            "Station1_Checked":"第1站(驗收)",
+            "member1":"第1站(人員)",
+            "time1":"第1站(時間)",
+            "Station2_Checked":"第2站(拆模)",
+            "member2":"第2站(人員)",
+            "time2":"第2站(時間)",
+            "Station3_TypeInValue":"第3站(導電度)",
+            "member3":"第3站(人員)",
+            "time3":"第3站(時間)",
+            "Station4_Checked":"第4站(檢查seat)",
+            "member4":"第4站(人員)",
+            "time4":"第4站(時間)",
+            "Station5_Checked":"第5站(鋼瓶烘乾)",
+            "working_period":"第5站(花費時間)",
+            "member5":"第5站(人員)",
+            "time5":"第5站(時間)",
+            "Station6_Value":"第6站(Outbound)",
+            "member6":"第6站(人員)",
+            "time6":"第6站(時間)",
+            "Station7_Value":"第7站(壓降測試)",
+            "member7":"第7站(人員)",
+            "time7":"第7站(時間)",
+            "Station8_Value":"第8站(Inbound)",
+            "member8":"第8站(人員)",
+            "time8":"第8站(時間)",
+            "Station9_Pump":"第9站(Pump)",
+            "Station9_TakenTime":"第9站(花費時間)",
+            "member9":"第9站(人員)",
+            "time9":"第9站(時間)",
+            "Station10_Value":"第10站(RGA自動填入)",
+            "Station10_TypeInValue":"第10站(RGA人員填入)",
+            "member10":"第10站(人員)",
+            "time10":"第10站(時間)",
+            "Station11_Checked":"第11站(下線鋼瓶)",
+            "member11":"第11站(人員)",
+            "time11":"第11站(時間)",
+            "Station12_TypeInValue":"第12站(熱氮氣)",
+            "member12":"第12站(人員)",
+            "time12":"第12站(時間)",
+            "Station13_Checked":"第13站(補正壓)",
+            "member13":"第13站(人員)",
+            "time13":"第13站(時間)",
+            "Station14_Checked":"第14站(分裝作業)",
+            "member14":"第14站(人員)",
+            "time14":"第14站(時間)",
 
-            "working_date" : "日期",
-            "founder" : "建立人",
-            "material_number" : "料號",
-            "customer" : "客戶名稱",
-            "original_container" : "原料鋼瓶",
-            "additives_number" : "添加物批號",
-            "TSMC_remark" : "TSMC持壓",
-            "order_weight" : "訂購重量(G)",
-            "product_batch_number" : "成品分裝批號",
-            "bottle_number" : "瓶號",
-            "container_base_weight_ideal" : "鋼瓶空重(G)",
-            "container_base_weight_real" : "實秤空重(G)",
-            "container_base_weight_operator" : "實秤空重操作人員",
-            "container_doing_weight_ideal" : "總重量(G)",
-            "container_doing_weight_real" : "實秤總重量(G)",
-            "container_doing_weight_air" : "氣室重量(G)",
-            "container_doing_weight_operator" : "實秤總重操作人員",
-
-            "container_packaging_weight_ideal" : "淨重(G)",
-            "container_packaging_weight_real" : "實秤總重量(包裝)(G)",
-            "container_packaging_weight_operator" : "實秤總重操作人員(包裝)",
-
-            "container_addpackaging_weight_ideal" : "包材重(G)",
-            "container_addpackaging_weight_real" : "實秤總重量(含包材)(G)",
-            "container_addpackaging_weight_operator" : "實秤總重操作人員(包材)",
-
-            "bottle_weight":"鋼瓶基礎值",
-            "packaging_weight": "包材基準值",
-
-            "remark" : "備註",       
             "created_at" : "建立時間" ,
             "updated_at" : "更新時間" ,
         };
@@ -208,16 +244,10 @@
 {{-- Data資料呈現 Start --}}
 <script type="text/javascript">
 
-    var Container_Balance = @json($todosContainer_Balance);
-    var Container_Baseweight = @json($todosContainer_Baseweight);
-    var Material_Order = @json($todosMaterial_Order);
-    var Packaging_Weight = @json($todosPackaging_Weight);
-    
+    var Container_Process = @json($todosContainer_Process);
+   
     var _todoList = {
-            Container_Balance: Container_Balance,
-            Container_Baseweight: Container_Baseweight, 
-            Material_Order: Material_Order, 
-            Packaging_Weight: Packaging_Weight, 
+            Container_Process: Container_Process,
         };
     var combobox_items = [];  //用來儲存colName內容選項
 
@@ -387,7 +417,7 @@
         var gridCaption = getColumnNameFromDatabaseToChinese(_todoP);
         // 準備資料           
         $("#" + table).jqGrid({
-            url:"ContainerBalance/show/"+_todoP,
+            url:"ContainerProcess/show/"+_todoP,
             datatype: "json",        
             altrows:false,
             width: jqgridWidth,
@@ -469,12 +499,21 @@
         $("#" + table).jqGrid('setGroupHeaders', {
                         useColSpanStyle: true, 
                         groupHeaders:[
-                            {startColumnName: 'founder', numberOfColumns: 6, titleText: '分裝人員填入'},
-                            {startColumnName: 'product_batch_number', numberOfColumns: 2, titleText: '分裝人員填入'},
-                            {startColumnName: 'container_base_weight_ideal', numberOfColumns: 3, titleText: '空重確認'},
-                            {startColumnName: 'container_doing_weight_ideal', numberOfColumns: 4, titleText: '分裝後總重確認'},
-                            {startColumnName: 'container_packaging_weight_ideal', numberOfColumns: 3, titleText: '包裝人員總重確認'},
-                            {startColumnName: 'container_addpackaging_weight_ideal', numberOfColumns: 3, titleText: '加包材後總重'},
+                            {startColumnName: 'bottle_number', numberOfColumns: 7, titleText: '倉庫'},
+                            {startColumnName: 'Station1_Checked', numberOfColumns: 3, titleText: '第1站'},
+                            {startColumnName: 'Station2_Checked', numberOfColumns: 3, titleText: '第2站'},
+                            {startColumnName: 'Station3_TypeInValue', numberOfColumns: 3, titleText: '第3站'},
+                            {startColumnName: 'Station4_Checked', numberOfColumns: 3, titleText: '第4站'},
+                            {startColumnName: 'Station5_Checked', numberOfColumns: 4, titleText: '第5站'},
+                            {startColumnName: 'Station6_Value', numberOfColumns: 3, titleText: '第6站'},
+                            {startColumnName: 'Station7_Value', numberOfColumns: 3, titleText: '第7站'},
+                            {startColumnName: 'Station8_Value', numberOfColumns: 3, titleText: '第8站'},
+                            {startColumnName: 'Station9_Pump', numberOfColumns: 4, titleText: '第9站'},
+                            {startColumnName: 'Station10_Value', numberOfColumns: 4, titleText: '第10站'},
+                            {startColumnName: 'Station11_Checked', numberOfColumns: 3, titleText: '第11站'},
+                            {startColumnName: 'Station12_TypeInValue', numberOfColumns: 3, titleText: '第12站'},
+                            {startColumnName: 'Station13_Checked', numberOfColumns: 3, titleText: '第13站'},
+                            {startColumnName: 'Station14_Checked', numberOfColumns: 3, titleText: '第14站'},
                         ]
                     }); 
         $("#" + table).jqGrid('setFrozenColumns');
@@ -597,7 +636,7 @@
         
         $.ajax({
             async:false,
-            url: "ContainerBalance/GetComboboxItem",//路徑
+            url: "ContainerProcess/GetComboboxItem",//路徑
             type: "Get",
             data:{    
             },
@@ -680,40 +719,19 @@
 <meta name="csrf-token" content="{{ csrf_token() }}"> 
     <h1 class="my-2"></h1>
     <div style = "margin:0px auto;"  >
-        <img class=" img-responsive" src="img/Logo_Container_Balance.png" >   
+        <img class=" img-responsive" src="img/Logo_ContainerProcess.png" >   
     </div>  
     <div align="center">
         <div id="Gridtabs"  >
             <ul class = "row justify-content-center">
-              <li><a href="#Gridtabs-1">鋼瓶秤重紀錄</a></li>
-              <li><a href="#Gridtabs-2">鋼瓶空重</a></li>
-              <li><a href="#Gridtabs-3">料號重量</a></li>
-              {{-- <li><a href="#Gridtabs-4">包材重量</a></li> --}}
+              <li><a href="#Gridtabs-1">鋼瓶流程紀錄</a></li>
             </ul>
             <div id = "Gridtabs-1" >
                 <div class = "row justify-content-center">
-                <table id="dgContainer_Balance" ></table> 
-                <div id="dgContainer_Balancepager"></div>
+                <table id="dgContainer_Process" ></table> 
+                <div id="dgContainer_Processpager"></div>
                 </div>                             
             </div>
-            <div id = "Gridtabs-2" >
-                <div class = "row justify-content-center">     
-                <table id="dgContainer_Baseweight" ></table> 
-                <div id="dgContainer_Baseweightpager"></div>
-                </div>                             
-            </div>
-            <div id="Gridtabs-3">
-                <div class = "row justify-content-center">     
-                <table id="dgMaterial_Order" ></table> 
-                <div id="dgMaterial_Orderpager"></div>
-                </div>        
-            </div>
-            {{-- <div id="Gridtabs-4">
-                <div class = "row justify-content-center">  
-                <table id="dgPackaging_Weight" ></table> 
-                <div id="dgPackaging_Weightpager"></div>
-                </div>     
-            </div> --}}
         </div>
 
         <div id="warningDialog" title="Warning Information">
@@ -854,7 +872,7 @@
         {     
             saveparameters = {
                         "successfunc" : null,
-                        "url" : 'ContainerBalance/AddandUpdate/'+0,
+                        "url" : 'ContainerProcess/AddandUpdate/'+0,
                         "extraparam" : {
                             "oper": oper,
                             "table": table,
@@ -948,7 +966,7 @@
                                 $(this).dialog("close");
                                 saveparameters = {
                                 "successfunc" : null,
-                                "url" : 'ContainerBalance/AddandUpdate/'+ret.id,
+                                "url" : 'ContainerProcess/AddandUpdate/'+ret.id,
                                 "extraparam" : {                                   
                                     "id" : ret.id,
                                     "oper" : oper,
@@ -1005,7 +1023,7 @@
             if (answer)
             {
                 $.ajax({
-                    url: "ContainerBalance/delete/" + ret.id ,//路徑
+                    url: "ContainerProcess/delete/" + ret.id ,//路徑
                     type: "DELETE",           
                     data:{
                         "id": ret.id,
@@ -1112,7 +1130,7 @@
 
         $.ajax({
                 async:false,
-                url: "ContainerBalance/export" ,//路徑
+                url: "ContainerProcess/export" ,//路徑
                 type: "POST",           
                 data:{
                     "postData": postData,
@@ -1189,41 +1207,57 @@
 
             //舊key到新key的映射
             var oldkey = {
-                "鋼瓶秤重紀錄": "Container_Balance",
-                "鋼瓶空重": "Container_Baseweight",  
-                "料號重量": "Material_Order",  
-                "包材重量": "Packaging_Weight",
-
-                "日期":"working_date",
-                "建立人":"founder",
-                "料號":"material_number",
-                "客戶名稱":"customer",
-                "原料鋼瓶":"original_container",
-                "添加物批號":"additives_number",
-                "TSMC持壓":"TSMC_remark",
-                "訂購重量(G)":"order_weight",
-                "成品分裝批號":"product_batch_number",
+                "鋼瓶流程紀錄": "Container_Process",
+                "公司":"Company",            
                 "瓶號":"bottle_number",
-                "鋼瓶空重(G)":"container_base_weight_ideal",
-                "實秤空重(G)":"container_base_weight_real",
-                "實秤空重操作人員":"container_base_weight_operator",
-                "總重量(G)":"container_doing_weight_ideal",
-                "實秤總重量(G)":"container_doing_weight_real",
-                "氣室重量(G)":"container_doing_weight_air",
-                "實秤總重操作人員":"container_doing_weight_operator",
-
-                "淨重(G)":"container_packaging_weight_ideal",
-                "實秤總重量(包裝)(G)":"container_packaging_weight_real",
-                "實秤總重操作人員(包裝)":"container_packaging_weight_operator",
-
-                "包材重(G)":"container_addpackaging_weight_ideal",
-                "實秤總重量(含包材)(G)":"container_addpackaging_weight_real",
-                "實秤總重操作人員(包材)":"container_addpackaging_weight_operator",
-
-                "鋼瓶基礎值":"bottle_weight",
-                "包材基準值" :"packaging_weight",
-
-                "備註":"remark",       
+                "回廠日期":"Return_Date",
+                "殘重":"Residual_Wt",
+                "工作日期":"Working_Date",
+                "第1站(驗收)":"Station1_Checked",
+                "第1站(人員)":"member1",
+                "第1站(時間)":"time1",
+                "第2站(拆模)":"Station2_Checked",
+                "第2站(人員)":"member2",
+                "第2站(時間)":"time2",
+                "第3站(導電度)":"Station3_TypeInValue",
+                "第3站(人員)":"member3",
+                "第3站(時間)":"time3",
+                "第4站(檢查seat)":"Station4_Checked",
+                "第4站(人員)":"member4",
+                "第4站(時間)":"time4",
+                "第5站(鋼瓶烘乾)":"Station5_Checked",
+                "第5站(花費時間)":"working_period",
+                "第5站(人員)":"member5",
+                "第5站(時間)":"time5",
+                "第6站(Outbound)":"Station6_Value",
+                "第6站(人員)":"member6",
+                "第6站(時間)":"time6",
+                "第7站(壓降測試)":"Station7_Value",
+                "第7站(人員)":"member7",
+                "第7站(時間)":"time7",
+                "第8站(Inbound)":"Station8_Value",
+                "第8站(人員)":"member8",
+                "第8站(時間)":"time8",
+                "第9站(Pump)":"Station9_Pump",
+                "第9站(花費時間)":"Station9_TakenTime",
+                "第9站(人員)":"member9",
+                "第9站(時間)":"time9",
+                "第10站(RGA自動填入)":"Station10_Value",
+                "第10站(RGA人員填入)":"Station10_TypeInValue",
+                "第10站(人員)":"member10",
+                "第10站(時間)":"time10",
+                "第11站(下線鋼瓶)":"Station11_Checked",
+                "第11站(人員)":"member11",
+                "第11站(時間)":"time11",
+                "第12站(熱氮氣)":"Station12_TypeInValue",
+                "第12站(人員)":"member12",
+                "第12站(時間)":"time12",
+                "第13站(補正壓)":"Station13_Checked",
+                "第13站(人員)":"member13",
+                "第13站(時間)":"time13",
+                "第14站(分裝作業)":"Station14_Checked",
+                "第14站(人員)":"member14",
+                "第14站(時間)":"time14",  
                 "建立時間" : "created_at",
                 "更新時間" : "updated_at" ,
             };
@@ -1320,7 +1354,7 @@
                                     return function () {                                                                       
 
                                         $.ajax({
-                                            url: 'ContainerBalance/FileUpload/' + data[i].id,
+                                            url: 'ContainerProcess/FileUpload/' + data[i].id,
                                             method: 'post',
                                             async: false,//同步請求資料
                                             //datatype:"json",
@@ -1469,7 +1503,7 @@
 
        $.ajax({
                async:false,
-               url: "ContainerBalance/export" ,//路徑
+               url: "ContainerProcess/export" ,//路徑
                type: "POST",           
                data:{
                     "postData": postData,
@@ -1520,7 +1554,7 @@ $("button#view-outlier").click(
         
         $.ajax({
                 async:false,
-                url: "ContainerBalance/GetDataFromID/"+table ,//路徑
+                url: "ContainerProcess/GetDataFromID/"+table ,//路徑
                 type: "POST",           
                 data:{
                     "postData": outlier_data,
@@ -1648,7 +1682,7 @@ function viewChartData( ){
   
     $.ajax({
             async:false,
-            url: "ContainerBalance/GetDataFromID/"+table ,//路徑
+            url: "ContainerProcess/GetDataFromID/"+table ,//路徑
             type: "POST",           
             data:{
                 "postData": outlier_data,
