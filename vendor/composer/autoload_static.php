@@ -446,6 +446,7 @@ class ComposerStaticInit62cf1d4417f54ef64500d713a5326269
         'App\\Http\\Controllers\\AuthorityController' => __DIR__ . '/../..' . '/app/Http/Controllers/AuthorityController.php',
         'App\\Http\\Controllers\\ContainerBalanceController' => __DIR__ . '/../..' . '/app/Http/Controllers/ContainerBalanceController.php',
         'App\\Http\\Controllers\\ContainerInputController' => __DIR__ . '/../..' . '/app/Http/Controllers/ContainerInputController.php',
+        'App\\Http\\Controllers\\ContainerProcessController' => __DIR__ . '/../..' . '/app/Http/Controllers/ContainerProcessController.php',
         'App\\Http\\Controllers\\ContainerRecordController' => __DIR__ . '/../..' . '/app/Http/Controllers/ContainerRecordController.php',
         'App\\Http\\Controllers\\ContainerSPECController' => __DIR__ . '/../..' . '/app/Http/Controllers/ContainerSPECController.php',
         'App\\Http\\Controllers\\Container_GdSp_controller' => __DIR__ . '/../..' . '/app/Http/Controllers/Container_GdSp_controller.php',

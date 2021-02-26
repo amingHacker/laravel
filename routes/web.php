@@ -165,6 +165,7 @@ Route::delete('/ProductSPEC/delete/{todo}', 'ProductSPECController@destroy')->na
 
 
 /*************************** Authority *****************************/
+/* SamplingRecords */
 //資料呈現
 Route::get('/Authority', 'AuthorityController@index');
 Route::get('/Authority/show/{todo}', 'AuthorityController@show');
@@ -180,6 +181,23 @@ Route::any('/Authority/AddandUpdate/{todo}', 'AuthorityController@AddandUpdate')
 
 //Grid 刪除
 Route::delete('/Authority/delete/{todo}', 'AuthorityController@destroy')->name('Authority.destroy');
+
+/* Container Balance*/
+//資料呈現
+Route::get('/BalanceAuthority', 'BalanceAuthorityController@index');
+Route::get('/BalanceAuthority/show/{todo}', 'BalanceAuthorityController@show');
+Route::post('/BalanceAuthority/export', 'BalanceAuthorityController@export');
+Route::get('/BalanceAuthority/GetAuthorityGroup', 'BalanceAuthorityController@GetAuthorityGroup');
+
+
+//File 大量新增和修改
+Route::post('/BalanceAuthority/FileUpload/{todo}', 'BalanceAuthorityController@FileUpload')->name('BalanceAuthority.FileUpload');
+
+//Grid inline 新增和修改
+Route::any('/BalanceAuthority/AddandUpdate/{todo}', 'BalanceAuthorityController@AddandUpdate')->name('BalanceAuthority.AddandUpdate');
+
+//Grid 刪除
+Route::delete('/BalanceAuthority/delete/{todo}', 'BalanceAuthorityController@destroy')->name('BalanceAuthority.destroy');
 
 
 /*************************** AbnormalEvent *****************************/

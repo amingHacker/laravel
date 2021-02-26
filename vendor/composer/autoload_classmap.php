@@ -19,6 +19,7 @@ return array(
     'App\\Http\\Controllers\\AuthorityController' => $baseDir . '/app/Http/Controllers/AuthorityController.php',
     'App\\Http\\Controllers\\ContainerBalanceController' => $baseDir . '/app/Http/Controllers/ContainerBalanceController.php',
     'App\\Http\\Controllers\\ContainerInputController' => $baseDir . '/app/Http/Controllers/ContainerInputController.php',
+    'App\\Http\\Controllers\\ContainerProcessController' => $baseDir . '/app/Http/Controllers/ContainerProcessController.php',
     'App\\Http\\Controllers\\ContainerRecordController' => $baseDir . '/app/Http/Controllers/ContainerRecordController.php',
     'App\\Http\\Controllers\\ContainerSPECController' => $baseDir . '/app/Http/Controllers/ContainerSPECController.php',
     'App\\Http\\Controllers\\Container_GdSp_controller' => $baseDir . '/app/Http/Controllers/Container_GdSp_controller.php',
