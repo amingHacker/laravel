@@ -142,7 +142,7 @@
                         {name:colName, index:colName, width:80, align:"center",sortable:true, sorttype:"int", frozen: true, editable:false, cellattr: addCellAttrID}
                     );
             }
-            else if (colName === 'Group_Name' || colName === 'SPC_Group_Name')
+            else if (colName === 'Group_Name' || colName === 'Container_Group')
             {
                 colModel.push({
                     name:colName, index:colName, width:150, align:"center", editable:true, cellattr: addCellAttr, frozen: true,
@@ -158,7 +158,7 @@
             }
 
             else if (colName === 'Add' || colName === 'Edit' || colName === 'Delete' || colName === 'Import' || 
-                        colName === 'Export' || colName === 'Admin' || colName === 'View_Log' || colName === 'ProductSPEC'
+                        colName === 'Export' || colName === 'Admin'
                 )
             {
                 colModel.push({
@@ -291,7 +291,7 @@
                     document.getElementById("Delete").style.display=""; 
                     document.getElementById("Import").style.display="";
                     document.getElementById("ExportExcel").style.display="";
-                }            
+                }
             }
         });
     }
@@ -375,7 +375,7 @@
 <meta name="csrf-token" content="{{ csrf_token() }}"> 
     <h1 class="my-2"></h1>
     <div style = "margin:0px auto;"  >
-        <img class=" img-responsive" src="img/Logo_Authority.png" >   
+        <img class=" img-responsive" src="img/Logo_BalanceAuthority.png" >   
     </div>  
 
     <div align="center">
@@ -746,7 +746,7 @@
                     var myDate = new Date().toISOString().slice(0,10); 
 
                     //檔名
-                    var filename = myDate + '-' + $("#tabs .ui-tabs-active").text()+ '-'+ 'Authority.xlsx';
+                    var filename = myDate + '-' + $("#tabs .ui-tabs-active").text()+ '-'+ 'BalanceAuthority.xlsx';
 
                     //表名
                     var sheetname = 'Sheet';

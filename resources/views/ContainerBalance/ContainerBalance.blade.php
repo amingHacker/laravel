@@ -488,7 +488,7 @@
         var Authority = '';
         $.ajax({
             async:false,
-            url: "SamplingRecord/GetAuthority",//路徑
+            url: "BalanceAuthority/GetAuthority",//路徑
             type: "Get",
             data:
                 {
@@ -502,16 +502,26 @@
             }
             else
             {
-                // if (Authority["ProductSPEC"] == 1)
-                // {     
+                if (Authority["Add"] == '1')
+                { 
                     document.getElementById("New").style.display="";
                     document.getElementById("Save").style.display="";
-                    document.getElementById("Cancel").style.display="";        
+                    document.getElementById("Cancel").style.display="";
+                }
+                if (Authority["Edit"] == '1'){ 
                     document.getElementById("Edit").style.display="";
-                    document.getElementById("Delete").style.display=""; 
+                    document.getElementById("Save").style.display="";
+                    document.getElementById("Cancel").style.display="";
+                }
+                if (Authority["Delete"] == '1'){ 
+                    document.getElementById("Delete").style.display="";
+                }
+                if (Authority["Import"] == '1'){ 
                     document.getElementById("Import").style.display="";
+                }
+                if (Authority["Export"] == '1'){ 
                     document.getElementById("ExportExcel").style.display="";
-                //}            
+                }        
             }
         });
     }

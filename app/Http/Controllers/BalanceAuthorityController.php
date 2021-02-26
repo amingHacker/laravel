@@ -239,7 +239,7 @@ class BalanceAuthorityController extends Controller
         $table = '';
         switch ($uploadData["table"]){
             case 'dgAccounts':
-                $table = 'sampling_records_accounts';
+                $table = 'container_balance_authority';
                 break;
         } 
         $uploadData["UploadData"]["created_at"] = date('Y-m-d H:i:s');
@@ -347,6 +347,16 @@ class BalanceAuthorityController extends Controller
         $todo = DB::connection('mysqlbalance')->table($table)->insert(
             $RowData 
         );
+    }
+
+    public function GetAuthority(Request $request)
+    {    
+        $User = $request->all();    
+        $Result = DB::connection('mysqlbalance')->table('container_balance_authority')->
+        where('container_balance_authority.User_Account', '=', $User["User"])->get();
+        return response()->json([
+            'success' => $Result,        
+        ]);     
     }
 
     public function test()

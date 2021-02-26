@@ -158,6 +158,7 @@ function findUser(){
           </a>
           <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownBlog">
             <li><a class="dropdown-item" href="Authority">SamplingRecordsAuthority</a></li>
+            <li><a class="dropdown-item" href="BalanceAuthority">ContainerBalanceAuthority</a></li>
           </ul>
         </li>
         <li class="nav-item dropdown">
