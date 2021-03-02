@@ -322,6 +322,11 @@ class SublimationController extends Controller
         //先整理從Sampling Records紀錄的資料，再進一步判斷要如何更新資料
         foreach($updateItemSelect as $_tmp)
         {
+            //把備註中有(1:10)的紀錄bypass，此筆紀錄為QC單純的實驗
+            if(strpos($_tmp->remarks,'(1:10)') !== false)
+            {
+                continue;
+            }
 
             if ($_tmp->determination == 'Fail')
             {
