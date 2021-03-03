@@ -298,7 +298,7 @@
                             "bulk output", "bulk yield", "input system oxygen", "pre system Pump", "pre system torr",
                             "Impurity A", "Impurity B", "Impurity C", "Impurity D", "Impurity E", "Impurity F",
                             "output system oxygen", "top Mantle (end)", "top Tapes (end)", "top Coolant (end)", "top Turbo (end)", "top Oxygen (end)", 
-                            "man Tapes (end)", "main Coolant (end)", "main Turbo (end)", "main Oxygen (end)"
+                            "man Tapes (end)", "main Coolant (end)", "main Mantle (end)", "main Turbo (end)", "main Oxygen (end)"
                         ];
         var _GroupSource = ["1st crude batch", "1st tank batch", "2nd crude batch", "2nd tank batch", "3rd crude batch", "3rd tank batch", "bulk batch", "judge", "glove box", 
                             "PLC status", "ALL"
