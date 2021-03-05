@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use DB;
 use Illuminate\Http\Request;
 use Validator;
+use PhpOffice\PhpWord\TemplateProcessor;
+
 
 class BalanceAuthorityController extends Controller
 {
@@ -364,5 +366,23 @@ class BalanceAuthorityController extends Controller
         return view('todo.test',[
             
         ]);  
+    }
+
+    public function ExportWord(Request $request)
+    {   
+        if(!file_exists(public_path('qrcodes')))
+            mkdir(public_path('qrcodes'));
+        \QrCode::format('png')->size(500)->generate('X56789', public_path('word-template/qrcode.png'));
+    
+        
+        $temp = new TemplateProcessor('word-template\balance.docx');
+        $temp->setValue('id', '1');
+        $temp->setValue('Group_Name', 'QC_Group');
+        $temp->setValue('User_Account', 'M289488');
+        $temp->setImageValue('qrcode', array('path' => 'word-template/qrcode.png', 'width' => 100, 'height' => 100, 'ratio' => true));
+        $fileName = 'BALANCE';
+        $temp->saveAs($fileName.'.docx');
+        return response()->download($fileName.'.docx')->deleteFileAfterSend(true);
+
     }
 }

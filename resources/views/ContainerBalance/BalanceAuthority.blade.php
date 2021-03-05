@@ -407,11 +407,12 @@
         <input type="BUTTON" class="btn btn-outline-info btn-space" id="Save" style="display: none" disabled="true" value="儲存" />
         <input type="BUTTON" class="btn btn-outline-info btn-space" id="Cancel" style="display: none" disabled="true" value="取消" />       
         <input type="BUTTON" class="btn btn-outline-info btn-space" id="Delete" style="display: none" value="刪除" />
-        <input type="BUTTON" class="btn btn-outline-info btn-space" id="ExportExcel" style="display: none" value="下載" />   
+        <input type="BUTTON" class="btn btn-outline-info btn-space" id="ExportExcel" style="display: none" value="下載" />
         {{-- <div> --}}
             <input id="file" type="file" onchange="Import(this)" style="display: none" />
             <input type="button" onclick="file.click()" class="btn btn-outline-info btn-space" id="Import" style="display: none" value="上傳" />
         {{-- </div>     --}}
+        <input type="BUTTON" class="btn btn-outline-info btn-space" onclick = "location.href = 'BalanceAuthority/ExportWord/'" id="ExportWord" style="display:none" value="Word" />
 </div>
 <h1 class="my-4"></h1>
 
@@ -690,7 +691,6 @@
                 break;
         }    
     }
-
 </script>
 {{-- 表單送出方法 inline End --}}
 
@@ -911,4 +911,18 @@
     }
 </script>
 {{-- 表單輸出、輸入功能 End--}}
+
+<script type="text/javascript">
+    // $("#ExportWord").click( function(){
+    //     $.ajax({
+    //                 url: "BalanceAuthority/ExportWord/" ,//路徑
+    //                 type: "Get",           
+    //                 data:{
+                        
+    //                 },
+    //                 success: function (){        
+    //                 }                               
+    //             });
+    // });
+</script>
 @endsection

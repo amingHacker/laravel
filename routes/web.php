@@ -188,7 +188,7 @@ Route::get('/BalanceAuthority', 'BalanceAuthorityController@index');
 Route::get('/BalanceAuthority/show/{todo}', 'BalanceAuthorityController@show');
 Route::post('/BalanceAuthority/export', 'BalanceAuthorityController@export');
 Route::get('/BalanceAuthority/GetAuthorityGroup', 'BalanceAuthorityController@GetAuthorityGroup');
-Route::get('/BalanceAuthority/GetAuthority', 'SamplingRecordController@GetAuthority');
+Route::get('/BalanceAuthority/GetAuthority', 'BalanceAuthorityController@GetAuthority');
 
 //File 大量新增和修改
 Route::post('/BalanceAuthority/FileUpload/{todo}', 'BalanceAuthorityController@FileUpload')->name('BalanceAuthority.FileUpload');
@@ -199,6 +199,8 @@ Route::any('/BalanceAuthority/AddandUpdate/{todo}', 'BalanceAuthorityController@
 //Grid 刪除
 Route::delete('/BalanceAuthority/delete/{todo}', 'BalanceAuthorityController@destroy')->name('BalanceAuthority.destroy');
 
+//Test phpWord
+Route::get('/BalanceAuthority/ExportWord/', 'BalanceAuthorityController@ExportWord');
 
 /*************************** AbnormalEvent *****************************/
 //資料呈現
