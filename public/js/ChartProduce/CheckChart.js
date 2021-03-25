@@ -248,9 +248,9 @@ function DrowChart( ChartTitle, dataLo, chartTypeGroup, dataXaxisGroup, dataYaxi
                 "text": "UCL=" + ((UCLGroup[i] != '')? UCLGroup[i] : UpandDown[i]["UCL"].toString())
             }, 
             {
-                "y": (UCLGroup[i] != '' && LCLGroup[i] != '')?((parseFloat(UCLGroup[i]) + parseFloat(LCLGroup[i])) / 2).toFixed(2) : UpandDown[i]["Mean"],
+                "y": (UCLGroup[i] != '' && LCLGroup[i] != '')?((parseFloat(UCLGroup[i]) + parseFloat(LCLGroup[i])) / 2).toFixed(4) : UpandDown[i]["Mean"],
                 "style": "#0000FF",
-                "text": "Center=" + ((UCLGroup[i] != '' && LCLGroup[i] != '')?((parseFloat(UCLGroup[i]) + parseFloat(LCLGroup[i])) / 2).toFixed(2).toString() : UpandDown[i]["Mean"].toString()),
+                "text": "Center=" + ((UCLGroup[i] != '' && LCLGroup[i] != '')?((parseFloat(UCLGroup[i]) + parseFloat(LCLGroup[i])) / 2).toFixed(4).toString() : UpandDown[i]["Mean"].toString()),
             }, 
             {
                 "y": (LCLGroup[i] != '')? parseFloat(LCLGroup[i]) : UpandDown[i]["LCL"],
@@ -754,17 +754,17 @@ function getDeviation(data, tUSL, tLSL)
     //console.log("平均值："+mean);
     //console.log("偏差："+deviations);
     //console.log("標準差："+stddev);
-    if (tUSL != ''){tCpu = Math.abs((tUSL - mean) / ( 3 * stddev.toFixed(2))).toFixed(2);}
-    if (tLSL != ''){tCpl = Math.abs((mean - tLSL) / ( 3 * stddev.toFixed(2))).toFixed(2);}
+    if (tUSL != ''){tCpu = Math.abs((tUSL - mean) / ( 3 * stddev.toFixed(4))).toFixed(4);}
+    if (tLSL != ''){tCpl = Math.abs((mean - tLSL) / ( 3 * stddev.toFixed(4))).toFixed(4);}
     if (tUSL != '' && tLSL == ''){ tCpk = tCpu; }
     if (tUSL == '' && tLSL != ''){ tCpk = tCpl; }
     if (tUSL != '' && tLSL != ''){ tCpk = Math.min(tCpu, tCpl);}
     
     var Result = {
-        Mean: mean.toFixed(2),
-        Stddev: stddev.toFixed(2),
-        UCL: (mean + 3 * stddev).toFixed(2),
-        LCL: (mean - 3 * stddev).toFixed(2),
+        Mean: mean.toFixed(4),
+        Stddev: stddev.toFixed(4),
+        UCL: (mean + 3 * stddev).toFixed(4),
+        LCL: (mean - 3 * stddev).toFixed(4),
         Item: data.length,
         Cpu: tCpu,
         Cpl: tCpl,
