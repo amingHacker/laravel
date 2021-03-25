@@ -264,6 +264,7 @@ function DrowChart( ChartTitle, dataLo, chartTypeGroup, dataXaxisGroup, dataYaxi
         UpandDown[i]["UCL"] = horizontalLinetmp[0]["y"];
         UpandDown[i]["Mean"] = horizontalLinetmp[1]["y"];
         UpandDown[i]["LCL"] = horizontalLinetmp[2]["y"];
+        
 
         for(var j in horizontalLinetmp)
         {
@@ -464,6 +465,20 @@ function DrowChart( ChartTitle, dataLo, chartTypeGroup, dataXaxisGroup, dataYaxi
                 !(
                     (parseFloat(window.myLine .data.datasets[0].data[i]["y"]) <= ((UCLGroup[0] != '')? parseFloat(UCLGroup[0]) : parseFloat(UpandDown[0]["UCL"]))) && 
                     (parseFloat(window.myLine .data.datasets[0].data[i]["y"]) >= ((LCLGroup[0] != '')? parseFloat(LCLGroup[0]) : parseFloat(UpandDown[0]["LCL"])))
+                )
+            )
+                {
+                    judgeColor = 'abnormal';
+                }
+        }
+
+        // 1-1.超過規格(OOS)
+        if (tSPCRule.find(element => element == 'A1-1.超過規格(OOS)') != undefined)
+        {
+            if (
+                !(
+                    (parseFloat(window.myLine .data.datasets[0].data[i]["y"]) <= ((USLGroup[0] != '')? parseFloat(USLGroup[0]) : parseFloat(UpandDown[0]["UCL"]))) && 
+                    (parseFloat(window.myLine .data.datasets[0].data[i]["y"]) >= ((LSLGroup[0] != '')? parseFloat(LSLGroup[0]) : parseFloat(UpandDown[0]["LCL"])))
                 )
             )
                 {
@@ -691,7 +706,7 @@ function removeChartData()
                     if( tLCL != ""){result["UCL"] = tLCL;}
         
                     //重新給予Y軸Data顏色
-                    changeBorderColor(_newYdata,  result["UCL"],  result["LCL"], tSPCRule);
+                    changeBorderColor(_newYdata,  result["UCL"],  result["LCL"], tUSL, tLSL, tSPCRule);
 
                     window.myLine.data.datasets[removeDataSetIndex].data._chartjs.listeners[0].chart.options.addTextOnChart[removeDataSetIndex]["Item"] = result["Item"];
                     window.myLine.data.datasets[removeDataSetIndex].data._chartjs.listeners[0].chart.options.addTextOnChart[removeDataSetIndex]["Mean"] = result["Mean"];
@@ -782,7 +797,7 @@ function getDataYFromChart(data)
 }
 
 /*更改BorderColor*/
-function changeBorderColor(data, UCL, LCL, SPCRule)
+function changeBorderColor(data, UCL, LCL, USL, LSL, SPCRule)
 {
     window.myLine.data.datasets[0].data._chartjs.listeners[0].chart.options.addTextOnChart[0]["Outlier"] = 0;
     var tSPCRule = SPCRule.split(",");
@@ -808,6 +823,44 @@ function changeBorderColor(data, UCL, LCL, SPCRule)
                 {
                     judgeColor = 'abnormal';
                 }
+        }
+
+        // 1-1. 超過規格(OOS)
+        if (tSPCRule.find(element => element == 'A1-1.超過規格(OOS)') != undefined)
+        {
+            if(USL == '' && LSL != ''){
+                if (
+                    !(
+                        parseFloat(data[i]) >=  parseFloat(LSL)
+                    )
+                )
+                    {
+                        judgeColor = 'abnormal';
+                    }
+            }
+            else if (USL != '' && LSL == '')
+            {
+                if (
+                    !(
+                        parseFloat(data[i]) <=  parseFloat(USL)
+                    )
+                )
+                    {
+                        judgeColor = 'abnormal';
+                    }
+            }
+            else
+            {
+                if (
+                    !(
+                        parseFloat(data[i]) <  parseFloat(USL) && parseFloat(data[i]) >  parseFloat(LSL)
+                    )
+                )
+                    {
+                        judgeColor = 'abnormal';
+                    }
+            }
+            
         }
         
         // 2.連續九點在中線同一側
