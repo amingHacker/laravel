@@ -309,6 +309,13 @@ Route::any('/ContainerBalance/AddandUpdate/{todo}', 'ContainerBalanceController@
 //Grid 刪除
 Route::delete('/ContainerBalance/delete/{todo}', 'ContainerBalanceController@destroy')->name('ContainerBalance.destroy');
 
+
+/********* InventoryInstock ***********/
+//資料呈現
+Route::get('/InventoryInstock', 'InventoryInstockController@index');
+Route::get('/InventoryInstock/show/{todo}', 'InventoryInstockController@show');
+
+
 /********* ContainerInput ***********/
 //資料呈現
 Route::get('/ContainerInput', 'ContainerInputController@index');

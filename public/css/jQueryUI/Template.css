@@ -451,6 +451,7 @@ body
    min-width: 950px;
    color: #0F1419;
    background-color: #D1E4EE !important;
+   /* background-color: #FFFFFF !important;  */
    /* background-image: url('images/Bottom_texture.jpg'); */
    background-repeat: repeat-x;
    background-attachment: fixed;
