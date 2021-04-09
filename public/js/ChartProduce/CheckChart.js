@@ -754,21 +754,24 @@ function getDeviation(data, tUSL, tLSL)
     //console.log("平均值："+mean);
     //console.log("偏差："+deviations);
     //console.log("標準差："+stddev);
-    if (tUSL != ''){tCpu = Math.abs((tUSL - mean) / ( 3 * stddev.toFixed(4))).toFixed(4);}
-    if (tLSL != ''){tCpl = Math.abs((mean - tLSL) / ( 3 * stddev.toFixed(4))).toFixed(4);}
+    if (tUSL != ''){tCpu = Math.abs((tUSL - mean) / ( 3 * stddev.toFixed(20))).toFixed(20);}
+    if (tLSL != ''){tCpl = Math.abs((mean - tLSL) / ( 3 * stddev.toFixed(20))).toFixed(20);}
     if (tUSL != '' && tLSL == ''){ tCpk = tCpu; }
     if (tUSL == '' && tLSL != ''){ tCpk = tCpl; }
     if (tUSL != '' && tLSL != ''){ tCpk = Math.min(tCpu, tCpl);}
+
+    var tUCL = parseFloat((mean + 3 * stddev).toFixed(20));
+    var tLCL = parseFloat((mean - 3 * stddev).toFixed(20));
     
     var Result = {
-        Mean: mean.toFixed(4),
-        Stddev: stddev.toFixed(4),
-        UCL: (mean + 3 * stddev).toFixed(4),
-        LCL: (mean - 3 * stddev).toFixed(4),
+        Mean: parseFloat(mean.toFixed(20)) > 0.0001? mean.toFixed(4):parseFloat(mean.toFixed(20)).toExponential(2),
+        Stddev: parseFloat(stddev.toFixed(20)) > 0.0001? stddev.toFixed(4):parseFloat(stddev.toFixed(20)).toExponential(2),
+        UCL: tUCL > 0? (tUCL > 0.0001? tUCL.toFixed(4):parseFloat(tUCL).toExponential(2)): (tUCL < -0.0001? tUCL.toFixed(4):parseFloat(tUCL).toExponential(2)),
+        LCL: tLCL > 0? (tLCL > 0.0001? tLCL.toFixed(4):parseFloat(tLCL).toExponential(2)): (tLCL < -0.0001? tLCL.toFixed(4):parseFloat(tLCL).toExponential(2)),
         Item: data.length,
-        Cpu: tCpu,
-        Cpl: tCpl,
-        Cpk: tCpk,
+        Cpu: (tCpu == '')? tCpu:tCpu > 0.0001? parseFloat(tCpu).toFixed(4):parseFloat(tCpu).toExponential(2),
+        Cpl: (tCpl == '')? tCpl:tCpl > 0.0001? parseFloat(tCpl).toFixed(4):parseFloat(tCpl).toExponential(2),
+        Cpk: (tCpk == '')? tCpk:tCpk > 0.0001? parseFloat(tCpk).toFixed(4):parseFloat(tCpk).toExponential(2),
         Outlier:0,
     };
     return Result;

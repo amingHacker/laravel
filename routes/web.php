@@ -314,6 +314,20 @@ Route::delete('/ContainerBalance/delete/{todo}', 'ContainerBalanceController@des
 //資料呈現
 Route::get('/InventoryInstock', 'InventoryInstockController@index');
 Route::get('/InventoryInstock/show/{todo}', 'InventoryInstockController@show');
+Route::post('/InventoryInstock/export', 'InventoryInstockController@export');
+Route::get('/InventoryInstock/GetTable/{todo}', 'InventoryInstockController@GetTable');
+Route::get('/InventoryInstock/GetComboboxItem', 'InventoryInstockController@ComboboxItem');
+Route::post('/InventoryInstock/GetDataFromID/{todo}', 'InventoryInstockController@GetDataFromID');
+
+
+//File 大量新增和修改
+Route::post('/InventoryInstock/FileUpload/{todo}', 'InventoryInstockController@FileUpload')->name('InventoryInstock.FileUpload');
+
+//Grid inline 新增和修改
+Route::any('/InventoryInstock/AddandUpdate/{todo}', 'InventoryInstockController@AddandUpdate')->name('InventoryInstock.AddandUpdate');
+
+//Grid 刪除
+Route::delete('/InventoryInstock/delete/{todo}', 'InventoryInstockController@destroy')->name('InventoryInstock.destroy');
 
 
 /********* ContainerInput ***********/

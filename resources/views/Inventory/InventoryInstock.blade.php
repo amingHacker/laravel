@@ -83,6 +83,10 @@
 <script type="text/javascript" src="{{asset('js/RightClick/RightClick.js')}}"></script>
 {{-- RightClick Action End--}}
 
+{{-- Judge Color Start--}}
+<script type="text/javascript" src="{{asset('js/JudgeColor/JudgeColor.js')}}"></script>
+{{-- Judge Color End--}}
+
 {{-- Google Font Start --}}
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
       rel="stylesheet">
@@ -95,70 +99,33 @@
     {
         width:72%;
     }
-
-    /* define bootstrap 5 columns */
-.col-xs-1-8,
-.col-sm-1-8,
-.col-md-1-8,
-.col-lg-1-8 {
-    position: relative;
-    min-height: 1px;
-    padding-right: 20px;
-    padding-left: 20px;
-}
-
-.col-xs-1-8 {
-    width: 12.5%;
-    float: left;
-}
-
-
-@media (min-width: 768px) {
-.col-sm-1-8 {
-        width: 12.5%;
-        float: left;
+    section{
+        /* background-color: #D1E4EE; */
+        background-color: #D1E4EE;
+        
+        color: blue;
     }
-}
-@media (min-width: 992px) {
-    .col-md-1-8 {
-        width: 12.5%;
-        float: left;
+
+    section article{
+        height: 15eM;
+        border: sold 1px black;
     }
-}
-@media (min-width: 1200px) {
-    .col-lg-1-8 {
-        width: 12.5%;
-        float: left;
+
+    aside{
+        background-color: #D1E4EE;
     }
-}
 
-section{
-    /* background-color: #D1E4EE; */
-    background-color: #D1E4EE;
-    
-    color: blue;
-}
+    aside div{
+        height: 5eM;
+        background-color: #D1E4EE;
+        color: black;
+    }
 
-section article{
-    height: 15eM;
-    border: sold 1px black;
-}
+    .Gridtabs{
+        width: 82%;
+        height: 90%;
 
-aside{
-    background-color: #D1E4EE;
-}
-
-aside div{
-    height: 5eM;
-    background-color: #D1E4EE;
-    color: black;
-}
-
-.Gridtabs{
-    width: 82%;
-    height: 90%;
-
-}
+    }
 </style>
 
 {{-- CSS設定 End --}}
@@ -171,41 +138,21 @@ aside div{
         var Result = '';
          //舊key到新key的映射，colName的轉換
         var oldkey = {
-            "鋼瓶秤重紀錄": "Container_Balance",
-            "鋼瓶空重": "Container_Baseweight",  
-            "料號重量": "Material_Order",  
-            "包材重量": "Packaging_Weight",
-
-            "日期":"working_date",
-            "建立人":"founder",
-            "料號":"material_number",
-            "客戶名稱":"customer",
-            "原料鋼瓶":"original_container",
+            "料號": "Material",
+            "料號描述": "Material_Description",  
+            "料號型別": "Material_Type",  
+            "工廠": "Plant",
+            "儲存位置":"Storage_Location",
+            "儲位描述":"Descr_of_Storage_Loc",
+            "批號":"Batch",
+            "基礎單位":"Base_Unit_of_Measure",
+            "未受限量":"Unrestricted",
             "添加物批號":"additives_number",
-            "TSMC持壓":"TSMC_remark",
-            "訂購重量(G)":"order_weight",
-            "成品分裝批號":"product_batch_number",
-            "瓶號":"bottle_number",
-            "鋼瓶空重(G)":"container_base_weight_ideal",
-            "實秤空重(G)":"container_base_weight_real",
-            "實秤空重操作人員":"container_base_weight_operator",
-            "總重量(G)":"container_doing_weight_ideal",
-            "實秤總重量(G)":"container_doing_weight_real",
-            "氣室重量(G)":"container_doing_weight_air",
-            "實秤總重操作人員":"container_doing_weight_operator",
-
-            "淨重(G)":"container_packaging_weight_ideal",
-            "實秤總重量(包裝)(G)":"container_packaging_weight_real",
-            "實秤總重操作人員(包裝)":"container_packaging_weight_operator",
-
-            "包材重(G)":"container_addpackaging_weight_ideal",
-            "實秤總重量(含包材)(G)":"container_addpackaging_weight_real",
-            "實秤總重操作人員(包材)":"container_addpackaging_weight_operator",
-
-            "鋼瓶基礎值":"bottle_weight",
-            "包材基準值" :"packaging_weight",
-
-            "備註":"remark",       
+            "幣別":"Currency",
+            "Value未受限量":"Value_Unrestricted",
+            "過渡":"Transit_and_Transfer",
+            "過渡量":"Val_in_Trans_Tfr",
+            "VGRBS.":"Valuated_Goods_Receipt_Blocked_Stock",
             "建立時間" : "created_at",
             "更新時間" : "updated_at" ,
         };
@@ -225,41 +172,21 @@ aside div{
         var Result = '';
          //舊key到新key的映射，colName的轉換
         var oldkey = {
-            "Container_Balance" : "鋼瓶秤重紀錄",
-            "Container_Baseweight": "鋼瓶空重",
-            "Material_Order" : "料號重量",  
-            "Packaging_Weight" : "包材重量",
-
-            "working_date" : "日期",
-            "founder" : "建立人",
-            "material_number" : "料號",
-            "customer" : "客戶名稱",
-            "original_container" : "原料鋼瓶",
-            "additives_number" : "添加物批號",
-            "TSMC_remark" : "TSMC持壓",
-            "order_weight" : "訂購重量(G)",
-            "product_batch_number" : "成品分裝批號",
-            "bottle_number" : "瓶號",
-            "container_base_weight_ideal" : "鋼瓶空重(G)",
-            "container_base_weight_real" : "實秤空重(G)",
-            "container_base_weight_operator" : "實秤空重操作人員",
-            "container_doing_weight_ideal" : "總重量(G)",
-            "container_doing_weight_real" : "實秤總重量(G)",
-            "container_doing_weight_air" : "氣室重量(G)",
-            "container_doing_weight_operator" : "實秤總重操作人員",
-
-            "container_packaging_weight_ideal" : "淨重(G)",
-            "container_packaging_weight_real" : "實秤總重量(包裝)(G)",
-            "container_packaging_weight_operator" : "實秤總重操作人員(包裝)",
-
-            "container_addpackaging_weight_ideal" : "包材重(G)",
-            "container_addpackaging_weight_real" : "實秤總重量(含包材)(G)",
-            "container_addpackaging_weight_operator" : "實秤總重操作人員(包材)",
-
-            "bottle_weight":"鋼瓶基礎值",
-            "packaging_weight": "包材基準值",
-
-            "remark" : "備註",       
+            "Material":"料號",
+            "Material_Description": "料號描述",  
+            "Material_Type": "料號型別",  
+            "Plant":"工廠",
+            "Storage_Location":"儲存位置",
+            "Descr_of_Storage_Loc":"儲位描述",
+            "Batch":"批號",
+            "Base_Unit_of_Measure":"基礎單位",
+            "Unrestricted":"未受限量",
+            "additives_number":"添加物批號",
+            "Currency":"幣別",
+            "Value_Unrestricted":"Value未受限量",
+            "Transit_and_Transfer":"過渡",
+            "Val_in_Trans_Tfr":"過渡量",
+            "Valuated_Goods_Receipt_Blocked_Stock":"VGRBS.",
             "created_at" : "建立時間" ,
             "updated_at" : "更新時間" ,
         };
@@ -295,16 +222,16 @@ aside div{
 
         
         //test
-        var _ChartTypeSource = ["Scatter Chart", "Control Chart"];
-        var _xAxisSource = ["日期", "次數", "型號", "瓶號"];
-        var _yAxisSource = ["導電度"];
-        var _GroupSource = ["型號", "瓶號", "ALL"];
-        //建立ToolBar
-        var SPCSource = ['A1.超過3個標準差', 'A2.連續九點在中線同一側', 'A3.連續六點呈現上升或下降',
-                            'A4.連續三點中的兩點落在2個標準差之外', 'A5.連續五點中的四點落在1個標準差之外',
-                            'A6.區間最大最小值',
-                        ];
-        PrepareToToolbar(_ChartTypeSource, _xAxisSource, _yAxisSource, _GroupSource, SPCSource); 
+        // var _ChartTypeSource = ["Scatter Chart", "Control Chart"];
+        // var _xAxisSource = ["日期", "次數", "型號", "瓶號"];
+        // var _yAxisSource = ["導電度"];
+        // var _GroupSource = ["型號", "瓶號", "ALL"];
+        // //建立ToolBar
+        // var SPCSource = ['A1.超過3個標準差', 'A2.連續九點在中線同一側', 'A3.連續六點呈現上升或下降',
+        //                     'A4.連續三點中的兩點落在2個標準差之外', 'A5.連續五點中的四點落在1個標準差之外',
+        //                     'A6.區間最大最小值',
+        //                 ];
+        // PrepareToToolbar(_ChartTypeSource, _xAxisSource, _yAxisSource, _GroupSource, SPCSource); 
         
         //獲得combobox的內容
         combobox_items = getComboboxItem();
@@ -350,14 +277,14 @@ aside div{
     
         for ( var colName in _todoList[_todoP])
         {           
-            if (colName === 'id')
+            if (colName === 'Material')
             {           
                 colModel.push(
-                        {name:colName, index:colName, width:80, align:"center",sortable:true, sorttype:"int", frozen: true, editable:false, cellattr: addCellAttrID}
+                        {name:colName, index:colName, width:100, align:"center",sortable:true,  stype:'text', frozen: true, editable:false, cellattr: addCellAttrID}
                     );
             }
             else if (
-                colName === 'material_number' || colName === 'bottle_number' 
+                colName === 'Material_Description'
             )
             {
                 colModel.push(
@@ -376,10 +303,8 @@ aside div{
                 );
             }
             else if (
-                colName === 'founder' || colName === 'material_number' || colName === 'customer'
-                || colName === 'original_container'|| colName === 'bottle_number' || colName === 'container_base_weight_operator'
-                || colName === 'container_doing_weight_operator'|| colName === 'container_packaging_weight_operator'
-                || colName === 'container_addpackaging_weight_operator'
+                colName === 'Storage_Location' || colName === 'Descr_of_Storage_Loc'
+            
             )
             {
                 colModel.push(
@@ -397,43 +322,7 @@ aside div{
                     }
                 );
             }
-            else if (colName === 'working_date')
-            {
-                colModel.push(
-                    {
-                        name:colName, index:colName, width: 150, align:"center",sortable:true, editable:true, cellattr: addCellAttr,frozen: true,
-                        sorttype: "date", edittype:'text', 
-                        editoptions: 
-                        {                       
-                            dataInit: function (elem) 
-                            {                                                                 
-                                $(elem).datetimepicker(
-                                    {
-                                        autoclose:true,
-                                        dateFormat: 'yy-mm-dd', 
-                                        timeFormat: 'HH:mm:ss',                         
-                                    }                             
-                                );
-                            },      
-                        },
-                        search:true,
-                        searchoptions: {
-                            sopt: ['eq','le','ge'],
-                            dataInit : function (elem) 
-                            {
-                                var self = this;
-                                $(elem).datepicker({
-                                    dateFormat: 'yy-mm-dd',                                 
-                                    changeYear: true,
-                                    changeMonth: true,
-                                    showOn: 'focus',
-                                    autoclose:1
-                                });
-                            }
-                        },                                   
-                    }
-                );
-            }
+           
             else if (colName === 'created_at' || colName === 'updated_at')
             {
                 colModel.push({name:colName, index:colName, width:150, align:"center", editable:false, cellattr: addCellAttr});
@@ -532,18 +421,18 @@ aside div{
             //$("#load_" + table).show();
         });
 
-        //設定多層的標題檔
-        $("#" + table).jqGrid('setGroupHeaders', {
-                        useColSpanStyle: true, 
-                        groupHeaders:[
-                            {startColumnName: 'founder', numberOfColumns: 6, titleText: '分裝人員填入'},
-                            {startColumnName: 'product_batch_number', numberOfColumns: 2, titleText: '分裝人員填入'},
-                            {startColumnName: 'container_base_weight_ideal', numberOfColumns: 3, titleText: '空重確認'},
-                            {startColumnName: 'container_doing_weight_ideal', numberOfColumns: 4, titleText: '分裝後總重確認'},
-                            {startColumnName: 'container_packaging_weight_ideal', numberOfColumns: 3, titleText: '包裝人員總重確認'},
-                            {startColumnName: 'container_addpackaging_weight_ideal', numberOfColumns: 3, titleText: '加包材後總重'},
-                        ]
-                    }); 
+        // //設定多層的標題檔
+        // $("#" + table).jqGrid('setGroupHeaders', {
+        //                 useColSpanStyle: true, 
+        //                 groupHeaders:[
+        //                     {startColumnName: 'founder', numberOfColumns: 6, titleText: '分裝人員填入'},
+        //                     {startColumnName: 'product_batch_number', numberOfColumns: 2, titleText: '分裝人員填入'},
+        //                     {startColumnName: 'container_base_weight_ideal', numberOfColumns: 3, titleText: '空重確認'},
+        //                     {startColumnName: 'container_doing_weight_ideal', numberOfColumns: 4, titleText: '分裝後總重確認'},
+        //                     {startColumnName: 'container_packaging_weight_ideal', numberOfColumns: 3, titleText: '包裝人員總重確認'},
+        //                     {startColumnName: 'container_addpackaging_weight_ideal', numberOfColumns: 3, titleText: '加包材後總重'},
+        //                 ]
+        //             }); 
         $("#" + table).jqGrid('setFrozenColumns');
 
 
@@ -602,7 +491,7 @@ aside div{
         $("#Gridtabs").tabs({
             select: function(event, ui) {
                 //alert(ui.tab.innerHTML);
-                ChangeToolbar(ui.tab.innerHTML);
+                //ChangeToolbar(ui.tab.innerHTML);
                 refreshGrid(ui.tab.innerHTML);
             }
         });
@@ -674,7 +563,7 @@ aside div{
         
         $.ajax({
             async:false,
-            url: "ContainerBalance/GetComboboxItem",//路徑
+            url: "InventoryInstock/GetComboboxItem",//路徑
             type: "Get",
             data:{    
             },
@@ -755,22 +644,32 @@ aside div{
 
 {{-- Data資料呈現 End --}}
 
-<meta name="csrf-token" content="{{ csrf_token() }}"> 
+<meta name="csrf-token" content="{{ csrf_token() }}">
+<h1 class="my-4"></h1> 
 <div class="container-fluid">
     <div class="row">
         <aside class="col-1"> 
-            <button class="btn btn-outline-info btn-space" type="button" id = "SearchInstock" >
-                <i class="material-icons">search</i>庫存篩選
-            </button>     
-            <button class="btn btn-outline-info btn-space" type="button" id = "SearchContainer">
-                <i class="material-icons">search</i>鋼瓶篩選
+            <button class="btn btn-outline-info btn-space btn-block" type="button" id = "SearchInstock_RawMaterial" >
+                <i class="material-icons">category</i>Raw
+            </button>
+            <button class="btn btn-outline-info btn-space btn-block" type="button" id = "SearchInstock_Finished" >
+                <i class="material-icons">search</i>成品
+            </button>
+            <button class="btn btn-outline-info btn-space btn-block" type="button" id = "SearchInstock_Chemical" >
+                <i class="material-icons">science</i>化學品
+            </button>         
+            <button class="btn btn-outline-info btn-space btn-block" type="button" id = "SearchContainer">
+                <i class="material-icons">luggage</i>鋼瓶
             </button>         
         </aside>
         <section class="col-11">
             <div id ="Gridtabs" class="Gridtabs"> 
                 <ul class = "row ">
                     <li><a href="#Gridtabs-1">庫存</a></li>
-                    <li><a href="#Gridtabs-2">鋼瓶</a></li>
+                    <li><a href="#Gridtabs-2">RawMaterial</a></li>
+                    <li><a href="#Gridtabs-3">成品</a></li>
+                    <li><a href="#Gridtabs-4">化學品</a></li>
+                    <li><a href="#Gridtabs-5">鋼瓶</a></li>
                 </ul>
                 <div id = "Gridtabs-1" >
                     <div class = "row">
@@ -850,16 +749,102 @@ aside div{
 {{-- 篩選條件 Start --}}
 <script type="text/javascript">
 /*顯示Log紀錄*/
-    $("#SearchInstock").click( function() {
+    $("#SearchInstock_RawMaterial").click( function() {
         var table = "viewLog";
-        var pcontent = '<span style="font-weight:bold; color:#2e6e9e;">《 篩選條件 》</span><br /><br />' + '<table id= '+ table + '></table><div id="viewLogPager"></div>';
+    
+        var pcontent = '<span style="font-weight:bold; color:#2e6e9e;">《 篩選條件 》</span><br /><br />'
+        + '<p>RawMaterial: <input type="text" id="dateStartFrom"> <input type="BUTTON"  onclick="ShowContainerComplete()" id="QueryContainer" value="確定" /></p>'
+        + '</br>'
+        + '<table id= '+ table + '></table><div id="viewLogPager"></div>';
         
         //建立動態表格
         $("#confirmDialog").html(pcontent);
         
             
         $("#confirmDialog").dialog({
-            width:'auto', height:'600', autoResize:true, modal:true, closeText:"關閉", 
+            width:'auto', height:'auto', autoResize:true, modal:true, closeText:"關閉", 
+            resizable:true, closeOnEscape:true, dialogClass:'top-dialog',position:['center',168],
+            show:{effect: "blind", duration: 300},
+            hide:{effect: "blind", duration: 300},
+           
+            focus: function() { $(".ui-dialog").focus(); }, // Unfocus the default focus elem
+            buttons : {
+                "確認" : function() {   
+                    $(this).dialog("close");        
+                },       
+            }
+        });  
+    });
+
+
+    $("#SearchInstock_Finished").click( function() {
+        var table = "viewLog";
+    
+        var pcontent = '<span style="font-weight:bold; color:#2e6e9e;">《 篩選條件 》</span><br /><br />'
+        + '<p>成品: <input type="text" id="dateStartFrom"> <input type="BUTTON"  onclick="ShowContainerComplete()" id="QueryContainer" value="確定" /></p>'
+        + '</br>'
+        + '<table id= '+ table + '></table><div id="viewLogPager"></div>';
+        
+        //建立動態表格
+        $("#confirmDialog").html(pcontent);
+        
+            
+        $("#confirmDialog").dialog({
+            width:'auto', height:'auto', autoResize:true, modal:true, closeText:"關閉", 
+            resizable:true, closeOnEscape:true, dialogClass:'top-dialog',position:['center',168],
+            show:{effect: "blind", duration: 300},
+            hide:{effect: "blind", duration: 300},
+           
+            focus: function() { $(".ui-dialog").focus(); }, // Unfocus the default focus elem
+            buttons : {
+                "確認" : function() {   
+                    $(this).dialog("close");        
+                },       
+            }
+        });  
+    });
+
+    $("#SearchInstock_Chemical").click( function() {
+        var table = "viewLog";
+    
+        var pcontent = '<span style="font-weight:bold; color:#2e6e9e;">《 篩選條件 》</span><br /><br />'
+        + '<p>化學: <input type="text" id="dateStartFrom"> <input type="BUTTON"  onclick="ShowContainerComplete()" id="QueryContainer" value="確定" /></p>'
+        + '</br>'
+        + '<table id= '+ table + '></table><div id="viewLogPager"></div>';
+        
+        //建立動態表格
+        $("#confirmDialog").html(pcontent);
+        
+            
+        $("#confirmDialog").dialog({
+            width:'auto', height:'auto', autoResize:true, modal:true, closeText:"關閉", 
+            resizable:true, closeOnEscape:true, dialogClass:'top-dialog',position:['center',168],
+            show:{effect: "blind", duration: 300},
+            hide:{effect: "blind", duration: 300},
+           
+            focus: function() { $(".ui-dialog").focus(); }, // Unfocus the default focus elem
+            buttons : {
+                "確認" : function() {   
+                    $(this).dialog("close");        
+                },       
+            }
+        });  
+    });
+
+    $("#SearchContainer").click( function() {
+        var table = "viewLog";
+    
+        var pcontent = '<span style="font-weight:bold; color:#2e6e9e;">《 篩選條件 》</span><br /><br />'
+        + '<p>鋼瓶: <input type="text" id="dateStartFrom"> <input type="BUTTON"  onclick="ShowContainerComplete()" id="QueryContainer" value="確定" /></p>'
+        + '</br>'
+        + '<table id= '+ table + '></table><div id="viewLogPager"></div>';
+        
+        //建立動態表格
+        $("#confirmDialog").html(pcontent);
+        
+            
+        $("#confirmDialog").dialog({
+            width:'auto', height:'auto', autoResize:true, modal:true, closeText:"關閉", 
             resizable:true, closeOnEscape:true, dialogClass:'top-dialog',position:['center',168],
             show:{effect: "blind", duration: 300},
             hide:{effect: "blind", duration: 300},
