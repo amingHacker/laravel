@@ -211,7 +211,8 @@
         };
     var combobox_items = [];  //用來儲存colName內容選項
 
-    $(document).ready(function () {      
+    $(document).ready(function () {
+        sessionStorage.setItem("Se_RawMaterial", ""); //初始化RawMaterial      
         var i = 0;
         for(var _todoP in _todoList ){       
             ShowTable(_todoP, i);
@@ -222,16 +223,16 @@
 
         
         //test
-        // var _ChartTypeSource = ["Scatter Chart", "Control Chart"];
-        // var _xAxisSource = ["日期", "次數", "型號", "瓶號"];
-        // var _yAxisSource = ["導電度"];
-        // var _GroupSource = ["型號", "瓶號", "ALL"];
-        // //建立ToolBar
-        // var SPCSource = ['A1.超過3個標準差', 'A2.連續九點在中線同一側', 'A3.連續六點呈現上升或下降',
-        //                     'A4.連續三點中的兩點落在2個標準差之外', 'A5.連續五點中的四點落在1個標準差之外',
-        //                     'A6.區間最大最小值',
-        //                 ];
-        // PrepareToToolbar(_ChartTypeSource, _xAxisSource, _yAxisSource, _GroupSource, SPCSource); 
+        var _ChartTypeSource = ["Bar Chart"];
+        var _xAxisSource = ["類別"];
+        var _yAxisSource = ["庫存"];
+        var _GroupSource = ["型號", "瓶號", "ALL"];
+        //建立ToolBar
+        var SPCSource = ['A1.超過3個標準差', 'A2.連續九點在中線同一側', 'A3.連續六點呈現上升或下降',
+                            'A4.連續三點中的兩點落在2個標準差之外', 'A5.連續五點中的四點落在1個標準差之外',
+                            'A6.區間最大最小值',
+                        ];
+        PrepareToToolbar(_ChartTypeSource, _xAxisSource, _yAxisSource, _GroupSource, SPCSource); 
         
         //獲得combobox的內容
         combobox_items = getComboboxItem();
@@ -344,7 +345,7 @@
         // 準備資料           
         $("#" + table).jqGrid({
             url:"InventoryInstock/show/"+_todoP,
-            datatype: "json",        
+            datatype: "json",
             altrows:false,
             width: jqgridWidth,
             height:'100%',
@@ -360,18 +361,23 @@
             sortorder: "desc",
             caption: gridCaption,
             shrinkToFit :false,
-            loadonce: false,          
+            loadonce: false,
             jsonReader : {
-                            root: "dataList",
-                            page: "currPage",
-                            total: "totalPages",
-                            records: "totalCount"                     
-                        },
+                                root: "dataList",
+                                page: "currPage",
+                                total: "totalPages",
+                                records: "totalCount"                     
+                            },
             prmNames : {
-                            page:"pageNum", 
-                            rows:"limit", 
-                            order: "order",
-                        },
+                    page:"pageNum", 
+                    rows:"limit", 
+                    order: "order", 
+                },
+           
+            postData:{
+                    UserFilter:sessionStorage.getItem("Se_RawMaterial"),
+            },
+            
 
             loadComplete: function (){
                    
@@ -400,6 +406,7 @@
                 
         //增加更多的搜尋條件
         $.extend($.jgrid.search, {
+                    multipleGroup:true,
                     multipleSearch: true,
                     recreateFilter: true,
                     closeOnEscape: true,
@@ -706,7 +713,7 @@
 
 
 {{-- Tab ToolBar Start --}}
-{{-- <h1 class="my-4"></h1>
+<h1 class="my-4"></h1>
 <div id='tabs' style = 'width: 1200px; margin:0px auto; text-align:justify; display:none' >
     <button id='add-tab' class="btn btn-outline-info btn-space">＋ Groups</button>
     <button id='remove-tab' class="btn btn-outline-info btn-space">－ Groups</button>
@@ -722,13 +729,13 @@
         <h1 class="my-1"></h1>
         <div id="jqxToolBarChartRange1" style = " margin:0px auto; text-align:justify" ></div>
     </div>
-</div> --}}
+</div>
 {{-- Tab ToolBar End --}}    
 
 {{-- Chart Start --}}
-{{-- <div id = canvas_div style="width:70%; margin:0px auto; display: none;" >
+<div id = canvas_div style="width:70%; margin:0px auto; display: none;" >
     <canvas id="canvas" ></canvas>
-</div> --}}
+</div>
 {{-- Chart End --}}
 
 
@@ -750,12 +757,33 @@
 <script type="text/javascript">
 /*顯示Log紀錄*/
     $("#SearchInstock_RawMaterial").click( function() {
-        var table = "viewLog";
-    
-        var pcontent = '<span style="font-weight:bold; color:#2e6e9e;">《 篩選條件 》</span><br /><br />'
-        + '<p>RawMaterial: <input type="text" id="dateStartFrom"> <input type="BUTTON"  onclick="ShowContainerComplete()" id="QueryContainer" value="確定" /></p>'
-        + '</br>'
-        + '<table id= '+ table + '></table><div id="viewLogPager"></div>';
+
+        var pcontent = '';
+
+        if (sessionStorage.getItem('Se_RawMaterial') != "" )
+        {
+            pcontent= '<span style="font-weight:bold; color:#2e6e9e;">《 篩選條件 》</span><br /><br />'
+            + '<p>RawMaterial: <table><td><div id="jqxcbx_RawMaterial"></div></td><td><input type="BUTTON"  onclick="addToConfirm()" id="QueryContainer" value="確定" /></td></table></p>'
+            + '</br>';
+            var _tmp = sessionStorage.getItem('Se_RawMaterial').split(',');
+        
+            for(var key in _tmp)
+            {        
+                if (_tmp[key]!='')
+                {
+                    pcontent = pcontent + '<table><td>'+ _tmp[key]+ '</td><td>'+ '<input type="BUTTON" onclick= \'deleteFromConfirm("'+_tmp[key]+'")\' value="刪除" /></td></table>';
+                }
+            }
+        }
+        else
+        {
+            pcontent = '<span style="font-weight:bold; color:#2e6e9e;">《 篩選條件 》</span><br /><br />'
+            + '<p>RawMaterial: <table><td><div id="jqxcbx_RawMaterial"></div></td><td><input type="BUTTON"  onclick="addToConfirm()" id="QueryContainer" value="確定" /></td></table></p>'
+            + '</br>';
+        }
+        //sessionStorage.setItem('Se_RawMaterial', "");//清除RawMaterial session
+
+      
         
         //建立動態表格
         $("#confirmDialog").html(pcontent);
@@ -770,10 +798,39 @@
             focus: function() { $(".ui-dialog").focus(); }, // Unfocus the default focus elem
             buttons : {
                 "確認" : function() {   
-                    $(this).dialog("close");        
-                },       
+                    $(this).dialog("close");
+                    var table = "dgInventoryInstock" ;
+                    $('#' + table ).jqGrid('setGridParam', { 
+                            postData: {"UserFilter":sessionStorage.getItem("Se_RawMaterial")},
+                            
+                    }).trigger('reloadGrid'); 
+                },              
             }
-        });  
+        });
+
+
+        $.ajax({
+                async:false,
+                url: "InventoryInstock/Get_Condition" ,//路徑
+                type: "POST",           
+                data:{
+                    "table":"RawMaterial",
+                },
+                success: function (DownLoadValue)
+                    {
+                   
+                        var sourceRawMaterial = DownLoadValue.success;
+                        var _data = [];
+                        for (var key in sourceRawMaterial)
+                        {
+                            _data.push(sourceRawMaterial[key]["Material_Description"]);
+                        }
+
+                        $("#jqxcbx_RawMaterial").jqxComboBox({ source:  _data , selectedIndex: -1, width: '200px', height: '25' });
+                        
+                    }                               
+                });      
+    
     });
 
 
@@ -1190,34 +1247,34 @@
            columnNameGroup.push(columnName);
            itemGroup.push(item);
 
-           //獲得Toolbar的資料
-           var toolsConChart = $("#jqxToolBarConChart" + ( j + 1 )).jqxToolBar("getTools");
-           var tUSL = toolsConChart[1].tool[0].value;
-           var tLSL = toolsConChart[3].tool[0].value;
-           var tUCL = toolsConChart[5].tool[0].value;
-           var tLCL = toolsConChart[7].tool[0].value;
-           USLGroup.push(tUSL);
-           LSLGroup.push(tLSL);
-           UCLGroup.push(tUCL);
-           LCLGroup.push(tLCL);
-           LabelItem.push("bottle_number");
-           DateItem.push("working_date");
+        //    //獲得Toolbar的資料
+        //    var toolsConChart = $("#jqxToolBarConChart" + ( j + 1 )).jqxToolBar("getTools");
+        //    var tUSL = toolsConChart[1].tool[0].value;
+        //    var tLSL = toolsConChart[3].tool[0].value;
+        //    var tUCL = toolsConChart[5].tool[0].value;
+        //    var tLCL = toolsConChart[7].tool[0].value;
+        //    USLGroup.push(tUSL);
+        //    LSLGroup.push(tLSL);
+        //    UCLGroup.push(tUCL);
+        //    LCLGroup.push(tLCL);
+        //    LabelItem.push("bottle_number");
+        //    DateItem.push("working_date");
            
-           //獲得Toolbar的資料 
-           var toolsBarChartRange = $("#jqxToolBarChartRange" + ( j + 1 )).jqxToolBar("getTools");
-           var tYaxisMax = toolsBarChartRange[1].tool[0].value;
-           var tYaxisMin = toolsBarChartRange[3].tool[0].value;
-           var tSPCRule = toolsBarChartRange[5].tool[0].lastChild.value;
+        //    //獲得Toolbar的資料 
+        //    var toolsBarChartRange = $("#jqxToolBarChartRange" + ( j + 1 )).jqxToolBar("getTools");
+        //    var tYaxisMax = toolsBarChartRange[1].tool[0].value;
+        //    var tYaxisMin = toolsBarChartRange[3].tool[0].value;
+        //    var tSPCRule = toolsBarChartRange[5].tool[0].lastChild.value;
            
            YaxisMax.push(tYaxisMax);
            YaxisMin.push(tYaxisMin);
            SPCRule.push(tSPCRule);
        }
        
-        //檢查選擇Control Chart時，Group 不能大於1組以上，UCL 或LCL需同時為空或有值避免Center Line計算錯誤
-        //檢查選擇Scatter Chart時，Group 不能有值沒有選擇，避免無法產生圖表
-        var _checkChartWithGroup = checkChartWithGroup(chartTypeGroup, UCLGroup, LCLGroup); 
-        if (_checkChartWithGroup !==''){alert(_checkChartWithGroup); return;}
+        // //檢查選擇Control Chart時，Group 不能大於1組以上，UCL 或LCL需同時為空或有值避免Center Line計算錯誤
+        // //檢查選擇Scatter Chart時，Group 不能有值沒有選擇，避免無法產生圖表
+        // var _checkChartWithGroup = checkChartWithGroup(chartTypeGroup, UCLGroup, LCLGroup); 
+        // if (_checkChartWithGroup !==''){alert(_checkChartWithGroup); return;}
 
        //獲得資料
 
@@ -1251,7 +1308,7 @@
                    var dataLo = DownLoadValue.success;
                  //產生要寫入excel的data
                    //參數格式: original data -> toolbar data -> toolbar control data 
-                   DrowChart( 'Container Balance', dataLo, 
+                   DrowBarChart( 'Container Balance', dataLo, 
                            chartTypeGroup, dataXaxisGroup, dataYaxisGroup, 
                            columnNameGroup, itemGroup, 
                            USLGroup, LSLGroup, UCLGroup, LCLGroup, LabelItem, DateItem,
@@ -1406,7 +1463,7 @@ $("button#view-outlier").click(
     }
 );
 /*得到Chart上的data*/ 
-function viewChartData( ){
+function viewChartData(){
     var $menu = $('#Chartmenu');
     $menu.hide();
     var dataSetIndex = sessionStorage.getItem('operatingChartDataSetIndex');
@@ -1532,8 +1589,99 @@ function viewChartData( ){
             }                               
         });     
 }      
-    </script>
+</script>
     
     {{-- Show outlier Log End --}}
+
+    {{-- Add to Confirm Start--}}
+<script type="">
+    ///跳脫字元的用法，可以用來傳遞Onclick參數
+    function addToConfirm()
+    {
+        var _getRawMaterial = sessionStorage.getItem('Se_RawMaterial');
+        
+        var item = $('#jqxcbx_RawMaterial').jqxComboBox('getItem',  args.selectedIndex);
+        if(item == undefined){
+            item = $('#jqxcbx_RawMaterial').jqxComboBox('getItem',  args.index)
+        }
+        sessionStorage.setItem('Se_RawMaterial', _getRawMaterial + item.label + ',');
+        var original = document.getElementById('confirmDialog').innerHTML;
+        var pcontent = original + '<table><td>'+ item.label + '</td><td>'+ '<input type="BUTTON" onclick= \'deleteFromConfirm("'+item.label+'")\' value="刪除" /></td></table>';
+        $("#confirmDialog").html(pcontent);
+
+        //重新呼叫ToolBar
+        $.ajax({
+                async:false,
+                url: "InventoryInstock/Get_Condition" ,//路徑
+                type: "POST",           
+                data:{
+                    "table":"RawMaterial",
+                },
+                success: function (DownLoadValue)
+                    {
+                   
+                        var sourceRawMaterial = DownLoadValue.success;
+                        var _data = [];
+                        for (var key in sourceRawMaterial)
+                        {
+                            _data.push(sourceRawMaterial[key]["Material_Description"]);
+                        }
+
+                        $("#jqxcbx_RawMaterial").jqxComboBox({ source:  _data , selectedIndex: -1, width: '200px', height: '25' });
+                        
+                    }                               
+                });      
+    }
+
+    function deleteFromConfirm(label)
+    {
+        //清除Session裡的label
+        var _getRawMaterial = sessionStorage.getItem('Se_RawMaterial');
+        _getRawMaterial = _getRawMaterial.replace( label + ',', '');
+        sessionStorage.setItem('Se_RawMaterial', _getRawMaterial);
+        reCreateConfirm(); 
+    }
+
+    function reCreateConfirm()
+    {
+        var original = '<span style="font-weight:bold; color:#2e6e9e;">《 篩選條件 》</span><br /><br />'
+        + '<p>RawMaterial: <table><td><div id="jqxcbx_RawMaterial"></div></td><td><input type="BUTTON"  onclick="addToConfirm()" id="QueryContainer" value="確定" /></td></table></p>'
+        + '</br>';
+        var _tmp = sessionStorage.getItem('Se_RawMaterial').split(',');
+      
+        for(var key in _tmp)
+        {        
+            if (_tmp[key]!='')
+            {
+                original = original + '<table><td>'+ _tmp[key]+ '</td><td>'+ '<input type="BUTTON" onclick= \'deleteFromConfirm("'+_tmp[key]+'")\' value="刪除" /></td></table>';
+            }
+        }
+
+        $("#confirmDialog").html(original);
+          //重新呼叫ToolBar
+        $.ajax({
+                async:false,
+                url: "InventoryInstock/Get_Condition" ,//路徑
+                type: "POST",           
+                data:{
+                    "table":"RawMaterial",
+                },
+                success: function (DownLoadValue)
+                    {
+                   
+                        var sourceRawMaterial = DownLoadValue.success;
+                        var _data = [];
+                        for (var key in sourceRawMaterial)
+                        {
+                            _data.push(sourceRawMaterial[key]["Material_Description"]);
+                        }
+
+                        $("#jqxcbx_RawMaterial").jqxComboBox({ source:  _data , selectedIndex: -1, width: '200px', height: '25' });
+                        
+                    }                               
+                });   
+    }
+</script>
+    {{-- Add to Confirm End --}}
 
 @endsection

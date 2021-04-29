@@ -39,71 +39,29 @@ class InventoryInstockController extends Controller
         }
         // var_dump($_SERVER["REDIRECT_URL"]);
 
-        $query = DB::connection('mysqlinventory')->table($table);
+        $queryTemp = DB::connection('mysqlinventory')->table($table);
+        
+        //處理UserFilter
+        if($pageInf["UserFilter"]!="")
+        {
+            $_UserFilter = explode(",",$pageInf["UserFilter"]);
+            foreach ($_UserFilter as $i)
+            {
+                if($i != "")
+                {
+                    $queryTemp = $queryTemp->orwhere("Material_Description",$i);
+                }
+            }
+            
+        }
 
+        $query = DB::connection('mysqlinventory')->table(DB::connection('mysqlinventory')->raw('(' . $queryTemp->toSql() . ') as t'))->mergeBindings($queryTemp);
+        
         if ($pageInf["_search"] == 'true')
         {
             $tmp = get_object_vars(json_decode($pageInf["filters"])); //先把字串轉成obj,再轉成array形式運用
-            //var_dump($tmp);
-            foreach ($tmp["rules"] as $i)
-            {
-                $rules = get_object_vars($i);      
-                $searchGroupOp = $tmp["groupOp"];
-                $field = $rules["field"];
-                $op = $rules["op"];
-                $SearchData = $rules["data"];
-                
-                switch ($op){
-                    case "eq":
-                        $query = $query->where($field, $SearchData); 
-                        break;
-                    case "ne":
-                        $query = $query->where($field, '!=' ,$SearchData); 
-                        break;
-                    case "bw":
-                        $query = $query->where($field, 'like', '%'.$SearchData.'%'); 
-                        break;
-                    case "bn":
-                        $query = $query->where($field, 'not like', '%'.$SearchData.'%'); 
-                        break;
-                    case "ew":
-                        $query = $query->where($field, 'like', '%'.$SearchData.'%'); 
-                        break;
-                    case "en":
-                        $query = $query->where($field, 'not like', '%'.$SearchData.'%');
-                        break;
-                    case "cn":
-                        $query = $query->where($field, 'like', '%'.$SearchData.'%'); 
-                        break;
-                    case "nc":
-                        $query = $query->where($field, 'not like', '%'.$SearchData.'%');
-                        break;
-                    case "nu":
-                        $query = $query->whereNull($field);
-                        break;
-                    case "nn":
-                        $query = $query->whereNotNull($field);
-                        break;
-                    case "in":
-                        $query = $query->whereIn($field, $SearchData);
-                        break;
-                    case "ni":
-                        $query = $query->whereNotIn($field, $SearchData);
-                        break;
-                    case "lt":
-                        $query = $query->where($field,'<', $SearchData); 
-                        break;
-                    case "le":
-                        $query = $query->where($field,'<=', $SearchData); 
-                        break;
-                    case "gt":
-                        $query = $query->where($field,'>', $SearchData); 
-                        break;
-                    case "ge":
-                        $query = $query->where($field,'>=', $SearchData); 
-                        break;
-                }
-            }
+            $query = $this->Recursive($tmp, $query);
+          
         }
         
         $Record = $query->count();
@@ -119,6 +77,235 @@ class InventoryInstockController extends Controller
                 'totalPages'=> $totalPage,        
             ]);
     }
+
+
+    public function Recursive($tmp, $query)
+    {
+        $tmp = (array)$tmp;
+        if (array_key_exists("groups", $tmp))
+        {
+            foreach( $tmp["groups"] as $j )
+            {
+                $j = (array)($j);
+                
+                
+                if($j["groups"] != [])
+                {
+
+                    $this->Recursive($j, $query); 
+                }
+                else
+                {
+                    foreach ($j["rules"] as $i)
+                    {
+                        $rules = get_object_vars($i);      
+                        $searchGroupOp = $j["groupOp"];
+                        $field = $rules["field"];
+                        $op = $rules["op"];
+                        $SearchData = $rules["data"];
+                        
+                        switch ($op){
+                            case "eq":
+                                $query = $searchGroupOp == 'AND'? $query->where($field, $SearchData):$query->orwhere($field, $SearchData);
+                                break;
+                            case "ne":
+                                $query = $searchGroupOp == 'AND'? $query->where($field, '!=', $SearchData):$query->orwhere($field, '!=', $SearchData);
+                                break;
+                            case "bw":
+                                $query = $searchGroupOp == 'AND'? $query->where($field, 'like', '%'.$SearchData.'%'):$query->orwhere($field, 'like', '%'.$SearchData.'%');
+                                break;
+                            case "bn":
+                                $query = $searchGroupOp == 'AND'? $query->where($field, 'not like', '%'.$SearchData.'%'):$query->orwhere($field, 'not like', '%'.$SearchData.'%');
+                                break;
+                            case "ew":
+                                $query = $searchGroupOp == 'AND'? $query->where($field, 'like', '%'.$SearchData.'%'):$query->orwhere($field, 'like', '%'.$SearchData.'%');
+                                break;
+                            case "en":
+                                $query = $searchGroupOp == 'AND'? $query->where($field, 'not like', '%'.$SearchData.'%'):$query->orwhere($field, 'not like', '%'.$SearchData.'%');
+                                break;
+                            case "cn":
+                                $query = $searchGroupOp == 'AND'? $query->where($field, 'like', '%'.$SearchData.'%'):$query->orwhere($field, 'like', '%'.$SearchData.'%');
+                                break;
+                            case "nc":
+                                $query = $searchGroupOp == 'AND'? $query->where($field, 'not like', '%'.$SearchData.'%'):$query->orwhere($field, 'not like', '%'.$SearchData.'%');
+                                break;
+                            case "nu":
+                                $query = $searchGroupOp == 'AND'? $query->whereNull($field):$query->orwhereNull($field);
+                                break;
+                            case "nn":
+                                $query = $searchGroupOp == 'AND'? $query->whereNotNull($field):$query->orwhereNotNull($field);
+                                break;
+                            case "in":
+                                $query = $searchGroupOp == 'AND'? $query->whereIn($field, $SearchData):$query->orwhereIn($field, $SearchData);
+                                break;
+                            case "ni":
+                                $query = $searchGroupOp == 'AND'? $query->whereNotIn($field, $SearchData):$query->orwhereNotIn($field, $SearchData);
+                                break;
+                            case "lt":
+                                $query = $searchGroupOp == 'AND'? $query->where($field,'<', $SearchData):$query->orwhere($field,'<', $SearchData);
+                                break;
+                            case "le":
+                                $query = $searchGroupOp == 'AND'? $query->where($field,'<=', $SearchData):$query->orwhere($field,'<=', $SearchData);
+                                break;
+                            case "gt":
+                                $query = $searchGroupOp == 'AND'? $query->where($field,'>', $SearchData):$query->orwhere($field,'>', $SearchData);
+                                break;
+                            case "ge":
+                                $query = $searchGroupOp == 'AND'? $query->where($field,'>=', $SearchData):$query->orwhere($field,'>=', $SearchData);
+                                break;
+                        }   
+                    }
+                }
+            }
+            // var_dump($query->toSql());
+
+            $query = DB::connection('mysqlinventory')->table(DB::connection('mysqlinventory')->raw('(' . $query->toSql() . ') as t'))->mergeBindings($query);
+            
+
+            foreach ($tmp["rules"] as $i)
+            {
+                $rules = get_object_vars($i);      
+                $searchGroupOp = $tmp["groupOp"];
+                $field = $rules["field"];
+                $op = $rules["op"];
+                $SearchData = $rules["data"];
+                
+                switch ($op){
+                    case "eq":
+                        $query = $searchGroupOp == 'AND'? $query->where($field, $SearchData):$query->orwhere($field, $SearchData);
+                        break;
+                    case "ne":
+                        $query = $searchGroupOp == 'AND'? $query->where($field, '!=', $SearchData):$query->orwhere($field, '!=', $SearchData);
+                        break;
+                    case "bw":
+                        $query = $searchGroupOp == 'AND'? $query->where($field, 'like', '%'.$SearchData.'%'):$query->orwhere($field, 'like', '%'.$SearchData.'%');
+                        break;
+                    case "bn":
+                        $query = $searchGroupOp == 'AND'? $query->where($field, 'not like', '%'.$SearchData.'%'):$query->orwhere($field, 'not like', '%'.$SearchData.'%');
+                        break;
+                    case "ew":
+                        $query = $searchGroupOp == 'AND'? $query->where($field, 'like', '%'.$SearchData.'%'):$query->orwhere($field, 'like', '%'.$SearchData.'%');
+                        break;
+                    case "en":
+                        $query = $searchGroupOp == 'AND'? $query->where($field, 'not like', '%'.$SearchData.'%'):$query->orwhere($field, 'not like', '%'.$SearchData.'%');
+                        break;
+                    case "cn":
+                        $query = $searchGroupOp == 'AND'? $query->where($field, 'like', '%'.$SearchData.'%'):$query->orwhere($field, 'like', '%'.$SearchData.'%');
+                        break;
+                    case "nc":
+                        $query = $searchGroupOp == 'AND'? $query->where($field, 'not like', '%'.$SearchData.'%'):$query->orwhere($field, 'not like', '%'.$SearchData.'%');
+                        break;
+                    case "nu":
+                        $query = $searchGroupOp == 'AND'? $query->whereNull($field):$query->orwhereNull($field);
+                        break;
+                    case "nn":
+                        $query = $searchGroupOp == 'AND'? $query->whereNotNull($field):$query->orwhereNotNull($field);
+                        break;
+                    case "in":
+                        $query = $searchGroupOp == 'AND'? $query->whereIn($field, $SearchData):$query->orwhereIn($field, $SearchData);
+                        break;
+                    case "ni":
+                        $query = $searchGroupOp == 'AND'? $query->whereNotIn($field, $SearchData):$query->orwhereNotIn($field, $SearchData);
+                        break;
+                    case "lt":
+                        $query = $searchGroupOp == 'AND'? $query->where($field,'<', $SearchData):$query->orwhere($field,'<', $SearchData);
+                        break;
+                    case "le":
+                        $query = $searchGroupOp == 'AND'? $query->where($field,'<=', $SearchData):$query->orwhere($field,'<=', $SearchData);
+                        break;
+                    case "gt":
+                        $query = $searchGroupOp == 'AND'? $query->where($field,'>', $SearchData):$query->orwhere($field,'>', $SearchData);
+                        break;
+                    case "ge":
+                        $query = $searchGroupOp == 'AND'? $query->where($field,'>=', $SearchData):$query->orwhere($field,'>=', $SearchData);
+                        break;
+                }   
+            }
+
+            $query = DB::connection('mysqlinventory')->table(DB::connection('mysqlinventory')->raw('(' . $query->toSql() . ') as t'))->mergeBindings($query);
+        }
+        else
+        {
+
+            foreach ($tmp["rules"] as $i)
+            {
+                $rules = get_object_vars($i);      
+                $searchGroupOp = $tmp["groupOp"];
+                $field = $rules["field"];
+                $op = $rules["op"];
+                $SearchData = $rules["data"];
+                
+                switch ($op){
+                    case "eq":
+                        $query = $searchGroupOp == 'AND'? $query->where($field, $SearchData):$query->orwhere($field, $SearchData);
+                        break;
+                    case "ne":
+                        $query = $searchGroupOp == 'AND'? $query->where($field, '!=', $SearchData):$query->orwhere($field, '!=', $SearchData);
+                        break;
+                    case "bw":
+                        $query = $searchGroupOp == 'AND'? $query->where($field, 'like', '%'.$SearchData.'%'):$query->orwhere($field, 'like', '%'.$SearchData.'%');
+                        break;
+                    case "bn":
+                        $query = $searchGroupOp == 'AND'? $query->where($field, 'not like', '%'.$SearchData.'%'):$query->orwhere($field, 'not like', '%'.$SearchData.'%');
+                        break;
+                    case "ew":
+                        $query = $searchGroupOp == 'AND'? $query->where($field, 'like', '%'.$SearchData.'%'):$query->orwhere($field, 'like', '%'.$SearchData.'%');
+                        break;
+                    case "en":
+                        $query = $searchGroupOp == 'AND'? $query->where($field, 'not like', '%'.$SearchData.'%'):$query->orwhere($field, 'not like', '%'.$SearchData.'%');
+                        break;
+                    case "cn":
+                        $query = $searchGroupOp == 'AND'? $query->where($field, 'like', '%'.$SearchData.'%'):$query->orwhere($field, 'like', '%'.$SearchData.'%');
+                        break;
+                    case "nc":
+                        $query = $searchGroupOp == 'AND'? $query->where($field, 'not like', '%'.$SearchData.'%'):$query->orwhere($field, 'not like', '%'.$SearchData.'%');
+                        break;
+                    case "nu":
+                        $query = $searchGroupOp == 'AND'? $query->whereNull($field):$query->orwhereNull($field);
+                        break;
+                    case "nn":
+                        $query = $searchGroupOp == 'AND'? $query->whereNotNull($field):$query->orwhereNotNull($field);
+                        break;
+                    case "in":
+                        $query = $searchGroupOp == 'AND'? $query->whereIn($field, $SearchData):$query->orwhereIn($field, $SearchData);
+                        break;
+                    case "ni":
+                        $query = $searchGroupOp == 'AND'? $query->whereNotIn($field, $SearchData):$query->orwhereNotIn($field, $SearchData);
+                        break;
+                    case "lt":
+                        $query = $searchGroupOp == 'AND'? $query->where($field,'<', $SearchData):$query->orwhere($field,'<', $SearchData);
+                        break;
+                    case "le":
+                        $query = $searchGroupOp == 'AND'? $query->where($field,'<=', $SearchData):$query->orwhere($field,'<=', $SearchData);
+                        break;
+                    case "gt":
+                        $query = $searchGroupOp == 'AND'? $query->where($field,'>', $SearchData):$query->orwhere($field,'>', $SearchData);
+                        break;
+                    case "ge":
+                        $query = $searchGroupOp == 'AND'? $query->where($field,'>=', $SearchData):$query->orwhere($field,'>=', $SearchData);
+                        break;
+                }   
+            }
+
+            $query = DB::connection('mysqlinventory')->table(DB::connection('mysqlinventory')->raw('(' . $query->toSql() . ') as t'))->mergeBindings($query);
+        
+        }        
+        
+        return $query;
+    }
+
+    public function object_array($array) {  
+        if(is_object($array)) {  
+            $array = (array)$array;  
+            } 
+        if(is_array($array)) {  
+        foreach($array as $key=>$value) {  
+            $array[$key] = object_array($value);  
+            }  
+        }  
+        return $array;  
+    }
+    
 
     //This is the controller Export
     public function Export(Request $request )
@@ -397,6 +584,59 @@ class InventoryInstockController extends Controller
             $query = $query->orwhere('id', '=', $i); 
         }
         $DownLoadValue = $query->orderBy( 'id', 'asc')->get();    
+        return response()->json([
+            'success' => $DownLoadValue,        
+        ]);     
+    }
+
+
+    //從ID中獲取資料庫相對應的內容
+    public function Get_Condition( Request $request )
+    {  
+        $Data = $request->all();
+        
+        $table = '';
+        $Condition = '';
+
+        switch ($Data["table"]){
+            case 'RawMaterial':
+                $table = 'inventory_instock';
+                $Condition = 'RawMaterial';
+
+                break;
+        }
+
+
+        $Data = $request->all();
+        $DownLoadValue = [];
+        $query = DB::connection('mysqlinventory')->table($table)->select('Material_Description')->distinct()->get();
+                  
+        // $query = $query->where('id', '=', $i); 
+       
+        $DownLoadValue = $query;    
+        return response()->json([
+            'success' => $DownLoadValue,        
+        ]);     
+    }
+
+    //從ID中獲取資料庫相對應的內容
+    public function FilterSearch( Request $request )
+    {  
+        $Data = $request->all();
+        
+        $table = '';
+        $Condition = '';
+
+        switch ($Data["table"]){
+            case 'RawMaterial':
+                $table = 'inventory_instock';
+                $Condition = 'RawMaterial';
+                break;
+        }
+
+        $DownLoadValue = [];
+        $query = DB::connection('mysqlinventory')->table($table);
+        
         return response()->json([
             'success' => $DownLoadValue,        
         ]);     

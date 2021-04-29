@@ -467,6 +467,7 @@ class ComposerStaticInit62cf1d4417f54ef64500d713a5326269
         'App\\Http\\Controllers\\Container_GdSp_controller' => __DIR__ . '/../..' . '/app/Http/Controllers/Container_GdSp_controller.php',
         'App\\Http\\Controllers\\Controller' => __DIR__ . '/../..' . '/app/Http/Controllers/Controller.php',
         'App\\Http\\Controllers\\GrindingOvenController' => __DIR__ . '/../..' . '/app/Http/Controllers/GrindingOvenController.php',
+        'App\\Http\\Controllers\\InventoryInstockController' => __DIR__ . '/../..' . '/app/Http/Controllers/InventoryInstockController.php',
         'App\\Http\\Controllers\\ProductSPECController' => __DIR__ . '/../..' . '/app/Http/Controllers/ProductSPECController.php',
         'App\\Http\\Controllers\\SamplingRecordController' => __DIR__ . '/../..' . '/app/Http/Controllers/SamplingRecordController.php',
         'App\\Http\\Controllers\\ShowAll' => __DIR__ . '/../..' . '/app/Http/Controllers/ShowAll.php',

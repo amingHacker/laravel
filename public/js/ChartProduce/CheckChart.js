@@ -572,6 +572,45 @@ function DrowChart( ChartTitle, dataLo, chartTypeGroup, dataXaxisGroup, dataYaxi
     window.myLine.update();
 }
 
+
+/*產生圖表*/
+function DrowBarChart( ChartTitle, dataLo, chartTypeGroup, dataXaxisGroup, dataYaxisGroup,  
+    columnNameGroup, itemGroup, USLGroup, LSLGroup, UCLGroup, LCLGroup, LabelItem, DateItem, YaxisMax, YaxisMin, SPCRule)
+{         
+    const DATA_COUNT = 7;
+    const NUMBER_CFG = {count: DATA_COUNT, min: -100, max: 100};
+
+    const labels = Utils.months({count: 7});
+    const data = {
+        labels: labels,
+        datasets: [
+            {
+            label: 'Dataset 1',
+            data: Utils.numbers(NUMBER_CFG),
+            borderColor: Utils.CHART_COLORS.red,
+            backgroundColor: Utils.transparentize(Utils.CHART_COLORS.red, 0.5),
+            hoverBorderWidth: 5,
+            hoverBorderColor: 'green',
+            },
+            {
+            label: 'Dataset 2',
+            data: Utils.numbers(NUMBER_CFG),
+            borderColor: Utils.CHART_COLORS.blue,
+            backgroundColor: Utils.transparentize(Utils.CHART_COLORS.blue, 0.5),
+            hoverBorderWidth: 5,
+            hoverBorderColor: 'green',
+            }
+        ]
+    };
+    const config = {
+        type: 'bar',
+        data: data,
+        options: {
+        },
+    };
+}
+
+
 /*點擊Chart產生的事件*/
 function graphClickEvent(event, array){
     if(array[0])

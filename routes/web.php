@@ -329,6 +329,11 @@ Route::any('/InventoryInstock/AddandUpdate/{todo}', 'InventoryInstockController@
 //Grid 刪除
 Route::delete('/InventoryInstock/delete/{todo}', 'InventoryInstockController@destroy')->name('InventoryInstock.destroy');
 
+//獲得篩選時的條件
+Route::post('/InventoryInstock/Get_Condition', 'InventoryInstockController@Get_Condition');
+
+//根據篩選的條件找出相對應的資料
+Route::post('/InventoryInstock/FilterSearch', 'InventoryInstockController@FilterSearch');
 
 /********* ContainerInput ***********/
 //資料呈現

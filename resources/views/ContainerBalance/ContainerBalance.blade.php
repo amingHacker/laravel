@@ -123,6 +123,7 @@
             "總重量(G)":"container_doing_weight_ideal",
             "實秤總重量(G)":"container_doing_weight_real",
             "氣室重量(G)":"container_doing_weight_air",
+            "結果重量(G)":"result_weight",
             "實秤總重操作人員":"container_doing_weight_operator",
 
             "淨重(G)":"container_packaging_weight_ideal",
@@ -177,6 +178,7 @@
             "container_doing_weight_ideal" : "總重量(G)",
             "container_doing_weight_real" : "實秤總重量(G)",
             "container_doing_weight_air" : "氣室重量(G)",
+            "result_weight" : "結果重量(G)",
             "container_doing_weight_operator" : "實秤總重操作人員",
 
             "container_packaging_weight_ideal" : "淨重(G)",
@@ -472,7 +474,7 @@
                             {startColumnName: 'founder', numberOfColumns: 6, titleText: '分裝人員填入'},
                             {startColumnName: 'product_batch_number', numberOfColumns: 2, titleText: '分裝人員填入'},
                             {startColumnName: 'container_base_weight_ideal', numberOfColumns: 3, titleText: '空重確認'},
-                            {startColumnName: 'container_doing_weight_ideal', numberOfColumns: 4, titleText: '分裝後總重確認'},
+                            {startColumnName: 'container_doing_weight_ideal', numberOfColumns: 5, titleText: '分裝後總重確認'},
                             {startColumnName: 'container_packaging_weight_ideal', numberOfColumns: 3, titleText: '包裝人員總重確認'},
                             {startColumnName: 'container_addpackaging_weight_ideal', numberOfColumns: 3, titleText: '加包材後總重'},
                         ]
@@ -1220,6 +1222,7 @@
                 "總重量(G)":"container_doing_weight_ideal",
                 "實秤總重量(G)":"container_doing_weight_real",
                 "氣室重量(G)":"container_doing_weight_air",
+                "結果重量(G)":"result_weight",
                 "實秤總重操作人員":"container_doing_weight_operator",
 
                 "淨重(G)":"container_packaging_weight_ideal",

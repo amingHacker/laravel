@@ -26,6 +26,7 @@ return array(
     'App\\Http\\Controllers\\Container_GdSp_controller' => $baseDir . '/app/Http/Controllers/Container_GdSp_controller.php',
     'App\\Http\\Controllers\\Controller' => $baseDir . '/app/Http/Controllers/Controller.php',
     'App\\Http\\Controllers\\GrindingOvenController' => $baseDir . '/app/Http/Controllers/GrindingOvenController.php',
+    'App\\Http\\Controllers\\InventoryInstockController' => $baseDir . '/app/Http/Controllers/InventoryInstockController.php',
     'App\\Http\\Controllers\\ProductSPECController' => $baseDir . '/app/Http/Controllers/ProductSPECController.php',
     'App\\Http\\Controllers\\SamplingRecordController' => $baseDir . '/app/Http/Controllers/SamplingRecordController.php',
     'App\\Http\\Controllers\\ShowAll' => $baseDir . '/app/Http/Controllers/ShowAll.php',
