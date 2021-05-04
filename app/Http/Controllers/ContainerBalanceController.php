@@ -528,10 +528,10 @@ class ContainerBalanceController extends Controller
     {    
         //dd($request);    
         $founder = DB::connection('mysqlbalance')->table('container_balance_records')->select('founder')->distinct()->get();
-        $material_number = DB::connection('mysqlbalance')->table('container_balance_records')->select('material_number')->distinct()->get();
+        $material_number = DB::connection('mysqlbalance')->table('material_order_weight')->select('material_number')->distinct()->get();
         $customer = DB::connection('mysqlbalance')->table('container_balance_records')->select('customer')->distinct()->get();
         $original_container= DB::connection('mysqlbalance')->table('container_balance_records')->select('original_container')->distinct()->get();
-        $bottle_number = DB::connection('mysqlbalance')->table('container_balance_records')->select('bottle_number')->distinct()->get();
+        $bottle_number = DB::connection('mysqlbalance')->table('container_baseweight')->select('bottle_number')->distinct()->get();
         $container_base_weight_operator = DB::connection('mysqlbalance')->table('container_balance_records')->select('container_base_weight_operator')->distinct()->get();
         $container_doing_weight_operator = DB::connection('mysqlbalance')->table('container_balance_records')->select('container_doing_weight_operator')->distinct()->get();
         $container_packaging_weight_operator = DB::connection('mysqlbalance')->table('container_balance_records')->select('container_packaging_weight_operator')->distinct()->get();

@@ -245,6 +245,32 @@
         
         //獲得combobox的內容
         combobox_items = getComboboxItem();
+        
+        //紀錄bottle_number, material_number避免重複填入
+        var items_bottle = [];
+        var items_material = [];
+        for (var i in combobox_items)
+        {
+            if(i == "bottle_number")
+            {
+                for(var j in combobox_items[i])
+                {
+                    items_bottle.push(combobox_items[i][j][i])
+                }
+            }
+           
+
+            if(i == "material_number")
+            {
+                for(var j in combobox_items[i])
+                {
+                    items_material.push(combobox_items[i][j][i])
+                }
+            }
+        }
+
+        sessionStorage.setItem('bottle_number', items_bottle);
+        sessionStorage.setItem('material_number', items_material);
     });
     
     /*****修改GridView欄位字體顏色*****/
@@ -658,7 +684,8 @@
             {
                 items.push(combobox_items[i][j][i])
             }
-        }  
+        }
+        
         // Get items amount to decide dropdown height to avoid autoDropDownHeight making list too long
         if (items.length > 7)
         {
@@ -863,8 +890,73 @@
         }
         //新增
         if (oper == 'add')
-        {     
-            saveparameters = {
+        {   
+             var isDuplicate = "false";     
+            
+            //判斷是否重複輸入
+            //鋼瓶
+            if(table == "dgContainer_Baseweight"){
+                var _tmp = sessionStorage.getItem("bottle_number").split(",");
+                var elem = $("#" + 0 + "_" + "bottle_number");
+                var cellvalue = elem.find("input").val();
+                if(_tmp.indexOf(cellvalue) != -1)
+                {
+                    var htmlStr = "<br />此鋼瓶號碼重複，無法新增! 請改用編輯方式!<br /><br />";
+                    $("#confirmDialog").html(htmlStr);
+                    $("#confirmDialog").dialog({
+                        width:'auto', height:'auto', autoResize:true, modal:true, closeText:"關閉", resizable:false,
+                        show:{effect: "fade", duration: 140},
+                        hide:{effect: "clip", duration: 140},
+                        focus: function() { $(".ui-dialog").focus(); }, // Unfocus the default focus elem
+                        buttons : {
+                            "取消" : function() {
+                                $(this).dialog("close");                     
+                                target_id = 'none';
+                                var rowIds = $('#' + table ).jqGrid('getDataIDs'); 
+                                for(idIndex = 0; idIndex < rowIds.length; ++idIndex){
+                                    $("#" + table).jqGrid('restoreRow',rowIds[idIndex], true); 
+                                }
+                                button_Control('after_Cancel');
+                            }
+                        }
+                    }); 
+                    isDuplicate = "true";
+                }   
+
+            }
+            //原料
+            if(table == "dgMaterial_Order"){
+                var _tmp = sessionStorage.getItem("material_number").split(",");
+                var elem = $("#" + 0 + "_" + "material_number");
+                var cellvalue = elem.find("input").val();
+                if(_tmp.indexOf(cellvalue) != -1)
+                {
+                    var htmlStr = "<br />此料號重複，無法新增! 請改用編輯方式!<br /><br />";
+                    $("#confirmDialog").html(htmlStr);
+                    $("#confirmDialog").dialog({
+                        width:'auto', height:'auto', autoResize:true, modal:true, closeText:"關閉", resizable:false,
+                        show:{effect: "fade", duration: 140},
+                        hide:{effect: "clip", duration: 140},
+                        focus: function() { $(".ui-dialog").focus(); }, // Unfocus the default focus elem
+                        buttons : {
+                            "取消" : function() {
+                                $(this).dialog("close");                     
+                                target_id = 'none';
+                                var rowIds = $('#' + table ).jqGrid('getDataIDs'); 
+                                for(idIndex = 0; idIndex < rowIds.length; ++idIndex){
+                                    $("#" + table).jqGrid('restoreRow',rowIds[idIndex], true); 
+                                }
+                                button_Control('after_Cancel');
+                            }
+                        }
+                    }); 
+                    isDuplicate = "true";
+                }   
+            }
+
+            if(isDuplicate == "false")
+            {
+                saveparameters = {
                         "successfunc" : null,
                         "url" : 'ContainerBalance/AddandUpdate/'+0,
                         "extraparam" : {
@@ -883,6 +975,7 @@
                         "mtype" : "POST"
                 }
                 $("#" + table ).jqGrid('saveRow', 0, saveparameters);
+            }   
         }
         //修改
         else
