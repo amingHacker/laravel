@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateProductSpecAgathosTable extends Migration
+class AddProductSpecAgathosTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,8 @@ class CreateProductSpecAgathosTable extends Migration
      */
     public function up()
     {
-        Schema::create('product_spec_agathos', function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('ELEMENT',100);
-            $table->string('AGATHOS_US',100);
-            $table->timestamps();
+        Schema::table('product_spec_agathos', function (Blueprint $table) {
+            $table->string("AGATHOS_TW", 50)->after('AGATHOS_US');
         });
     }
 
@@ -28,6 +25,6 @@ class CreateProductSpecAgathosTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('product_spec_agathos');
+        //
     }
 }

@@ -155,6 +155,7 @@
             "VGRBS.":"Valuated_Goods_Receipt_Blocked_Stock",
             "建立時間" : "created_at",
             "更新時間" : "updated_at" ,
+            "庫存":"InventoryInstock",
         };
         for(var key in oldkey)
         {        
@@ -189,6 +190,7 @@
             "Valuated_Goods_Receipt_Blocked_Stock":"VGRBS.",
             "created_at" : "建立時間" ,
             "updated_at" : "更新時間" ,
+            "InventoryInstock": "庫存",
         };
         for(var key in oldkey)
         {        
@@ -723,11 +725,9 @@
     </ul>
     <div id='tab1' style='background-color:powderblue;'>
         <span style='font-weight:bold; color:#2e6e9e; display:block; text-align:center'>《 Group 1 》</span> <br />
-        <div id="jqxToolBar1" style = "margin:0px auto; text-align:justify" ></div>
+        <div id="jqxInventoryToolBar1" style = "margin:0px auto; text-align:justify" ></div>
         <h1 class="my-1"></h1>
-        <div id="jqxToolBarConChart1" style = " margin:0px auto; text-align:justify" ></div>
-        <h1 class="my-1"></h1>
-        <div id="jqxToolBarChartRange1" style = " margin:0px auto; text-align:justify" ></div>
+        
     </div>
 </div>
 {{-- Tab ToolBar End --}}    
@@ -940,7 +940,7 @@
 
         $.ajax({
                 async:false,
-                url: "ContainerBalance/export" ,//路徑
+                url: "/InventoryInstock/export" ,//路徑
                 type: "POST",           
                 data:{
                     "postData": postData,
@@ -1247,24 +1247,24 @@
            columnNameGroup.push(columnName);
            itemGroup.push(item);
 
-        //    //獲得Toolbar的資料
-        //    var toolsConChart = $("#jqxToolBarConChart" + ( j + 1 )).jqxToolBar("getTools");
-        //    var tUSL = toolsConChart[1].tool[0].value;
-        //    var tLSL = toolsConChart[3].tool[0].value;
-        //    var tUCL = toolsConChart[5].tool[0].value;
-        //    var tLCL = toolsConChart[7].tool[0].value;
-        //    USLGroup.push(tUSL);
-        //    LSLGroup.push(tLSL);
-        //    UCLGroup.push(tUCL);
-        //    LCLGroup.push(tLCL);
-        //    LabelItem.push("bottle_number");
-        //    DateItem.push("working_date");
+           //獲得Toolbar的資料
+           var toolsConChart = $("#jqxToolBarConChart" + ( j + 1 )).jqxToolBar("getTools");
+           var tUSL = toolsConChart[1].tool[0].value;
+           var tLSL = toolsConChart[3].tool[0].value;
+           var tUCL = toolsConChart[5].tool[0].value;
+           var tLCL = toolsConChart[7].tool[0].value;
+           USLGroup.push(tUSL);
+           LSLGroup.push(tLSL);
+           UCLGroup.push(tUCL);
+           LCLGroup.push(tLCL);
+           LabelItem.push("bottle_number");
+           DateItem.push("working_date");
            
-        //    //獲得Toolbar的資料 
-        //    var toolsBarChartRange = $("#jqxToolBarChartRange" + ( j + 1 )).jqxToolBar("getTools");
-        //    var tYaxisMax = toolsBarChartRange[1].tool[0].value;
-        //    var tYaxisMin = toolsBarChartRange[3].tool[0].value;
-        //    var tSPCRule = toolsBarChartRange[5].tool[0].lastChild.value;
+           //獲得Toolbar的資料 
+           var toolsBarChartRange = $("#jqxToolBarChartRange" + ( j + 1 )).jqxToolBar("getTools");
+           var tYaxisMax = toolsBarChartRange[1].tool[0].value;
+           var tYaxisMin = toolsBarChartRange[3].tool[0].value;
+           var tSPCRule = toolsBarChartRange[5].tool[0].lastChild.value;
            
            YaxisMax.push(tYaxisMax);
            YaxisMin.push(tYaxisMin);
@@ -1293,16 +1293,16 @@
         var rowData = o.jqGrid('getRowData');//獲得目前顯示在表格上的資料
 
         var caption = o.jqGrid("getGridParam", "caption");
-       
 
        $.ajax({
                async:false,
-               url: "ContainerBalance/export" ,//路徑
+               url: "/InventoryInstock/export" ,//路徑
                type: "POST",           
                data:{
                     "postData": postData,
                     "table":table,
                     "caption": caption,
+                    "UserFilter":sessionStorage.getItem("Se_RawMaterial"),
                },
                success: function (DownLoadValue){
                    var dataLo = DownLoadValue.success;

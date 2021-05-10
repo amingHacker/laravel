@@ -312,88 +312,47 @@ class InventoryInstockController extends Controller
     {        
         $downloadReq = $request->all();
 
+        $_search = $downloadReq["postData"]["_search"];  
+        $limit = $downloadReq["postData"]["limit"];
+        $sidx = ($downloadReq["postData"]["sidx"] == '')? 'id': $downloadReq["postData"]["sidx"];
+        $order = ($downloadReq["postData"]["order"] == '')? 'desc': $downloadReq["postData"]["order"];
+
         $table = '';
+        $searchGroupOp = ''; $filed = ''; $op = ''; $SearchData = '';
+        $Record = '';
+        
         switch ($downloadReq["table"]){
             case 'dgInventoryInstock':
                 $table = 'inventory_instock';
                 break;
         }
 
-        $_search = $downloadReq["postData"]["_search"];  
-        $limit = $downloadReq["postData"]["limit"];
-        $sidx = ($downloadReq["postData"]["sidx"] == '')? 'id': $downloadReq["postData"]["sidx"];
-        $order = ($downloadReq["postData"]["order"] == '')? 'desc': $downloadReq["postData"]["order"];
-        
-        $searchGroupOp = ''; $filed = ''; $op = ''; $SearchData = '';
-        $Record = '';
-        $query = DB::connection('mysqlinventory')->table($table);
+        $queryTemp = DB::connection('mysqlinventory')->table($table);
         $DownLoadValue = [];
+
+        //處理UserFilter
+        if($downloadReq["postData"]["UserFilter"]!="")
+        {
+            $_UserFilter = explode(",",$downloadReq["postData"]["UserFilter"]);
+            foreach ($_UserFilter as $i)
+            {
+                if($i != "")
+                {
+                    $queryTemp = $queryTemp->orwhere("Material_Description",$i);
+                }
+            }
+        }
+
+        $query = DB::connection('mysqlinventory')->table(DB::connection('mysqlinventory')->raw('(' . $queryTemp->toSql() . ') as t'))->mergeBindings($queryTemp);
         
         if ($_search == 'true')
         {
             $tmp = get_object_vars(json_decode($downloadReq["postData"]["filters"])); //先把字串轉成obj,再轉成array形式運用
             
-            foreach ($tmp["rules"] as $i)
-            {                
-                $rules = get_object_vars($i);      
-                $searchGroupOp = $tmp["groupOp"];
-                $field = $rules["field"];
-                $op = $rules["op"];
-                $SearchData = $rules["data"];
-                
-                switch ($op){
-                    case "eq":
-                        $query = $query->where($field, $SearchData); 
-                        break;
-                    case "ne":
-                        $query = $query->where($field, '!=' ,$SearchData); 
-                        break;
-                    case "bw":
-                        $query = $query->where($field, 'like', '%'.$SearchData.'%'); 
-                        break;
-                    case "bn":
-                        $query = $query->where($field, 'not like', '%'.$SearchData.'%'); 
-                        break;
-                    case "ew":
-                        $query = $query->where($field, 'like', '%'.$SearchData.'%'); 
-                        break;
-                    case "en":
-                        $query = $query->where($field, 'not like', '%'.$SearchData.'%');
-                        break;
-                    case "cn":
-                        $query = $query->where($field, 'like', '%'.$SearchData.'%'); 
-                        break;
-                    case "nc":
-                        $query = $query->where($field, 'not like', '%'.$SearchData.'%');
-                        break;
-                    case "nu":
-                        $query = $query->whereNull($field);
-                        break;
-                    case "nn":
-                        $query = $query->whereNotNull($field);
-                        break;
-                    case "in":
-                        $query = $query->whereIn($field, $SearchData);
-                        break;
-                    case "ni":
-                        $query = $query->whereNotIn($field, $SearchData);
-                        break;
-                    case "lt":
-                        $query = $query->where($field,'<', $SearchData); 
-                        break;
-                    case "le":
-                        $query = $query->where($field,'<=', $SearchData); 
-                        break;
-                    case "gt":
-                        $query = $query->where($field,'>', $SearchData); 
-                        break;
-                    case "ge":
-                        $query = $query->where($field,'>=', $SearchData); 
-                        break;
-                }
-            }
+            $query = $this->Recursive($tmp, $query);
+
             $Record = $query->count();
-            //var_dump($Record);
+
             $DownLoadValue = $query->orderBy( $sidx, 'desc')->get();           
         } 
        
@@ -401,7 +360,8 @@ class InventoryInstockController extends Controller
         {     
             
             //dd($Record);
-            $DownLoadValue = DB::connection('mysqlinventory')->table($table)->limit(10000)->orderBy($sidx,'desc')->get();
+            //$DownLoadValue = DB::connection('mysqlinventory')->table($table)->limit(10000)->orderBy($sidx,'desc')->get();
+            $DownLoadValue = $query->orderBy( $sidx, 'desc')->get();
              
         } 
         //dd($DownLoadValue);

@@ -576,38 +576,44 @@ function DrowChart( ChartTitle, dataLo, chartTypeGroup, dataXaxisGroup, dataYaxi
 /*產生圖表*/
 function DrowBarChart( ChartTitle, dataLo, chartTypeGroup, dataXaxisGroup, dataYaxisGroup,  
     columnNameGroup, itemGroup, USLGroup, LSLGroup, UCLGroup, LCLGroup, LabelItem, DateItem, YaxisMax, YaxisMin, SPCRule)
-{         
-    const DATA_COUNT = 7;
-    const NUMBER_CFG = {count: DATA_COUNT, min: -100, max: 100};
-
-    const labels = Utils.months({count: 7});
-    const data = {
-        labels: labels,
-        datasets: [
-            {
-            label: 'Dataset 1',
-            data: Utils.numbers(NUMBER_CFG),
-            borderColor: Utils.CHART_COLORS.red,
-            backgroundColor: Utils.transparentize(Utils.CHART_COLORS.red, 0.5),
-            hoverBorderWidth: 5,
-            hoverBorderColor: 'green',
-            },
-            {
-            label: 'Dataset 2',
-            data: Utils.numbers(NUMBER_CFG),
-            borderColor: Utils.CHART_COLORS.blue,
-            backgroundColor: Utils.transparentize(Utils.CHART_COLORS.blue, 0.5),
-            hoverBorderWidth: 5,
-            hoverBorderColor: 'green',
-            }
-        ]
-    };
-    const config = {
+{   
+    var ctx = document.getElementById('canvas').getContext('2d');
+    var myChart = new Chart(ctx, {
         type: 'bar',
-        data: data,
-        options: {
+        data: {
+            labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+            datasets: [{
+                label: '# of Votes',
+                data: [12, 19, 3, 5, 2, 3],
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.2)',
+                    'rgba(54, 162, 235, 0.2)',
+                    'rgba(255, 206, 86, 0.2)',
+                    'rgba(75, 192, 192, 0.2)',
+                    'rgba(153, 102, 255, 0.2)',
+                    'rgba(255, 159, 64, 0.2)'
+                ],
+                borderColor: [
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 206, 86, 1)',
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(153, 102, 255, 1)',
+                    'rgba(255, 159, 64, 1)'
+                ],
+                borderWidth: 1
+            }]
         },
-    };
+        options: {
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }]
+            }
+        }
+    });
 }
 
 
