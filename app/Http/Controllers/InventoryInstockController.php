@@ -517,11 +517,13 @@ class InventoryInstockController extends Controller
         $Material_Description = DB::connection('mysqlinventory')->table('inventory_instock')->select('Material_Description')->distinct()->get();
         $Storage_Location = DB::connection('mysqlinventory')->table('inventory_instock')->select('Storage_Location')->distinct()->get();
         $Descr_of_Storage_Loc = DB::connection('mysqlinventory')->table('inventory_instock')->select('Descr_of_Storage_Loc')->distinct()->get();
-
+        $Batch = DB::connection('mysqlinventory')->table('inventory_instock')->select('Batch')->distinct()->get();
+        
         return response()->json([
             'Material_Description' => $Material_Description,
             'Storage_Location' => $Storage_Location,
             'Descr_of_Storage_Loc' => $Descr_of_Storage_Loc,
+            'Batch' => $Batch
         ]);     
     }
 

@@ -85,6 +85,7 @@
     var CCTBA = @json($todosCCTBA);
     var ALEXA = @json($todosALEXA);
     var AGATHOS = @json($todosAGATHOS);
+    var DEMS = @json($todosDEMS);
     
     var TMAL_EG = @json($todosTMAL_EG);
     var TMAL_TW = @json($todosTMAL_TW);
@@ -104,6 +105,7 @@
             TMAL_UM: TMAL_UM,
             TMAL_SH: TMAL_SH,
             AGATHOS: AGATHOS,
+            DEMS:DEMS,
         };
     $(document).ready(function () {      
         var i = 0;
@@ -466,6 +468,7 @@
               <li><a href="#tabs-4">CCTBA</a></li>
               <li><a href="#tabs-5">ALEXA</a></li>
               <li><a href="#tabs-6">AGATHOS</a></li>
+              <li><a href="#tabs-7">DEMS</a></li>
             </ul>
             <div id = "tabs-1" >
                 <div id='jqxcombobox_TMAL'></div>
@@ -504,6 +507,12 @@
                 <div class = "row justify-content-center">     
                 <table id="dgAGATHOS" ></table> 
                 <div id="dgAGATHOSpager"></div>
+                </div>                             
+            </div>
+            <div id = "tabs-7" >
+                <div class = "row justify-content-center">     
+                <table id="dgDEMS" ></table> 
+                <div id="dgDEMSpager"></div>
                 </div>                             
             </div>
         </div>

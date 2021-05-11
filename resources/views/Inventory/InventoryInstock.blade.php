@@ -223,21 +223,65 @@
         setTimeout(Showtab,1000);
         getAuthority();
 
-        
-        //test
-        var _ChartTypeSource = ["Bar Chart"];
-        var _xAxisSource = ["類別"];
-        var _yAxisSource = ["庫存"];
-        var _GroupSource = ["型號", "瓶號", "ALL"];
-        //建立ToolBar
-        var SPCSource = ['A1.超過3個標準差', 'A2.連續九點在中線同一側', 'A3.連續六點呈現上升或下降',
-                            'A4.連續三點中的兩點落在2個標準差之外', 'A5.連續五點中的四點落在1個標準差之外',
-                            'A6.區間最大最小值',
-                        ];
-        PrepareToToolbar(_ChartTypeSource, _xAxisSource, _yAxisSource, _GroupSource, SPCSource); 
-        
         //獲得combobox的內容
         combobox_items = getComboboxItem();
+
+        //紀錄料號描述、儲位、，在產生toolbar時可以使用
+        var item_Material = [];
+        var item_Storage_Location = [];
+        var item_Descr_of_Storage_Loc = [];
+        var item_Batch = [];
+        
+        for (var i in combobox_items)
+        {
+            if(i == "Material_Description")
+            {
+                for(var j in combobox_items[i])
+                {
+                    item_Material.push(combobox_items[i][j][i]);
+                }
+            }
+           
+
+            if(i == "Storage_Location")
+            {
+                for(var j in combobox_items[i])
+                {
+                    item_Storage_Location.push(combobox_items[i][j][i]);
+                }
+            }
+
+            if(i == "Descr_of_Storage_Loc")
+            {
+                for(var j in combobox_items[i])
+                {
+                    item_Descr_of_Storage_Loc.push(combobox_items[i][j][i]);
+                }
+            }
+
+            if(i == "Batch")
+            {
+                for(var j in combobox_items[i])
+                {
+                    item_Batch.push(combobox_items[i][j][i]);
+                }
+            }
+            
+        }
+
+        sessionStorage.setItem('Material_Description', item_Material);
+        sessionStorage.setItem('Storage_Location', item_Storage_Location);
+        sessionStorage.setItem('Descr_of_Storage_Loc', item_Descr_of_Storage_Loc);
+        sessionStorage.setItem('Batch',  item_Batch);
+
+        //test 建立ToolBar
+        var _ChartTypeSource = ["Bar Chart"];
+        var _xAxisSource = ["料號描述"];
+        var _yAxisSource = ["未受限量", "In_Quality_Insp"];
+        var _GroupSource = ["儲存位置", "儲位描述", "批號", "ALL"];
+    
+        
+        PrepareToInventoryToolbar(_ChartTypeSource, _xAxisSource, _yAxisSource, _GroupSource, item_Material, item_Storage_Location, item_Descr_of_Storage_Loc, item_Batch); 
 
        
     });
