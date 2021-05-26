@@ -190,9 +190,27 @@ function createToolbar(num_tabs, _ChartTypeSource, _xAxisSource, _yAxisSource, _
     });
 }
 
-function addToolbar(toolbarName, type, index, source, separator){
+function addToolbar(toolbarName, type, index, source, separator, selectedIndex){
     switch(type)
     {
+        case "dropdownlist":
+            $("#" + toolbarName).jqxToolBar("addTool", "dropdownlist", index, separator, 
+                function (type, tool, menuToolIninitialization) {          
+                {
+                    var width;
+                    if (menuToolIninitialization) {
+                        // specific setting for minimized tool
+                        width = "100%";
+                    } else {
+                        width = 120;
+                    }
+                    tool.jqxDropDownList({ width: 205, source: source, selectedIndex: selectedIndex, searchMode: 'containsignorecase',checkboxes:true });
+                    
+                    //tool.jqxComboBox({ width: width, source: source, selectedIndex: -1, searchMode: 'containsignorecase', autoComplete: true});
+                }    
+            });            
+            break;
+
         case "combobox":
             $("#" + toolbarName).jqxToolBar("addTool", "combobox", index, separator, 
                 function (type, tool, menuToolIninitialization) {          
@@ -258,6 +276,14 @@ function PrepareToInventoryToolbar(_ChartTypeSource, _xAxisSource, _yAxisSource,
     $("button#add-tab").click(
         function() 
         {
+            
+            var item_Material = sessionStorage.getItem('Material_Description');
+            var item_Storage_Location = sessionStorage.getItem('Storage_Location');
+            var item_Descr_of_Storage_Loc = sessionStorage.getItem('Descr_of_Storage_Loc');
+            var item_Batch = sessionStorage.getItem('Batch');
+            var _tmpxAxis = sessionStorage.getItem('_xAxis');
+            var _xAxis = _tmpxAxis.split(","); 
+
             var tabs =  $("#tabs").tabs();
             var num_tabs = $("#tabs ul li").length + 1;
             $("#tabs ul").append(
@@ -268,7 +294,9 @@ function PrepareToInventoryToolbar(_ChartTypeSource, _xAxisSource, _yAxisSource,
                 + "<span style='font-weight:bold; color:#2e6e9e; display:block; text-align:center'>《 Group " + num_tabs + " 》</span> <br />"       
                 + "<div id='jqxInventoryToolBar" + num_tabs + "' style = 'margin:0px auto; text-align:justify' ></div>" 
                 + "</div>");
-            createInventoryToolbar(num_tabs, _ChartTypeSource, _xAxisSource, _yAxisSource, _GroupSource);
+
+
+                createInventoryToolbar(num_tabs, _ChartTypeSource, _xAxis, _yAxisSource, _GroupSource, item_Material, item_Storage_Location, item_Descr_of_Storage_Loc, item_Batch);
             // $("#jqxToolBar" + num_tabs).jqxToolBar('render');
 
             $("#tabs").tabs("refresh");
@@ -289,15 +317,15 @@ function PrepareToInventoryToolbar(_ChartTypeSource, _xAxisSource, _yAxisSource,
 }
 
 
-function createInventoryToolbar(num_tabs, _ChartTypeSource, _xAxisSource, _yAxisSource, _GroupSource, _spcSource, item_Material, item_Storage_Location, item_Descr_of_Storage_Loc, item_Batch)
+function createInventoryToolbar(num_tabs, _ChartTypeSource, _xAxisSource, _yAxisSource, _GroupSource, item_Material, item_Storage_Location, item_Descr_of_Storage_Loc, item_Batch)
 { 
     var _dataSource = [];  //用來保存
     // var itemCount = 7; // The item count of Toolbar.
-
+    // 產生Material值、儲存位置、儲位名稱、批號
 
     $("#jqxInventoryToolBar" + num_tabs).jqxToolBar({ 
         width: "1000", height: '35', 
-        tools: "toggleButton dropdownlist dropdownlist | toggleButton combobox | toggleButton dropdownlist input  ",
+        tools: "toggleButton dropdownlist | toggleButton dropdownlist | toggleButton dropdownlist input  ",
        
         initTools: function (type, index, tool, menuToolIninitialization) 
         {
@@ -310,38 +338,31 @@ function createInventoryToolbar(num_tabs, _ChartTypeSource, _xAxisSource, _yAxis
                     break;
 
                 case 1:
-                    tool.jqxDropDownList({ width: 120, source: _xAxisSource, 
-                        selectedIndex: -1,
-                    });
-                    //tool.jqxComboBox({ width: 130, source: _xAxisSource, selectedIndex: 0 });
-                    break;  
-                case 2:
-                    tool.jqxDropDownList({ width: 120, source: _xAxisSource, 
-                        selectedIndex: -1,
-                    });
-                    //tool.jqxComboBox({ width: 130, source: _xAxisSource, selectedIndex: 0 });
+                    tool.jqxDropDownList({ width: 205, source: _xAxisSource, selectedIndex: -1, searchMode: 'containsignorecase',checkboxes:true });
+                    //tool.jqxComboBox({ width: width, source: source, selectedIndex: -1, searchMode: 'containsignorecase', autoComplete: true});
+                
                     break;  
                    
-                case 3:
+                case 2:
                     tool.jqxToggleButton({ width: 80, toggled: true });
                     tool.text("Y axis:");
                     break;                 
-                case 4:
-                    //tool.jqxDropDownList({ width: 130, source: _yAxisSource, selectedIndex:  -1});
-                    tool.jqxComboBox({ 
-                        width: 120, source: _yAxisSource, selectedIndex: -1, 
-                        searchMode: 'containsignorecase', autoComplete: true,
-                    });
+                case 3:
+                    tool.jqxDropDownList({ width: 205, source: _yAxisSource, selectedIndex:  -1, searchMode: 'containsignorecase', checkboxes:true});
+                    // tool.jqxComboBox({ 
+                    //     width: 120, source: _yAxisSource, selectedIndex: -1, 
+                    //     searchMode: 'containsignorecase', autoComplete: true,
+                    // });
                     break;
-                case 5:
+                case 4:
                     tool.jqxToggleButton({ width: 80, toggled: true });
                     tool.text("Column:");
                     break;                    
-                case 6:    
+                case 5:    
                     tool.jqxComboBox({ width: 120, source:_GroupSource, selectedIndex: -1, searchMode: 'containsignorecase', autoComplete: true });
                     
                     break;
-                case 7:
+                case 6:
                     tool.jqxInput({ width: 120, placeHolder: "Type here..." });
                     
                     break;      

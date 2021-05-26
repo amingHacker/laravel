@@ -126,6 +126,10 @@
         height: 90%;
 
     }
+    .center{
+        margin: 0 auto;
+        float: none;
+    }
 </style>
 
 {{-- CSS設定 End --}}
@@ -139,20 +143,23 @@
          //舊key到新key的映射，colName的轉換
         var oldkey = {
             "料號": "Material",
-            "料號描述": "Material_Description",  
+            "品名": "Material_Description",  
             "料號型別": "Material_Type",  
-            "工廠": "Plant",
-            "儲存位置":"Storage_Location",
-            "儲位描述":"Descr_of_Storage_Loc",
+            "廠區": "Plant",
+            "SAP位置":"Storage_Location",
+            "料品狀態":"Descr_of_Storage_Loc",
             "批號":"Batch",
             "基礎單位":"Base_Unit_of_Measure",
-            "未受限量":"Unrestricted",
+            "可用量":"Unrestricted",
             "添加物批號":"additives_number",
             "幣別":"Currency",
             "Value未受限量":"Value_Unrestricted",
             "過渡":"Transit_and_Transfer",
             "過渡量":"Val_in_Trans_Tfr",
+            "檢驗中":"In_Quality_Insp",
+            "限制使用":"Restricted_Use_Stock",
             "VGRBS.":"Valuated_Goods_Receipt_Blocked_Stock",
+            "Blocked":"不可用",
             "建立時間" : "created_at",
             "更新時間" : "updated_at" ,
             "庫存":"InventoryInstock",
@@ -174,20 +181,23 @@
          //舊key到新key的映射，colName的轉換
         var oldkey = {
             "Material":"料號",
-            "Material_Description": "料號描述",  
+            "Material_Description": "品名",  
             "Material_Type": "料號型別",  
-            "Plant":"工廠",
-            "Storage_Location":"儲存位置",
-            "Descr_of_Storage_Loc":"儲位描述",
+            "Plant":"廠區",
+            "Storage_Location":"SAP位置",
+            "Descr_of_Storage_Loc":"料品狀態",
             "Batch":"批號",
             "Base_Unit_of_Measure":"基礎單位",
-            "Unrestricted":"未受限量",
+            "Unrestricted":"可用量",
             "additives_number":"添加物批號",
             "Currency":"幣別",
             "Value_Unrestricted":"Value未受限量",
             "Transit_and_Transfer":"過渡",
             "Val_in_Trans_Tfr":"過渡量",
+            "In_Quality_Insp":"檢驗中",
+            "Restricted_Use_Stock":"限制使用",
             "Valuated_Goods_Receipt_Blocked_Stock":"VGRBS.",
+            "Blocked":"不可用",
             "created_at" : "建立時間" ,
             "updated_at" : "更新時間" ,
             "InventoryInstock": "庫存",
@@ -276,9 +286,9 @@
 
         //test 建立ToolBar
         var _ChartTypeSource = ["Bar Chart"];
-        var _xAxisSource = ["料號描述"];
-        var _yAxisSource = ["未受限量", "In_Quality_Insp"];
-        var _GroupSource = ["儲存位置", "儲位描述", "批號", "ALL"];
+        var _xAxisSource = ["品名"];
+        var _yAxisSource = ["可用量", "檢驗中"];
+        var _GroupSource = ["SAP位置", "料品狀態", "批號", "ALL"];
     
         
         PrepareToInventoryToolbar(_ChartTypeSource, _xAxisSource, _yAxisSource, _GroupSource, item_Material, item_Storage_Location, item_Descr_of_Storage_Loc, item_Batch); 
@@ -436,6 +446,124 @@
                     var winwidth= parseInt($(window).width()) * 0.7;     
                     $("#" + table).jqGrid('setGridWidth', winwidth);
                 });
+
+                //獲得資料
+
+                var table = "dg" +  getColumnNameFromChineseToDatabase($("#Gridtabs .ui-tabs-active").text()); //呈現此table的title
+                
+                var o = $("#" + table);
+                
+                var columnNames = o.jqGrid('getGridParam', 'colNames');//從grid獲得colnames
+
+                var rowNumber = o.jqGrid('getGridParam', 'records');//獲得搜尋後的紀錄筆數
+                
+                var postData = o.jqGrid('getGridParam', 'postData');//獲得搜尋條件
+
+                var getData = o.jqGrid('getGridParam', 'data');//獲得所有jqgrid的資料
+                
+                var rowData = o.jqGrid('getRowData');//獲得目前顯示在表格上的資料
+
+                var caption = o.jqGrid("getGridParam", "caption");
+
+                $.ajax({
+                        async:false,
+                        url: "/InventoryInstock/export" ,//路徑
+                        type: "POST",           
+                        data:{
+                                "postData": postData,
+                                "table":table,
+                                "caption": caption,
+                                "UserFilter":sessionStorage.getItem("Se_RawMaterial"),
+                        },
+                        success: function (DownLoadValue){
+                                
+                                var dataLo = DownLoadValue.success;
+                                var _xAxis = [];
+                                
+                                //紀錄Material_Description，寫到session中，用以產生選項。
+                                for( var key in dataLo)
+                                {
+                                    if(_xAxis.indexOf(dataLo[key]["Material_Description"]) == -1)
+                                    {
+                                        _xAxis.push(dataLo[key]["Material_Description"]); 
+                                    }
+                                }
+
+                                sessionStorage.setItem('_xAxis', _xAxis);
+
+                                var item_Material = sessionStorage.getItem('Material_Description');
+                                var item_Storage_Location = sessionStorage.getItem('Storage_Location');
+                                var item_Descr_of_Storage_Loc = sessionStorage.getItem('Descr_of_Storage_Loc');
+                                var item_Batch = sessionStorage.getItem('Batch');
+
+                                //test 建立ToolBar
+                                var _ChartTypeSource = ["Bar Chart"];
+                                var _xAxisSource = ["品名"];
+                                var _yAxisSource = ["可用量", "檢驗中"];
+                                var _GroupSource = ["SAP位置", "料品狀態", "批號", "ALL"];
+                                var num_tabs = $("#tabs ul li").length + 1;
+
+                                //紀錄目前toolbar的資訊
+                           
+                                for(var i = 1; i < num_tabs; i++)
+                                {
+                                    //獲得Toolbar的資料
+                                    var _xdataTmp = [];
+                                    var _ydataTmp = [];
+                                    var tools = $("#jqxInventoryToolBar" + (i)).jqxToolBar("getTools");
+                                    
+                                    var dataXaxis = $(tools[1].tool[0]).jqxDropDownList('getCheckedItems');
+                                    for(var t = 0; t < dataXaxis.length; t++)
+                                    {
+                                        _xdataTmp.push(dataXaxis[t]["label"]);
+                                    }         
+                                    
+                                    var dataYaxis = $(tools[3].tool[0]).jqxDropDownList('getCheckedItems');
+                                    for(var t = 0; t < dataYaxis.length; t++)
+                                    {
+                                        _ydataTmp.push(dataYaxis[t]["label"]);
+                                    }
+                                    
+                                    var columnNameIndex = $(tools[5].tool[0]).jqxComboBox('selectedIndex');
+                                    var item = tools[6].tool[0].value;
+
+                                    destoryToolbar("jqxInventoryToolBar" + i, 6);
+                                    destoryToolbar("jqxInventoryToolBar" + i, 5);
+                                    destoryToolbar("jqxInventoryToolBar" + i, 4);
+                                    destoryToolbar("jqxInventoryToolBar" + i, 3);
+                                    destoryToolbar("jqxInventoryToolBar" + i, 2);
+                                    destoryToolbar("jqxInventoryToolBar" + i, 1);
+                                    
+                                    addToolbar("jqxInventoryToolBar" + i, "dropdownlist", "last", _xAxis, true);
+                                    addToolbar("jqxInventoryToolBar" + i, "toggle", "last", "Y axis:", false);
+                                    addToolbar("jqxInventoryToolBar" + i, "dropdownlist", "last", _yAxisSource, false);
+                                    addToolbar("jqxInventoryToolBar" + i, "toggle", "last", "Column:", false);
+                                    addToolbar("jqxInventoryToolBar" + i, "combobox", "last", _GroupSource, false);
+                                    addToolbar("jqxInventoryToolBar" + i, "input", "last", "", false);
+                                    
+                                    //重新填入toolbar資訊
+                                    var toolsNew = $("#jqxInventoryToolBar" + (i)).jqxToolBar("getTools");
+                                    if(dataXaxis.length != 0)
+                                    {
+                                        for(var j = 0; j < _xdataTmp.length; j++)
+                                        {
+                                            $(toolsNew[1].tool[0]).jqxDropDownList('checkItem',_xdataTmp[j]);
+                                        } 
+                                    }
+                                    if(dataYaxis.length != 0)
+                                    {
+                                        for(var j = 0; j < _ydataTmp.length; j++)
+                                        {
+                                            $(toolsNew[3].tool[0]).jqxDropDownList('checkItem',_ydataTmp[j]);
+                                        }
+                                    }
+                                    
+                                    $(toolsNew[5].tool[0]).jqxComboBox('selectedIndex', columnNameIndex);
+                                    $(toolsNew[6].tool[0]).jqxInput('val', item );     
+                                }
+                            }                                  
+                        });    
+
             },
             onRightClickRow:function(rowid, irow, icol, e){
                     
@@ -701,7 +829,7 @@
 <h1 class="my-4"></h1> 
 <div class="container-fluid">
     <div class="row">
-        <aside class="col-1"> 
+        <div class="col-md-1"> 
             <button class="btn btn-outline-info btn-space btn-block" type="button" id = "SearchInstock_RawMaterial" >
                 <i class="material-icons">category</i>Raw
             </button>
@@ -714,29 +842,29 @@
             <button class="btn btn-outline-info btn-space btn-block" type="button" id = "SearchContainer">
                 <i class="material-icons">luggage</i>鋼瓶
             </button>         
-        </aside>
-        <section class="col-11">
-            <div id ="Gridtabs" class="Gridtabs"> 
-                <ul class = "row ">
-                    <li><a href="#Gridtabs-1">庫存</a></li>
-                    <li><a href="#Gridtabs-2">RawMaterial</a></li>
-                    <li><a href="#Gridtabs-3">成品</a></li>
-                    <li><a href="#Gridtabs-4">化學品</a></li>
-                    <li><a href="#Gridtabs-5">鋼瓶</a></li>
-                </ul>
-                <div id = "Gridtabs-1" >
-                    <div class = "row">
-                    <table id="dgInventoryInstock" ></table> 
-                    <div id="dgInventoryInstockpager"></div>
-                    </div>                             
-                </div>   
+       
+        </div>
+        <div class="col-md-10" id ="Gridtabs" class="Gridtabs"> 
+            <ul class = "row ">
+                <li><a href="#Gridtabs-1">庫存</a></li>
+                <li><a href="#Gridtabs-2">RawMaterial</a></li>
+                <li><a href="#Gridtabs-3">成品</a></li>
+                <li><a href="#Gridtabs-4">化學品</a></li>
+                <li><a href="#Gridtabs-5">鋼瓶</a></li>
+            </ul>
+            <div id = "Gridtabs-1" >
+                <div class = "row">
+                <table id="dgInventoryInstock" ></table> 
+                <div id="dgInventoryInstockpager"></div>
+                </div>                             
             </div>
-            <div>
+            <div align = "center">
                 <input type="BUTTON" class="btn btn-outline-info btn-space" id="ExportChart" value="圖表" />
                 <input type="BUTTON" class="btn btn-outline-info btn-space" id="CloseChart" value="收合" />
-            </div>  
-        </section>
+            </div>     
+        </div>
     </div>
+   
 </div>
 
 
@@ -1265,54 +1393,26 @@
        //分組的分組資料
        var dataXaxisGroup = [];     //紀錄Group X軸資料 
        var dataYaxisGroup = [];     //紀錄Group Y軸資料 
-       var chartTypeGroup = [];     //紀錄Group Chart Type資料
        var columnNameGroup = [];    //紀錄Group 欄位名稱
-       var itemGroup = [];      //紀錄Group Item名稱
-       var USLGroup = [], LSLGroup = [], UCLGroup = [], LCLGroup = [];  //紀錄Group control line資料
-       var LabelItem = [];  //紀錄要在圖面呈現的欄位資訊
-       var DateItem = [];  //紀錄data日期資訊
-       var YaxisMax = [], YaxisMin = [];  //紀錄Y軸的最大值與最小值
-       var SPCRule = [];  //紀錄Y軸的最大值與最小值 
+       var itemGroup = [];    //紀錄Group 欄位名稱
+       
 
        for(var j = 0; j < num_tabs; j++)
        {
          
            //獲得Toolbar的資料
-           var tools = $("#jqxToolBar" + ( j + 1 )).jqxToolBar("getTools");
-           var chartType = tools[1].tool[0].textContent; 
-           var dataXaxis = getColumnNameFromChineseToDatabase(tools[3].tool[0].textContent);        
-           var dataYaxis = getColumnNameFromChineseToDatabase(tools[5].tool[0].lastChild.value);
-           var columnName = getColumnNameFromChineseToDatabase(tools[7].tool[0].lastChild.value);
-           var item = tools[8].tool[0].value;
+           var tools = $("#jqxInventoryToolBar" + ( j + 1 )).jqxToolBar("getTools");
+            
+           var dataXaxis = tools[1].tool[0].textContent;        
+           var dataYaxis = tools[3].tool[0].lastChild.value;
+           var columnName = tools[5].tool[0].lastChild.value;
+           var item = tools[6].tool[0].value;
 
-           chartTypeGroup.push(chartType);
            dataXaxisGroup.push(dataXaxis);
            dataYaxisGroup.push(dataYaxis);
            columnNameGroup.push(columnName);
            itemGroup.push(item);
 
-           //獲得Toolbar的資料
-           var toolsConChart = $("#jqxToolBarConChart" + ( j + 1 )).jqxToolBar("getTools");
-           var tUSL = toolsConChart[1].tool[0].value;
-           var tLSL = toolsConChart[3].tool[0].value;
-           var tUCL = toolsConChart[5].tool[0].value;
-           var tLCL = toolsConChart[7].tool[0].value;
-           USLGroup.push(tUSL);
-           LSLGroup.push(tLSL);
-           UCLGroup.push(tUCL);
-           LCLGroup.push(tLCL);
-           LabelItem.push("bottle_number");
-           DateItem.push("working_date");
-           
-           //獲得Toolbar的資料 
-           var toolsBarChartRange = $("#jqxToolBarChartRange" + ( j + 1 )).jqxToolBar("getTools");
-           var tYaxisMax = toolsBarChartRange[1].tool[0].value;
-           var tYaxisMin = toolsBarChartRange[3].tool[0].value;
-           var tSPCRule = toolsBarChartRange[5].tool[0].lastChild.value;
-           
-           YaxisMax.push(tYaxisMax);
-           YaxisMin.push(tYaxisMin);
-           SPCRule.push(tSPCRule);
        }
        
         // //檢查選擇Control Chart時，Group 不能大於1組以上，UCL 或LCL需同時為空或有值避免Center Line計算錯誤
@@ -1353,10 +1453,8 @@
                  //產生要寫入excel的data
                    //參數格式: original data -> toolbar data -> toolbar control data 
                    DrowBarChart( 'Container Balance', dataLo, 
-                           chartTypeGroup, dataXaxisGroup, dataYaxisGroup, 
-                           columnNameGroup, itemGroup, 
-                           USLGroup, LSLGroup, UCLGroup, LCLGroup, LabelItem, DateItem,
-                           YaxisMax, YaxisMin, SPCRule
+                            dataXaxisGroup, dataYaxisGroup, 
+                           columnNameGroup, itemGroup 
                        );
                    }                                  
                });    

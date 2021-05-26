@@ -574,33 +574,105 @@ function DrowChart( ChartTitle, dataLo, chartTypeGroup, dataXaxisGroup, dataYaxi
 
 
 /*產生圖表*/
-function DrowBarChart( ChartTitle, dataLo, chartTypeGroup, dataXaxisGroup, dataYaxisGroup,  
-    columnNameGroup, itemGroup, USLGroup, LSLGroup, UCLGroup, LCLGroup, LabelItem, DateItem, YaxisMax, YaxisMin, SPCRule)
+function DrowBarChart( ChartTitle, dataLo, dataXaxisGroup, dataYaxisGroup, columnNameGroup, itemGroup)
 {   
+    //產生新圖
+    if (window.myBarChart !== undefined && window.myBarChart !== null) 
+    {
+        window.myBarChart.destroy();
+    }
+
+    //計算可用量、檢驗中, 根據勾選的選擇加總
+    var _sumUnrestricted = [];
+    var _sumIn_Quality_Insp = [];
+    var _sumDataY = [];
+
+    //Chart顏色
+    var _ChartbackgroundColor = [];
+    var _ChartborderColor = [];
+
+    
+    for(var i = 0 ; i < dataXaxisGroup.length ; i++)
+    {
+        _sumUnrestricted.push(0);
+        _sumIn_Quality_Insp.push(0);
+        _sumDataY.push(0);
+        _ChartbackgroundColor.push('rgba(75, 192, 192, 0.2)');
+        _ChartborderColor.push('rgb(75, 192, 192)');
+    }
+
+   
+
+    
+    //根據選擇的Y值計算
+    for(var i = 0 ; i < dataXaxisGroup.length ; i++)
+    {   
+        //分組資料
+        var dataX = dataXaxisGroup[i].split(",");
+        var dataY = dataYaxisGroup[i].split(",");
+        var columnName = columnNameGroup[i];
+        var item = itemGroup[i].split(","); 
+        for( var key in dataLo)
+        {
+            //根據dataX(加總所有產品的值)
+            for(var j = 0; j < dataX.length; j++)
+            {
+                for(var q = 0; q < item.length; q++)
+                {
+                    if(dataLo[key][getColumnNameFromChineseToDatabase(columnName)] == item[q] 
+                    && dataLo[key]["Material_Description"] == dataX[j])
+                    {
+                        _sumUnrestricted[i] += parseFloat(dataLo[key]["Unrestricted"]);
+                        _sumIn_Quality_Insp[i] += parseFloat(dataLo[key]["In_Quality_Insp"]);
+                    }
+                }     
+            } 
+        }
+
+        //將分組資料根據dataY值填入呈現的圖資料中
+        for(var j = 0 ; j < dataY.length; j++)
+        {
+            switch(dataY[j])
+            {
+                case '可用量':
+                    _sumDataY[i] += _sumUnrestricted[i];
+                    break;
+                case '檢驗中':
+                    _sumDataY[i] += _sumIn_Quality_Insp[i];
+                    break;
+            }
+        }
+        
+    }
+
     var ctx = document.getElementById('canvas').getContext('2d');
-    var myChart = new Chart(ctx, {
+    window.myBarChart = new Chart(ctx, {
         type: 'bar',
         data: {
-            labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+            labels:dataXaxisGroup,
+            // labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
             datasets: [{
-                label: '# of Votes',
-                data: [12, 19, 3, 5, 2, 3],
-                backgroundColor: [
-                    'rgba(255, 99, 132, 0.2)',
-                    'rgba(54, 162, 235, 0.2)',
-                    'rgba(255, 206, 86, 0.2)',
-                    'rgba(75, 192, 192, 0.2)',
-                    'rgba(153, 102, 255, 0.2)',
-                    'rgba(255, 159, 64, 0.2)'
-                ],
-                borderColor: [
-                    'rgba(255, 99, 132, 1)',
-                    'rgba(54, 162, 235, 1)',
-                    'rgba(255, 206, 86, 1)',
-                    'rgba(75, 192, 192, 1)',
-                    'rgba(153, 102, 255, 1)',
-                    'rgba(255, 159, 64, 1)'
-                ],
+                label: '庫存量',
+                // data: [12, 19, 3, 5, 2, 3],
+                data: _sumDataY,
+                backgroundColor:_ChartbackgroundColor,
+                // backgroundColor: [
+                //     'rgba(255, 99, 132, 0.2)',
+                //     'rgba(54, 162, 235, 0.2)',
+                //     'rgba(255, 206, 86, 0.2)',
+                //     'rgba(75, 192, 192, 0.2)',
+                //     'rgba(153, 102, 255, 0.2)',
+                //     'rgba(255, 159, 64, 0.2)'
+                // ],
+                borderColor:_ChartborderColor,
+                // borderColor: [
+                //     'rgba(255, 99, 132, 1)',
+                //     'rgba(54, 162, 235, 1)'
+                //     'rgba(255, 206, 86, 1)',
+                //     'rgba(75, 192, 192, 1)',
+                //     'rgba(153, 102, 255, 1)',
+                //     'rgba(255, 159, 64, 1)'
+                // ],
                 borderWidth: 1
             }]
         },
