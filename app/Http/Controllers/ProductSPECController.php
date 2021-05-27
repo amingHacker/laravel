@@ -19,6 +19,7 @@ class ProductSPECController extends Controller
         $todosALEXA = DB::table('product_spec_alexa')->orderBy('id','desc')->first();
         $todosAGATHOS = DB::table('product_spec_agathos')->orderBy('id','desc')->first();
         $todosDEMS = DB::table('product_spec_dems')->orderBy('id','desc')->first();
+        $todosAPHP = DB::table('product_spec_aphp')->orderBy('id','desc')->first();
         
         $todosTMAL_EG = DB::table('product_spec_tmal_tmaleg')->orderBy('id','desc')->first();
         $todosTMAL_TW = DB::table('product_spec_tmal_tmaltw')->orderBy('id','desc')->first();
@@ -38,6 +39,7 @@ class ProductSPECController extends Controller
             'todosTMAL_SH'=> $todosTMAL_SH,
             'todosAGATHOS' => $todosAGATHOS,
             'todosDEMS' => $todosDEMS,
+            'todosAPHP' => $todosAPHP,
         ]);
     }
 
@@ -88,6 +90,9 @@ class ProductSPECController extends Controller
                 break;
             case "/ProductSPEC/show/DEMS":
                 $table = 'product_spec_dems';
+                break;
+            case "/ProductSPEC/show/APHP":
+                $table = 'product_spec_aphp';
                 break;
         }
         // var_dump($_SERVER["REDIRECT_URL"]);
@@ -227,6 +232,9 @@ class ProductSPECController extends Controller
                 break;
             case 'dgDEMS':
                 $table = 'product_spec_dems';
+                break;
+            case 'dgAPHP':
+                $table = 'product_spec_aphp';
                 break;
         }
 
@@ -383,6 +391,9 @@ class ProductSPECController extends Controller
             case 'dgDEMS':
                 $table = 'product_spec_dems';
                 break;
+            case 'dgAPHP':
+                $table = 'product_spec_aphp';
+                break;
         } 
         $uploadData["UploadData"]["created_at"] = date('Y-m-d H:i:s');
         $uploadData["UploadData"]["updated_at"] = date('Y-m-d H:i:s');
@@ -461,6 +472,9 @@ class ProductSPECController extends Controller
             case 'dgDEMS':
                 $table = 'product_spec_dems';
                 break;
+            case 'dgAPHP':
+                $table = 'product_spec_aphp';
+                break;
         }
       
         $deleteData = DB::table($table)->delete($Parameter["id"]);
@@ -526,6 +540,9 @@ class ProductSPECController extends Controller
                 break;
             case 'dgDEMS':
                 $table = 'product_spec_dems';
+                break;
+            case 'dgAPHP':
+                $table = 'product_spec_aphp';
                 break;
         }
         
@@ -595,6 +612,9 @@ class ProductSPECController extends Controller
                 break;
             case "/ProductSPEC/GetTable/DEMS":
                 $table = 'product_spec_dems';
+                break;
+            case "/ProductSPEC/GetTable/APHP":
+                $table = 'product_spec_aphp';
                 break;
         }
         
