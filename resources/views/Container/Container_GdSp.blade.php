@@ -320,7 +320,7 @@
         var _xAxisSource = ["取樣日期", "次數"];
         var _yAxisSource = ["左顯示器(A3)", "右顯示器(A3)", "A3", "左顯示器(Body)", "右顯示器(Body)", "Body",
                             "原始數據(管路)", "原始數據(A3)", "原始數據(Body)", "左顯示器(管路校正)",
-                            "右顯示器(管路校正)", "管路校正"
+                            "右顯示器(管路校正)", "管路校正", "Outlet"
                         ];
         var _GroupSource = ["品名", "標準瓶", "設備", "ALL"
         ];
@@ -357,6 +357,7 @@
             LeftMonitor_Body: "左顯示器(Body)",
             RightMonitor_Body: "右顯示器(Body)",
             Body: "Body",
+            Outlet: "Outlet",
             Remark: "備註",
             Operator: "操作人員",
             created_at: "建立時間",
@@ -396,6 +397,7 @@
             "左顯示器(Body)" : "LeftMonitor_Body",
             "右顯示器(Body)" : "RightMonitor_Body",
             "Body" : "Body",
+            "Outlet" : "Outlet",
             "備註" : "Remark",
             "操作人員" : "Operator",
             "建立時間" : "created_at",
