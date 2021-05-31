@@ -362,7 +362,8 @@ class Container_GdSp_controller extends Controller
                 'RightMonitor_Body' => $RowData["RightMonitor_Body"],
                 'Body' => $RowData["Body"],
                 'Operator' => $RowData["Operator"],
-                'Remark' => $RowData["Remark"],                
+                'Remark' => $RowData["Remark"],
+                'Outlet' => $RowData["Outlet"],                 
             ]    
         );
     }
@@ -456,7 +457,8 @@ class Container_GdSp_controller extends Controller
             'RightMonitor_Body',
             'Body',
             'Operator',
-            'Remark', 
+            'Remark',
+            'Outlet', 
             '建立時間',
             '更新時間'            
         ];
@@ -679,6 +681,7 @@ class Container_GdSp_controller extends Controller
             'Body' => 'Body',
             'Operator' => '操作人員',
             'Remark' => '備註',
+            'Outlet' => 'Outlet',
         ];
 
         if (array_key_exists($col, $dbCol))

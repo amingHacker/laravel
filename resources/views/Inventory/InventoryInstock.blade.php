@@ -857,15 +857,16 @@
                 <table id="dgInventoryInstock" ></table> 
                 <div id="dgInventoryInstockpager"></div>
                 </div>                             
-            </div>
-            <div align = "center">
-                <input type="BUTTON" class="btn btn-outline-info btn-space" id="ExportChart" value="圖表" />
-                <input type="BUTTON" class="btn btn-outline-info btn-space" id="CloseChart" value="收合" />
-            </div>     
+            </div>   
         </div>
     </div>
-   
 </div>
+
+    <div align = "center">
+        <input type="BUTTON" class="btn btn-outline-info btn-space" id="ExportChart" value="圖表" />
+        <input type="BUTTON" class="btn btn-outline-info btn-space" id="CloseChart" value="收合" />
+        <input type="BUTTON" class="btn btn-outline-info btn-space" id="MyFavorite" value="我的最愛" />
+    </div>  
 
 
     {{-- <h1 class="my-2"></h1> --}}
@@ -1462,6 +1463,108 @@
    })
 </script>
 {{-- Chart.js End --}}
+
+{{-- MyFavorite Start--}}
+<script type="text/javascript">
+/*產生圖表*/
+$("#MyFavorite").click( function(){
+    var table = "viewLog";
+    var pcontent = '<span style="font-weight:bold; color:#2e6e9e;">《 資料處理紀錄 Data Log 》</span><br /><br />' + '<table id= '+ table + '></table><div id="viewLogPager"></div>';
+    
+    //建立動態表格
+    $("#confirmDialog").html(pcontent);
+    
+    var colNames = [];
+    var colModel = [];
+    colNames = ['ID','庫存','包含'];
+    colModel = 
+    [
+        {
+            name:'added_on', index:'added_on', align:"center", width:140, frozen:false, sortable:true,
+            search:true,
+                    searchoptions: {
+                        sopt: ['eq','le','ge'],
+                        dataInit : function (elem) 
+                        {
+                            var self = this;
+                            $(elem).datepicker({
+                                dateFormat: 'yy-mm-dd',                                 
+                                changeYear: true,
+                                changeMonth: true,
+                                showOn: 'focus',
+                                autoclose:1
+                            });
+                        }
+                    },                   
+        },
+        {name:'user', align:"center", width:120, index:'user', classes: "text-break", search:true, searchoptions:{sopt:['cn','nc','eq']}},
+        {name:'action', align:"center", width:70, index:'action', search:true, searchoptions:{sopt:['cn','nc','eq']}},
+        {name:'description', width:520, index:'description', classes: "text-break", search:true, searchoptions:{sopt:['cn','nc','eq']}}
+    ];
+    
+
+        // 準備資料           
+        $("#" + table).jqGrid({
+        url:"SamplingRecord/showOperLog",
+        mtype : "GET",
+        datatype: "json",        
+        altrows:false,
+        width: 890,
+        height:'100%',
+        colNames:colNames,
+        colModel:colModel,
+        multiselect:false,
+        rowNum:10,
+        rowList:[10,20,50],
+        pager: '#viewLogPager',
+        sortname: 'id',
+        viewrecords: true,
+        gridview: false,
+        sortorder: "desc",
+        caption:"紀錄 Log",
+        shrinkToFit :false,
+        loadonce: false,
+        
+        jsonReader : {
+                        root: "dataList",
+                        page: "currPage",
+                        total: "totalPages",
+                        records: "totalCount"                     
+                    },
+        prmNames : {
+                        page:"pageNum", 
+                        rows:"limit", 
+                        order: "order"
+                    },
+
+        loadComplete: function (){ 
+            fixPositionsOfFrozenDivs.call(this);
+        }, // Fix column's height are different after enable frozen column feature                                                           
+    }).jqGrid('setFrozenColumns'); 
+    
+    
+    $("#" + table).jqGrid('setFrozenColumns');
+    //增加Tool bar        
+    $("#" + table).jqGrid('navGrid','#viewLogPager', { search:true, edit:false, add:false, del:false, refresh:true } );
+        
+    $("#confirmDialog").dialog({
+        width:'auto', height:'600', autoResize:true, modal:true, closeText:"關閉", 
+        resizable:true, closeOnEscape:true, dialogClass:'top-dialog',position:['center',168],
+        show:{effect: "blind", duration: 300},
+        hide:{effect: "blind", duration: 300},
+        
+        focus: function() { $(".ui-dialog").focus(); }, // Unfocus the default focus elem
+        buttons : {
+            "確認" : function() {   
+                $(this).dialog("close");        
+            },       
+        }
+    });  
+            
+})
+
+</script>
+{{-- MyFavorite End --}}
 
 {{-- Show outlier Log Start --}}
 <script type="text/javascript">
