@@ -130,6 +130,13 @@
         margin: 0 auto;
         float: none;
     }
+
+    .text-break {
+        white-space: normal !important;
+        height:auto;
+        vertical-align:text-top;
+        padding-top:2px;
+    }
 </style>
 
 {{-- CSS設定 End --}}
@@ -163,6 +170,7 @@
             "建立時間" : "created_at",
             "更新時間" : "updated_at" ,
             "庫存":"InventoryInstock",
+            "出貨":"InventoryShipment",
         };
         for(var key in oldkey)
         {        
@@ -201,6 +209,7 @@
             "created_at" : "建立時間" ,
             "updated_at" : "更新時間" ,
             "InventoryInstock": "庫存",
+            "InventoryShipment": "出貨",
         };
         for(var key in oldkey)
         {        
@@ -217,9 +226,11 @@
 <script type="text/javascript">
 
     var InventoryInstock = @json($todosInventoryInstock);
+    var InventoryShipment = @json($todosInventoryShipment);
 
     var _todoList = {
-            InventoryInstock: InventoryInstock,  
+            InventoryInstock: InventoryInstock,
+            InventoryShipment: InventoryShipment,    
         };
     var combobox_items = [];  //用來儲存colName內容選項
 
@@ -236,11 +247,20 @@
         //獲得combobox的內容
         combobox_items = getComboboxItem();
 
-        //紀錄料號描述、儲位、，在產生toolbar時可以使用
+        //紀錄料號描述、儲位、Batch，在產生toolbar時可以使用
         var item_Material = [];
         var item_Storage_Location = [];
         var item_Descr_of_Storage_Loc = [];
         var item_Batch = [];
+        var item_Name_of_sold_to_party = [];
+        var item_Name_of_the_ship_to_party = [];
+        var item_Description = [];
+        var item_Sold_to_party = [];
+        var item_Ship_to_party = [];
+        var item_Ship_Batch = [];
+        var item_Ship_Material = [];
+        var item_Item_category = [];
+        var item_Ship_Storage_Location = [];
         
         for (var i in combobox_items)
         {
@@ -251,8 +271,6 @@
                     item_Material.push(combobox_items[i][j][i]);
                 }
             }
-           
-
             if(i == "Storage_Location")
             {
                 for(var j in combobox_items[i])
@@ -260,7 +278,6 @@
                     item_Storage_Location.push(combobox_items[i][j][i]);
                 }
             }
-
             if(i == "Descr_of_Storage_Loc")
             {
                 for(var j in combobox_items[i])
@@ -276,6 +293,70 @@
                     item_Batch.push(combobox_items[i][j][i]);
                 }
             }
+
+            if(i == "Name_of_sold_to_party")
+            {
+                for(var j in combobox_items[i])
+                {
+                    item_Name_of_sold_to_party.push(combobox_items[i][j][i]);
+                }
+            }
+            if(i == "Name_of_the_ship_to_party")
+            {
+                for(var j in combobox_items[i])
+                {
+                    item_Name_of_the_ship_to_party.push(combobox_items[i][j][i]);
+                }
+            }
+            if(i == "Description")
+            {
+                for(var j in combobox_items[i])
+                {
+                    item_Description.push(combobox_items[i][j][i]);
+                }
+            }
+            if(i == "Sold_to_party")
+            {
+                for(var j in combobox_items[i])
+                {
+                    item_Sold_to_party.push(combobox_items[i][j][i]);
+                }
+            }
+            if(i == "Ship_to_party")
+            {
+                for(var j in combobox_items[i])
+                {
+                    item_Ship_to_party.push(combobox_items[i][j][i]);
+                }
+            }
+            if(i == "Ship_Batch")
+            {
+                for(var j in combobox_items[i])
+                {
+                    item_Ship_Batch.push(combobox_items[i][j][i]);
+                }
+            }
+            if(i == "Ship_Material")
+            {
+                for(var j in combobox_items[i])
+                {
+                    item_Ship_Material.push(combobox_items[i][j][i]);
+                }
+            }
+            if(i == "Item_category")
+            {
+                for(var j in combobox_items[i])
+                {
+                    item_Item_category.push(combobox_items[i][j][i]);
+                }
+            }
+            if(i == "Ship_Storage_Location")
+            {
+                for(var j in combobox_items[i])
+                {
+                    item_Ship_Storage_Location.push(combobox_items[i][j][i]);
+                }
+            }
             
         }
 
@@ -284,14 +365,45 @@
         sessionStorage.setItem('Descr_of_Storage_Loc', item_Descr_of_Storage_Loc);
         sessionStorage.setItem('Batch',  item_Batch);
 
-        //test 建立ToolBar
-        var _ChartTypeSource = ["Bar Chart"];
-        var _xAxisSource = ["品名"];
-        var _yAxisSource = ["可用量", "檢驗中"];
-        var _GroupSource = ["SAP位置", "料品狀態", "批號", "ALL"];
-    
+        sessionStorage.setItem('Name_of_sold_to_party',  item_Name_of_sold_to_party);
+        sessionStorage.setItem('Name_of_the_ship_to_party',  item_Name_of_the_ship_to_party);
+        sessionStorage.setItem('Description',  item_Description);
+        sessionStorage.setItem('Sold_to_party',  item_Sold_to_party);
+        sessionStorage.setItem('Ship_to_party',  item_Ship_to_party);
+        sessionStorage.setItem('Ship_Batch',  item_Ship_Batch);
+        sessionStorage.setItem('Ship_Material',  item_Ship_Material);
+        sessionStorage.setItem('Item_category',  item_Item_category);
+        sessionStorage.setItem('Ship_Storage_Location',  item_Ship_Storage_Location);
+
+        for(var _todoP in _todoList ){
+                var _ChartTypeSource = ["Bar Chart"];
+                var _xAxisSource = ["品名"];
+                var _yAxisSource = ["可用量", "檢驗中"];
+                var _GroupSource = ["SAP位置", "料品狀態", "批號", "ALL"];
+                if(_todoP == "InventoryInstock")
+                {
+                    //test 建立ToolBar
+                    _ChartTypeSource = ["Bar Chart"];
+                    _xAxisSource = ["品名"];
+                    _yAxisSource = ["可用量", "檢驗中"];
+                    _GroupSource = ["SAP位置", "料品狀態", "批號", "ALL"];   
+
+                }
+                else
+                {
+                    _ChartTypeSource = ["Bar Chart"];
+                    _xAxisSource = ["品名"];
+                    _yAxisSource = ["Delivery_quantity", "Net_weight", "Total_Weight"];
+                    _GroupSource = ["SAP位置", "料品狀態", "批號", "ALL"];   
+                }
+               
+                PrepareToInventoryToolbar(_todoP, _ChartTypeSource, _xAxisSource, _yAxisSource, _GroupSource, 
+                item_Material, item_Storage_Location, item_Descr_of_Storage_Loc, item_Batch,
+                item_Name_of_sold_to_party, item_Name_of_the_ship_to_party, item_Description, item_Sold_to_party, item_Ship_to_party,
+                item_Ship_Batch, item_Ship_Material, item_Item_category, item_Ship_Storage_Location
+            ); 
+        }
         
-        PrepareToInventoryToolbar(_ChartTypeSource, _xAxisSource, _yAxisSource, _GroupSource, item_Material, item_Storage_Location, item_Descr_of_Storage_Loc, item_Batch); 
 
        
     });
@@ -324,297 +436,481 @@
     }
 
     function ShowTable(_todoP, i){
-        setTimeout(function(){
-        var colNames = [];
-        var colModel = [];
-        for ( var colName in _todoList[_todoP])
+        setTimeout(function()
         {
-            colNames.push(colName);
-        }
-    
-        for ( var colName in _todoList[_todoP])
-        {           
-            if (colName === 'Material')
-            {           
-                colModel.push(
-                        {name:colName, index:colName, width:100, align:"center",sortable:true,  stype:'text', frozen: true, editable:false, cellattr: addCellAttrID}
-                    );
-            }
-            else if (
-                colName === 'Material_Description'
-            )
-            {
-                colModel.push(
-                    {
-                        name:colName, index:colName, width:180, align:"center",sortable:true, editable:true, cellattr: addCellAttr, frozen: false,
-                        stype:'text',
-                        edittype:'custom', editoptions:
-                        {
-                            custom_element: combobox_elem, custom_value:combobox_value
-                        }, 
-                        stype:'custom', searchoptions:
-                        {
-                            custom_element: combobox_elem, custom_value:combobox_value                   
-                        },
-                    }
-                );
-            }
-            else if (
-                colName === 'Storage_Location' || colName === 'Descr_of_Storage_Loc'
+            var colNames = [];
+            var colModel = [];
             
-            )
+            for ( var colName in _todoList[_todoP])
             {
-                colModel.push(
-                    {
-                        name:colName, index:colName, width:125, align:"center",sortable:true, editable:true, cellattr: addCellAttr, frozen: false,
-                        stype:'text',
-                        edittype:'custom', editoptions:
-                        {
-                            custom_element: combobox_elem, custom_value:combobox_value
-                        }, 
-                        stype:'custom', searchoptions:
-                        {
-                            custom_element: combobox_elem, custom_value:combobox_value                   
-                        },
+                colNames.push(colName);
+            }
+        
+            for ( var colName in _todoList[_todoP])
+            {   
+                //InventoryInstock Grid
+                if(_todoP == "InventoryInstock")
+                {
+                    if (colName === 'Material')
+                    {           
+                        colModel.push(
+                                {name:colName, index:colName, width:100, align:"center",sortable:true,  stype:'text', frozen: true, editable:false, cellattr: addCellAttrID}
+                            );
                     }
-                );
-            }
-           
-            else if (colName === 'created_at' || colName === 'updated_at')
-            {
-                colModel.push({name:colName, index:colName, width:150, align:"center", editable:false, cellattr: addCellAttr});
-            }
-            else
-            {
-                colModel.push({name:colName, index:colName, align:"center", width:120, editable:true, cellattr: addCellAttr});
-            }
-        }
+                    else if (
+                        colName === 'Material_Description'
+                    )
+                    {
+                        colModel.push(
+                            {
+                                name:colName, index:colName, width:180, align:"center",sortable:true, editable:true, cellattr: addCellAttr, frozen: false,
+                                stype:'text',
+                                edittype:'custom', editoptions:
+                                {
+                                    custom_element: combobox_elem, custom_value:combobox_value
+                                }, 
+                                stype:'custom', searchoptions:
+                                {
+                                    custom_element: combobox_elem, custom_value:combobox_value                   
+                                },
+                            }
+                        );
+                    }
+                    else if (
+                        colName === 'Storage_Location' || colName === 'Descr_of_Storage_Loc'
+                    
+                    )
+                    {
+                        colModel.push(
+                            {
+                                name:colName, index:colName, width:125, align:"center",sortable:true, editable:true, cellattr: addCellAttr, frozen: false,
+                                stype:'text',
+                                edittype:'custom', editoptions:
+                                {
+                                    custom_element: combobox_elem, custom_value:combobox_value
+                                }, 
+                                stype:'custom', searchoptions:
+                                {
+                                    custom_element: combobox_elem, custom_value:combobox_value                   
+                                },
+                            }
+                        );
+                    }
+                
+                    else if (colName === 'created_at' || colName === 'updated_at')
+                    {
+                        colModel.push({name:colName, index:colName, width:150, align:"center", editable:false, cellattr: addCellAttr});
+                    }
+                    else
+                    {
+                        colModel.push({name:colName, index:colName, align:"center", width:120, editable:true, cellattr: addCellAttr});
+                    }
+                }
+                //InventoryShipment Grid
+                else
+                {
+                    if (colName === 'Delivery')
+                    {           
+                        colModel.push(
+                                {name:colName, index:colName, width:100, align:"center",sortable:true,  stype:'text', frozen: true, editable:false, cellattr: addCellAttrID}
+                            );
+                    }
+                    else if (
+                        colName === 'Name_of_sold_to_party' || colName === 'Name_of_the_ship_to_party' || colName === 'Description'  
+                    )
+                    {
+                        colModel.push(
+                            {
+                                name:colName, index:colName, width:250, align:"center",sortable:true, editable:true, cellattr: addCellAttr, frozen: false,
+                                stype:'text',
+                                edittype:'custom', editoptions:
+                                {
+                                    custom_element: combobox_elem, custom_value:combobox_value
+                                }, 
+                                stype:'custom', searchoptions:
+                                {
+                                    custom_element: combobox_elem, custom_value:combobox_value                   
+                                },
+                            }
+                        );
+                    }
+                    else if (
+                        colName === 'Sold_to_party' || colName === 'Ship_to_party' || colName === 'Ship_Batch' || 
+                        colName === 'Ship_Material' || colName === 'Item_category' || colName === 'Ship_Storage_Location'
+                    
+                    )
+                    {
+                        colModel.push(
+                            {
+                                name:colName, index:colName, width:125, align:"center",sortable:true, editable:true, cellattr: addCellAttr, frozen: false,
+                                stype:'text',
+                                edittype:'custom', editoptions:
+                                {
+                                    custom_element: combobox_elem, custom_value:combobox_value
+                                }, 
+                                stype:'custom', searchoptions:
+                                {
+                                    custom_element: combobox_elem, custom_value:combobox_value                   
+                                },
+                            }
+                        );
+                    }
 
-        for(var index in colNames)
-        {     
-            colNames[index] = getColumnNameFromDatabaseToChinese(colNames[index]);                
-        }
+                    else if (colName === 'Goods_Issue_Date' || colName === 'Deliv_date' || colName === 'Act_Gds_Mvmnt_Date')
+                    {
+                        colModel.push(
+                            {
+                                name:colName, index:colName, width: 150, align:"center",sortable:true, editable:true, cellattr: addCellAttr,
+                                sorttype: "date", edittype:'text', 
+                                editoptions: 
+                                {                       
+                                    dataInit: function (elem) 
+                                    {                                                                 
+                                        $(elem).datetimepicker(
+                                            {
+                                                autoclose:true,
+                                                dateFormat: 'yy-mm-dd', 
+                                                timeFormat: 'HH:mm:ss',                         
+                                            }                             
+                                        );
+                                    },      
+                                },
+                                search:true,
+                                searchoptions: {
+                                    sopt: ['eq','le','ge'],
+                                    dataInit : function (elem) 
+                                    {
+                                        var self = this;
+                                        $(elem).datepicker({
+                                            dateFormat: 'yy-mm-dd',                                 
+                                            changeYear: true,
+                                            changeMonth: true,
+                                            showOn: 'focus',
+                                            autoclose:1
+                                        });
+                                    }
+                                },                                   
+                            }
+                        );
+                    }
+                
+                    else if (colName === 'created_at' || colName === 'updated_at')
+                    {
+                        colModel.push({name:colName, index:colName, width:150, align:"center", editable:false, cellattr: addCellAttr});
+                    }
+                    else
+                    {
+                        colModel.push({name:colName, index:colName, align:"center", width:120, editable:true, cellattr: addCellAttr});
+                    }
+                }        
+                
+            }
 
-        var table = "dg" + _todoP ;
-        var jqgridWidth = parseInt($(window).width()) * 0.7;
-        var gridCaption = getColumnNameFromDatabaseToChinese(_todoP);
-        // 準備資料           
-        $("#" + table).jqGrid({
-            url:"InventoryInstock/show/"+_todoP,
-            datatype: "json",
-            altrows:false,
-            width: jqgridWidth,
-            height:'100%',
-            colNames:colNames,
-            colModel:colModel,
-            multiselect:false,
-            rowNum:10,
-            rowList:[10,20,50],
-            pager: '#' + table + "pager",
-            sortname: 'Material',
-            viewrecords: true,
-            gridview: false,
-            sortorder: "desc",
-            caption: gridCaption,
-            shrinkToFit :false,
-            loadonce: false,
-            jsonReader : {
-                                root: "dataList",
-                                page: "currPage",
-                                total: "totalPages",
-                                records: "totalCount"                     
-                            },
-            prmNames : {
-                    page:"pageNum", 
-                    rows:"limit", 
-                    order: "order", 
+            for(var index in colNames)
+            {     
+                colNames[index] = getColumnNameFromDatabaseToChinese(colNames[index]);                
+            }
+
+            var table = "dg" + _todoP ;
+            var jqgridWidth = parseInt($(window).width()) * 0.8;
+            var gridCaption = getColumnNameFromDatabaseToChinese(_todoP);
+            var sortname = (_todoP == "InventoryInstock")?'Material':'Delivery';
+            // 準備資料           
+            $("#" + table).jqGrid({
+                url:"InventoryInstock/show/"+_todoP,
+                datatype: "json",
+                altrows:false,
+                width: jqgridWidth,
+                height:'100%',
+                colNames:colNames,
+                colModel:colModel,
+                multiselect:false,
+                rowNum:10,
+                rowList:[10,20,50],
+                pager: '#' + table + "pager",
+                sortname: sortname,
+                viewrecords: true,
+                gridview: false,
+                sortorder: "desc",
+                caption: gridCaption,
+                shrinkToFit :false,
+                loadonce: false,
+                jsonReader : {
+                                    root: "dataList",
+                                    page: "currPage",
+                                    total: "totalPages",
+                                    records: "totalCount"                     
+                                },
+                prmNames : {
+                        page:"pageNum", 
+                        rows:"limit", 
+                        order: "order", 
+                    },
+            
+                postData:{
+                        UserFilter:sessionStorage.getItem("Se_RawMaterial"),
                 },
-           
-            postData:{
-                    UserFilter:sessionStorage.getItem("Se_RawMaterial"),
-            },
-            
-
-            loadComplete: function (){
-                   
-                    fixPositionsOfFrozenDivs.call(this);
                 
-            }, // Fix column's height are different after enable frozen column feature
-            gridComplete: function(){
-                //根據瀏覽器寬度動態改變
-                $(window).resize(function(){ 
-                    var winwidth= parseInt($(window).width()) * 0.7;     
-                    $("#" + table).jqGrid('setGridWidth', winwidth);
-                });
 
-                //獲得資料
+                loadComplete: function (){
+                    
+                        fixPositionsOfFrozenDivs.call(this);
+                    
+                }, // Fix column's height are different after enable frozen column feature
+                gridComplete: function(){
+                    //根據瀏覽器寬度動態改變
+                    $(window).resize(function(){ 
+                        var winwidth= parseInt($(window).width()) * 0.7;     
+                        $("#" + table).jqGrid('setGridWidth', winwidth);
+                    });
 
-                var table = "dg" +  getColumnNameFromChineseToDatabase($("#Gridtabs .ui-tabs-active").text()); //呈現此table的title
-                
-                var o = $("#" + table);
-                
-                var columnNames = o.jqGrid('getGridParam', 'colNames');//從grid獲得colnames
+                    //獲得資料
 
-                var rowNumber = o.jqGrid('getGridParam', 'records');//獲得搜尋後的紀錄筆數
-                
-                var postData = o.jqGrid('getGridParam', 'postData');//獲得搜尋條件
+                    var table = "dg" +  getColumnNameFromChineseToDatabase($("#Gridtabs .ui-tabs-active").text()); //呈現此table的title
+                    
+                    var o = $("#" + table);
+                    
+                    var columnNames = o.jqGrid('getGridParam', 'colNames');//從grid獲得colnames
 
-                var getData = o.jqGrid('getGridParam', 'data');//獲得所有jqgrid的資料
-                
-                var rowData = o.jqGrid('getRowData');//獲得目前顯示在表格上的資料
+                    var rowNumber = o.jqGrid('getGridParam', 'records');//獲得搜尋後的紀錄筆數
+                    
+                    var postData = o.jqGrid('getGridParam', 'postData');//獲得搜尋條件
 
-                var caption = o.jqGrid("getGridParam", "caption");
+                    var getData = o.jqGrid('getGridParam', 'data');//獲得所有jqgrid的資料
+                    
+                    var rowData = o.jqGrid('getRowData');//獲得目前顯示在表格上的資料
 
-                $.ajax({
-                        async:false,
-                        url: "/InventoryInstock/export" ,//路徑
-                        type: "POST",           
-                        data:{
-                                "postData": postData,
-                                "table":table,
-                                "caption": caption,
-                                "UserFilter":sessionStorage.getItem("Se_RawMaterial"),
-                        },
-                        success: function (DownLoadValue){
-                                
-                                var dataLo = DownLoadValue.success;
-                                var _xAxis = [];
-                                
-                                //紀錄Material_Description，寫到session中，用以產生選項。
-                                for( var key in dataLo)
-                                {
-                                    if(_xAxis.indexOf(dataLo[key]["Material_Description"]) == -1)
+                    var caption = o.jqGrid("getGridParam", "caption");
+
+                    $.ajax({
+                            async:false,
+                            url: "/InventoryInstock/export" ,//路徑
+                            type: "POST",           
+                            data:{
+                                    "postData": postData,
+                                    "table":table,
+                                    "caption": caption,
+                                    "UserFilter":sessionStorage.getItem("Se_RawMaterial"),
+                            },
+                            success: function (DownLoadValue){
+                                    
+                                    //dgInventoryInstock庫存
+                                    if(table == "dgInventoryInstock")
                                     {
-                                        _xAxis.push(dataLo[key]["Material_Description"]); 
-                                    }
-                                }
-
-                                sessionStorage.setItem('_xAxis', _xAxis);
-
-                                var item_Material = sessionStorage.getItem('Material_Description');
-                                var item_Storage_Location = sessionStorage.getItem('Storage_Location');
-                                var item_Descr_of_Storage_Loc = sessionStorage.getItem('Descr_of_Storage_Loc');
-                                var item_Batch = sessionStorage.getItem('Batch');
-
-                                //test 建立ToolBar
-                                var _ChartTypeSource = ["Bar Chart"];
-                                var _xAxisSource = ["品名"];
-                                var _yAxisSource = ["可用量", "檢驗中"];
-                                var _GroupSource = ["SAP位置", "料品狀態", "批號", "ALL"];
-                                var num_tabs = $("#tabs ul li").length + 1;
-
-                                //紀錄目前toolbar的資訊
-                           
-                                for(var i = 1; i < num_tabs; i++)
-                                {
-                                    //獲得Toolbar的資料
-                                    var _xdataTmp = [];
-                                    var _ydataTmp = [];
-                                    var tools = $("#jqxInventoryToolBar" + (i)).jqxToolBar("getTools");
-                                    
-                                    var dataXaxis = $(tools[1].tool[0]).jqxDropDownList('getCheckedItems');
-                                    for(var t = 0; t < dataXaxis.length; t++)
-                                    {
-                                        _xdataTmp.push(dataXaxis[t]["label"]);
-                                    }         
-                                    
-                                    var dataYaxis = $(tools[3].tool[0]).jqxDropDownList('getCheckedItems');
-                                    for(var t = 0; t < dataYaxis.length; t++)
-                                    {
-                                        _ydataTmp.push(dataYaxis[t]["label"]);
-                                    }
-                                    
-                                    var columnNameIndex = $(tools[5].tool[0]).jqxComboBox('selectedIndex');
-                                    var item = tools[6].tool[0].value;
-
-                                    destoryToolbar("jqxInventoryToolBar" + i, 6);
-                                    destoryToolbar("jqxInventoryToolBar" + i, 5);
-                                    destoryToolbar("jqxInventoryToolBar" + i, 4);
-                                    destoryToolbar("jqxInventoryToolBar" + i, 3);
-                                    destoryToolbar("jqxInventoryToolBar" + i, 2);
-                                    destoryToolbar("jqxInventoryToolBar" + i, 1);
-                                    
-                                    addToolbar("jqxInventoryToolBar" + i, "dropdownlist", "last", _xAxis, true);
-                                    addToolbar("jqxInventoryToolBar" + i, "toggle", "last", "Y axis:", false);
-                                    addToolbar("jqxInventoryToolBar" + i, "dropdownlist", "last", _yAxisSource, false);
-                                    addToolbar("jqxInventoryToolBar" + i, "toggle", "last", "Column:", false);
-                                    addToolbar("jqxInventoryToolBar" + i, "combobox", "last", _GroupSource, false);
-                                    addToolbar("jqxInventoryToolBar" + i, "input", "last", "", false);
-                                    
-                                    //重新填入toolbar資訊
-                                    var toolsNew = $("#jqxInventoryToolBar" + (i)).jqxToolBar("getTools");
-                                    if(dataXaxis.length != 0)
-                                    {
-                                        for(var j = 0; j < _xdataTmp.length; j++)
+                                        var dataLo = DownLoadValue.success;
+                                        var _xAxis = [];
+                                        
+                                        //紀錄Material_Description，寫到session中，用以產生選項。
+                                        for( var key in dataLo)
                                         {
-                                            $(toolsNew[1].tool[0]).jqxDropDownList('checkItem',_xdataTmp[j]);
-                                        } 
-                                    }
-                                    if(dataYaxis.length != 0)
-                                    {
-                                        for(var j = 0; j < _ydataTmp.length; j++)
+                                            if(_xAxis.indexOf(dataLo[key]["Material_Description"]) == -1)
+                                            {
+                                                _xAxis.push(dataLo[key]["Material_Description"]); 
+                                            }
+                                        }
+
+                                        sessionStorage.setItem('_xAxis', _xAxis);
+
+                                        var item_Material = sessionStorage.getItem('Material_Description');
+                                        var item_Storage_Location = sessionStorage.getItem('Storage_Location');
+                                        var item_Descr_of_Storage_Loc = sessionStorage.getItem('Descr_of_Storage_Loc');
+                                        var item_Batch = sessionStorage.getItem('Batch');
+
+                                        //test 建立ToolBar
+                                        var _ChartTypeSource = ["Bar Chart"];
+                                        var _xAxisSource = ["品名"];
+                                        var _yAxisSource = ["可用量", "檢驗中"];
+                                        var _GroupSource = ["SAP位置", "料品狀態", "批號", "ALL"];
+                                        var num_tabs = $("#tabs ul li").length + 1;
+
+                                        //紀錄目前toolbar的資訊
+                                
+                                        for(var i = 1; i < num_tabs; i++)
                                         {
-                                            $(toolsNew[3].tool[0]).jqxDropDownList('checkItem',_ydataTmp[j]);
+                                            //獲得Toolbar的資料
+                                            var _xdataTmp = [];
+                                            var _ydataTmp = [];
+                                            var tools = $("#jqxInventoryToolBar" + (i)).jqxToolBar("getTools");
+                                            
+                                            var dataXaxis = $(tools[1].tool[0]).jqxDropDownList('getCheckedItems');
+                                            for(var t = 0; t < dataXaxis.length; t++)
+                                            {
+                                                _xdataTmp.push(dataXaxis[t]["label"]);
+                                            }         
+                                            
+                                            var dataYaxis = $(tools[3].tool[0]).jqxDropDownList('getCheckedItems');
+                                            for(var t = 0; t < dataYaxis.length; t++)
+                                            {
+                                                _ydataTmp.push(dataYaxis[t]["label"]);
+                                            }
+                                            
+                                            var columnNameIndex = $(tools[5].tool[0]).jqxComboBox('selectedIndex');
+                                            var item = tools[6].tool[0].value;
+
+                                            destoryToolbar("jqxInventoryToolBar" + i, 6);
+                                            destoryToolbar("jqxInventoryToolBar" + i, 5);
+                                            destoryToolbar("jqxInventoryToolBar" + i, 4);
+                                            destoryToolbar("jqxInventoryToolBar" + i, 3);
+                                            destoryToolbar("jqxInventoryToolBar" + i, 2);
+                                            destoryToolbar("jqxInventoryToolBar" + i, 1);
+                                            
+                                            addToolbar("jqxInventoryToolBar" + i, "dropdownlist", "last", _xAxis, true);
+                                            addToolbar("jqxInventoryToolBar" + i, "toggle", "last", "Y axis:", false);
+                                            addToolbar("jqxInventoryToolBar" + i, "dropdownlist", "last", _yAxisSource, false);
+                                            addToolbar("jqxInventoryToolBar" + i, "toggle", "last", "Column:", false);
+                                            addToolbar("jqxInventoryToolBar" + i, "combobox", "last", _GroupSource, false);
+                                            addToolbar("jqxInventoryToolBar" + i, "input", "last", "", false);
+                                            
+                                            //重新填入toolbar資訊
+                                            var toolsNew = $("#jqxInventoryToolBar" + (i)).jqxToolBar("getTools");
+                                            if(dataXaxis.length != 0)
+                                            {
+                                                for(var j = 0; j < _xdataTmp.length; j++)
+                                                {
+                                                    $(toolsNew[1].tool[0]).jqxDropDownList('checkItem',_xdataTmp[j]);
+                                                } 
+                                            }
+                                            if(dataYaxis.length != 0)
+                                            {
+                                                for(var j = 0; j < _ydataTmp.length; j++)
+                                                {
+                                                    $(toolsNew[3].tool[0]).jqxDropDownList('checkItem',_ydataTmp[j]);
+                                                }
+                                            }
+                                            
+                                            $(toolsNew[5].tool[0]).jqxComboBox('selectedIndex', columnNameIndex);
+                                            $(toolsNew[6].tool[0]).jqxInput('val', item );     
                                         }
                                     }
                                     
-                                    $(toolsNew[5].tool[0]).jqxComboBox('selectedIndex', columnNameIndex);
-                                    $(toolsNew[6].tool[0]).jqxInput('val', item );     
+                                    //dgInventoryShipment出貨
+                                    if(table == "dgInventoryShipment")
+                                    {
+                                        
+                                        var dataLo = DownLoadValue.success;
+                                        var _xAxis = [];
+                                        var _xtype = "Name_of_sold_to_party"; 
+                                        
+                                        //紀錄Material_Description，寫到session中，用以產生選項。
+                                        for( var key in dataLo)
+                                        {
+                                            if(_xAxis.indexOf(dataLo[key][_xtype]) == -1)
+                                            {
+                                                _xAxis.push(dataLo[key][_xtype]); 
+                                            }
+                                        }
+
+                                        sessionStorage.setItem('_xAxis', _xAxis);
+
+                                        //test 建立ToolBar
+                                        var _ChartTypeSource = ["Bar Chart"];
+                                        var _xAxisSource = ["品名"];
+                                        var _yAxisSource = ["Delivery_quantity", "Net_weight", "Total_Weight"];
+                                        var _GroupSource = ["SAP位置", "料品狀態", "批號", "ALL"];
+                                        var num_tabs = $("#tabs ul li").length + 1;
+
+                                        //紀錄目前toolbar的資訊
+                                
+                                        for(var i = 1; i < num_tabs; i++)
+                                        {
+                                            //獲得Toolbar的資料
+                                            // var _xdataTmp = [];
+                                            // var _ydataTmp = [];
+                                            // var tools = $("#jqxShipmentToolBar" + (i)).jqxToolBar("getTools");
+                                            
+                                            // var dataXaxis = $(tools[1].tool[0]).jqxDropDownList('getCheckedItems');
+                                            // for(var t = 0; t < dataXaxis.length; t++)
+                                            // {
+                                            //     _xdataTmp.push(dataXaxis[t]["label"]);
+                                            // }         
+                                            
+                                            // var dataYaxis = $(tools[3].tool[0]).jqxDropDownList('getCheckedItems');
+                                            // for(var t = 0; t < dataYaxis.length; t++)
+                                            // {
+                                            //     _ydataTmp.push(dataYaxis[t]["label"]);
+                                            // }
+                                            
+                                            // var columnNameIndex = $(tools[5].tool[0]).jqxComboBox('selectedIndex');
+                                            // var item = tools[6].tool[0].value;
+
+                                            // destoryToolbar("jqxShipmentToolBar" + i, 6);
+                                            // destoryToolbar("jqxShipmentToolBar" + i, 5);
+                                            // destoryToolbar("jqxShipmentToolBar" + i, 4);
+                                            // destoryToolbar("jqxShipmentToolBar" + i, 3);
+                                            // destoryToolbar("jqxShipmentToolBar" + i, 2);
+                                            // destoryToolbar("jqxShipmentToolBar" + i, 1);
+                                            
+                                            // addToolbar("jqxShipmentToolBar" + i, "dropdownlist", "last", _xAxis, true);
+                                            // addToolbar("jqxShipmentToolBar" + i, "toggle", "last", "Y axis:", false);
+                                            // addToolbar("jqxShipmentToolBar" + i, "dropdownlist", "last", _yAxisSource, false);
+                                            // addToolbar("jqxShipmentToolBar" + i, "toggle", "last", "Column:", false);
+                                            // addToolbar("jqxShipmentToolBar" + i, "combobox", "last", _GroupSource, false);
+                                            // addToolbar("jqxShipmentToolBar" + i, "input", "last", "", false);
+                                            
+                                            //重新填入toolbar資訊
+                                            // var toolsNew = $("#jqxShipmentToolBar" + (i)).jqxToolBar("getTools");
+                                            // if(dataXaxis.length != 0)
+                                            // {
+                                            //     for(var j = 0; j < _xdataTmp.length; j++)
+                                            //     {
+                                            //         $(toolsNew[1].tool[0]).jqxDropDownList('checkItem',_xdataTmp[j]);
+                                            //     } 
+                                            // }
+                                            // if(dataYaxis.length != 0)
+                                            // {
+                                            //     for(var j = 0; j < _ydataTmp.length; j++)
+                                            //     {
+                                            //         $(toolsNew[3].tool[0]).jqxDropDownList('checkItem',_ydataTmp[j]);
+                                            //     }
+                                            // }
+                                            
+                                            // $(toolsNew[5].tool[0]).jqxComboBox('selectedIndex', columnNameIndex);
+                                            // $(toolsNew[6].tool[0]).jqxInput('val', item );     
+                                        }
+                                    }                                           
                                 }
-                            }                                  
-                        });    
+                                    
+                            });    
 
-            },
-            onRightClickRow:function(rowid, irow, icol, e){
+                },
+                onRightClickRow:function(rowid, irow, icol, e){
+                        
+                    //showRightClick(rowid, e);
+                },
+                onSelectRow:function(rowid,status,e){
+                    //handleClickMouseDown(e);
+                },                                                          
+            }); 
+
+
+            //增加Tool bar        
+            $("#" + table).jqGrid('navGrid','#' + table + "pager", { search:true, edit:false, add:false, del:false, refresh:true } );
                     
-                //showRightClick(rowid, e);
-            },
-            onSelectRow:function(rowid,status,e){
-                //handleClickMouseDown(e);
-            },                                                          
-        }); 
+            //增加更多的搜尋條件
+            $.extend($.jgrid.search, {
+                        multipleGroup:true,
+                        multipleSearch: true,
+                        recreateFilter: true,
+                        closeOnEscape: true,
+                        searchOnEnter: true,
+                        overlay: 1,
+                        closeAfterSearch:true
+                    });
+            //表格排序或隱藏       
+            $("#" + table).jqGrid('navButtonAdd','#' + table + "pager",{
+                    caption: "",
+                    title: "表格排序",
+                    onClickButton : function (){
+                    $("#" + table).jqGrid('columnChooser');
+                    }
+                });     
+            //重新整理功能
+            $('.ui-icon-refresh').click(function(){
+                lastSearchData = null;
+                //$("#load_" + table).show();
+            });
 
-
-        //增加Tool bar        
-        $("#" + table).jqGrid('navGrid','#' + table + "pager", { search:true, edit:false, add:false, del:false, refresh:true } );
-                
-        //增加更多的搜尋條件
-        $.extend($.jgrid.search, {
-                    multipleGroup:true,
-                    multipleSearch: true,
-                    recreateFilter: true,
-                    closeOnEscape: true,
-                    searchOnEnter: true,
-                    overlay: 1,
-                    closeAfterSearch:true
-                });
-        //表格排序或隱藏       
-        $("#" + table).jqGrid('navButtonAdd','#' + table + "pager",{
-                caption: "",
-                title: "表格排序",
-                onClickButton : function (){
-                $("#" + table).jqGrid('columnChooser');
-                }
-            });     
-        //重新整理功能
-        $('.ui-icon-refresh').click(function(){
-            lastSearchData = null;
-            //$("#load_" + table).show();
-        });
-
-        // //設定多層的標題檔
-        // $("#" + table).jqGrid('setGroupHeaders', {
-        //                 useColSpanStyle: true, 
-        //                 groupHeaders:[
-        //                     {startColumnName: 'founder', numberOfColumns: 6, titleText: '分裝人員填入'},
-        //                     {startColumnName: 'product_batch_number', numberOfColumns: 2, titleText: '分裝人員填入'},
-        //                     {startColumnName: 'container_base_weight_ideal', numberOfColumns: 3, titleText: '空重確認'},
-        //                     {startColumnName: 'container_doing_weight_ideal', numberOfColumns: 4, titleText: '分裝後總重確認'},
-        //                     {startColumnName: 'container_packaging_weight_ideal', numberOfColumns: 3, titleText: '包裝人員總重確認'},
-        //                     {startColumnName: 'container_addpackaging_weight_ideal', numberOfColumns: 3, titleText: '加包材後總重'},
-        //                 ]
-        //             }); 
-        $("#" + table).jqGrid('setFrozenColumns');
+            $("#" + table).jqGrid('setFrozenColumns');
 
 
         },i * 20);  
@@ -672,64 +968,27 @@
         $("#Gridtabs").tabs({
             select: function(event, ui) {
                 //alert(ui.tab.innerHTML);
-                //ChangeToolbar(ui.tab.innerHTML);
-                refreshGrid(ui.tab.innerHTML);
+                ChangeToolbar(ui.tab.innerHTML);
+                refreshGrid(ui.tab.innerHTML);       
+                
             }
         });
     });
 
     /*動態修改toolbar source*/
     function ChangeToolbar(process) {
-        
-        var SourceY = [], SourceCol = ["型號", "瓶號", "ALL"];
-        switch (process) {
-            case "清洗":
-                SourceY = ["導電度"];
-                break;
-            case "組裝測試":
-                SourceY = ["烘箱溫度", "烘箱時間"];
-                break;
-            case "Outbound":
-                SourceY = ["M1", "M2", "A1", "A2", "A3", "M1-Fail紀錄", "M2-Fail紀錄", "A1-Fail紀錄", 
-                "A2-Fail紀錄", "A3-Fail紀錄"];
-                break;
-            case "壓降測漏":
-                SourceY = ["管路校正", "管路校正-Fail紀錄", "By pass-1", "By pass-2", "By pass-Fail紀錄", 
-                "Body-1", "Body-2", "Body-Fail紀錄"];
-                break;
-            case "Inbound":
-                SourceY = ["VCR", "Fill Port", "VCR-Fail紀錄", "Fill Port-Fail紀錄", "M1", "M2", 
-                "A1", "A2", "A3", "M1-Fail紀錄", "M2-Fail紀錄", "A1-Fail紀錄", "A2-Fail紀錄",
-                "A3-Fail紀錄", "M1 Valve", "M2 Valve", "A1 Valve", "A2 Valve", "A3 Valve",
-                "M1 Valve-Fail紀錄", "M2 Valve-Fail紀錄", "A1 Valve-Fail紀錄", "A2 Valve-Fail紀錄", 
-                "A3 Valve-Fail紀錄", "In-1", "In-2", "OUT", "In-1-Fail紀錄", "In-2-Fail紀錄", 
-                "OUT-Fail紀錄"];
-                break;
-            case "PP測試":
-                SourceY = ["Pump", "花費時間"];
-                break;
-            case "RGA測試":
-                SourceY = ["真空值", "H2O", "N2", "O2", "CO2", "戊烷", "He"];
-                break;
-            case "熱氮氣":
-                SourceY = ["露點值", "含水量"];
-                break;
-        }
-        //修改ToolBary source
-        var num_tabs = $("#tabs ul li").length + 1;
-        for(var i = 1; i < num_tabs; i++)
+
+        if(process == "庫存")
         {
-            destoryToolbar("jqxToolBar" + i, 8);
-            destoryToolbar("jqxToolBar" + i, 7);
-            destoryToolbar("jqxToolBar" + i, 6);
-            destoryToolbar("jqxToolBar" + i, 5);
-            
-            addToolbar("jqxToolBar" + i, "combobox", "last", SourceY, true);
-            addToolbar("jqxToolBar" + i, "toggle", "last", "Column:", false);
-            addToolbar("jqxToolBar" + i, "combobox", "last", SourceCol, false);
-            addToolbar("jqxToolBar" + i, "input", "last", "", false); 
+            document.getElementById("jqxShipmentToolBar1").style.display="none";
+            document.getElementById("jqxInventoryToolBar1").style.display="";
         }
-        
+
+        if(process == "出貨")
+        {
+            document.getElementById("jqxShipmentToolBar1").style.display="";
+            document.getElementById("jqxInventoryToolBar1").style.display="none";
+        }   
     }
 
     /*****切換tab標籤時重新整理Grid*****/
@@ -847,17 +1106,24 @@
         <div class="col-md-10" id ="Gridtabs" class="Gridtabs"> 
             <ul class = "row ">
                 <li><a href="#Gridtabs-1">庫存</a></li>
-                <li><a href="#Gridtabs-2">RawMaterial</a></li>
-                <li><a href="#Gridtabs-3">成品</a></li>
-                <li><a href="#Gridtabs-4">化學品</a></li>
-                <li><a href="#Gridtabs-5">鋼瓶</a></li>
+                <li><a href="#Gridtabs-2">出貨</a></li>
+                <li><a href="#Gridtabs-3">RawMaterial</a></li>
+                <li><a href="#Gridtabs-4">成品</a></li>
+                <li><a href="#Gridtabs-5">化學品</a></li>
+                <li><a href="#Gridtabs-6">鋼瓶</a></li>
             </ul>
             <div id = "Gridtabs-1" >
                 <div class = "row">
                 <table id="dgInventoryInstock" ></table> 
                 <div id="dgInventoryInstockpager"></div>
                 </div>                             
-            </div>   
+            </div>
+            <div id = "Gridtabs-2" >
+                <div class = "row">
+                <table id="dgInventoryShipment" ></table> 
+                <div id="dgInventoryShipmentpager"></div>
+                </div>                             
+            </div>      
         </div>
     </div>
 </div>
@@ -898,9 +1164,9 @@
     </ul>
     <div id='tab1' style='background-color:powderblue;'>
         <span style='font-weight:bold; color:#2e6e9e; display:block; text-align:center'>《 Group 1 》</span> <br />
-        <div id="jqxInventoryToolBar1" style = "margin:0px auto; text-align:justify" ></div>
-        <h1 class="my-1"></h1>
-        
+        <div id="jqxInventoryToolBar1" style = "margin:0px auto; text-align:justify; display:" ></div>
+        <div id="jqxShipmentToolBar1" style = "margin:0px auto; text-align:justify; display:none" ></div>
+        <h1 class="my-1"></h1>     
     </div>
 </div>
 {{-- Tab ToolBar End --}}    
@@ -1376,53 +1642,79 @@
 
     /*產生圖表*/
    $("#ExportChart").click( function(){
-       //初始圖表時不產生"無資料"的提醒
-       var initial = 'false';
-       if(document.getElementById("tabs").style.display =='none')
-       {
-           initial = 'true'; 
-       }  
-       document.getElementById("canvas_div").style.display=""; //顯示Chart
-       document.getElementById("tabs").style.display=""; //顯示Control Toolbar
-       var num_tabs = $("#tabs ul li").length; //Group 組數
-       
-       if (initial == 'true')
-       {
-           return;
-       }
+  
+        //初始圖表時不產生"無資料"的提醒
+        var initial = 'false';
+        if(document.getElementById("tabs").style.display =='none')
+        {
+            initial = 'true'; 
+        }  
+        document.getElementById("canvas_div").style.display=""; //顯示Chart
+        document.getElementById("tabs").style.display=""; //顯示Control Toolbar
+        var num_tabs = $("#tabs ul li").length; //Group 組數
+        
+        if (initial == 'true')
+        {
+            return;
+        }
+   
+      
+        //分組的分組資料
+        var dataXaxisGroup = [];     //紀錄Group X軸資料 
+        var dataYaxisGroup = [];     //紀錄Group Y軸資料 
+        var columnNameGroup = [];    //紀錄Group 欄位名稱
+        var itemGroup = [];    //紀錄Group 欄位名稱
+        
 
-       //分組的分組資料
-       var dataXaxisGroup = [];     //紀錄Group X軸資料 
-       var dataYaxisGroup = [];     //紀錄Group Y軸資料 
-       var columnNameGroup = [];    //紀錄Group 欄位名稱
-       var itemGroup = [];    //紀錄Group 欄位名稱
-       
+        if (getColumnNameFromChineseToDatabase($("#Gridtabs .ui-tabs-active").text()) == "InventoryInstock")
+        {
+            for(var j = 0; j < num_tabs; j++)
+            {
+                
+                //獲得Toolbar的資料
+                var tools = $("#jqxInventoryToolBar" + ( j + 1 )).jqxToolBar("getTools");
+                    
+                var dataXaxis = tools[1].tool[0].textContent;        
+                var dataYaxis = tools[3].tool[0].lastChild.value;
+                var columnName = tools[5].tool[0].lastChild.value;
+                var item = tools[6].tool[0].value;
 
-       for(var j = 0; j < num_tabs; j++)
-       {
-         
-           //獲得Toolbar的資料
-           var tools = $("#jqxInventoryToolBar" + ( j + 1 )).jqxToolBar("getTools");
-            
-           var dataXaxis = tools[1].tool[0].textContent;        
-           var dataYaxis = tools[3].tool[0].lastChild.value;
-           var columnName = tools[5].tool[0].lastChild.value;
-           var item = tools[6].tool[0].value;
+                dataXaxisGroup.push(dataXaxis);
+                dataYaxisGroup.push(dataYaxis);
+                columnNameGroup.push(columnName);
+                itemGroup.push(item);
 
-           dataXaxisGroup.push(dataXaxis);
-           dataYaxisGroup.push(dataYaxis);
-           columnNameGroup.push(columnName);
-           itemGroup.push(item);
+            }
+        }
 
-       }
-       
+        if (getColumnNameFromChineseToDatabase($("#Gridtabs .ui-tabs-active").text()) == "InventoryShipment")
+        {
+            for(var j = 0; j < num_tabs; j++)
+            {
+                
+                //獲得Toolbar的資料
+                var tools = $("#jqxShipmentToolBar" + ( j + 1 )).jqxToolBar("getTools");
+                
+                var columnName = tools[1].tool[0].lastChild.value;
+                var dataXaxis = tools[2].tool[0].lastChild.value;        
+                var dataYaxis = tools[4].tool[0].lastChild.value;
+                
+                var item = ["6001"];
+
+                dataXaxisGroup.push(dataXaxis);
+                dataYaxisGroup.push(dataYaxis);
+                columnNameGroup.push(columnName);
+                itemGroup.push(item);
+
+            }
+        }
+        
         // //檢查選擇Control Chart時，Group 不能大於1組以上，UCL 或LCL需同時為空或有值避免Center Line計算錯誤
         // //檢查選擇Scatter Chart時，Group 不能有值沒有選擇，避免無法產生圖表
         // var _checkChartWithGroup = checkChartWithGroup(chartTypeGroup, UCLGroup, LCLGroup); 
         // if (_checkChartWithGroup !==''){alert(_checkChartWithGroup); return;}
 
-       //獲得資料
-
+        //獲得資料
         var table = "dg" +  getColumnNameFromChineseToDatabase($("#Gridtabs .ui-tabs-active").text()); //呈現此table的title
         
         var o = $("#" + table);
@@ -1439,26 +1731,40 @@
 
         var caption = o.jqGrid("getGridParam", "caption");
 
-       $.ajax({
-               async:false,
-               url: "/InventoryInstock/export" ,//路徑
-               type: "POST",           
-               data:{
-                    "postData": postData,
-                    "table":table,
-                    "caption": caption,
-                    "UserFilter":sessionStorage.getItem("Se_RawMaterial"),
-               },
-               success: function (DownLoadValue){
-                   var dataLo = DownLoadValue.success;
-                 //產生要寫入excel的data
-                   //參數格式: original data -> toolbar data -> toolbar control data 
-                   DrowBarChart( 'Container Balance', dataLo, 
-                            dataXaxisGroup, dataYaxisGroup, 
-                           columnNameGroup, itemGroup 
-                       );
-                   }                                  
-               });    
+        $.ajax({
+                async:false,
+                url: "/InventoryInstock/export" ,//路徑
+                type: "POST",           
+                data:{
+                        "postData": postData,
+                        "table":table,
+                        "caption": caption,
+                        "UserFilter":sessionStorage.getItem("Se_RawMaterial"),
+                },
+                success: function (DownLoadValue){
+                        var dataLo = DownLoadValue.success;
+                        //產生要寫入excel的data
+                        //參數格式: original data -> toolbar data -> toolbar control data
+                        if(caption == "庫存")
+                        {
+                            DrowInventoryBarChart( caption, dataLo, 
+                                    dataXaxisGroup, dataYaxisGroup, 
+                                columnNameGroup, itemGroup 
+                            ); 
+                        }
+                        if(caption == "出貨")
+                        {
+                            DrowShipmentBarChart( caption, dataLo, 
+                                    dataXaxisGroup, dataYaxisGroup, 
+                                columnNameGroup, itemGroup 
+                            ); 
+                        } 
+                        
+                    }                                  
+                });    
+       
+
+       
              
    })
 </script>
@@ -1468,44 +1774,39 @@
 <script type="text/javascript">
 /*產生圖表*/
 $("#MyFavorite").click( function(){
+    var item_Material = sessionStorage.getItem('Material_Description');
+
     var table = "viewLog";
-    var pcontent = '<span style="font-weight:bold; color:#2e6e9e;">《 資料處理紀錄 Data Log 》</span><br /><br />' + '<table id= '+ table + '></table><div id="viewLogPager"></div>';
+    var pcontent = '<span style="font-weight:bold; color:#2e6e9e;">《 庫存分析 》</span><br /><br />' + '<table id= '+ table + '></table><div id="viewLogPager"></div>';
     
     //建立動態表格
     $("#confirmDialog").html(pcontent);
     
     var colNames = [];
     var colModel = [];
-    colNames = ['ID','庫存','包含'];
+    colNames = ['ID','庫存','包含', '選單'];
     colModel = 
     [
+        {name:'id', align:"center", width:120, index:'id', classes: "text-break", editable:true, search:true, searchoptions:{sopt:['cn','nc','eq']}},
+        {name:'Description', align:"center", width:120, index:'Description', classes: "text-break", editable:true, search:true, searchoptions:{sopt:['cn','nc','eq']}},    
+        {name:'Include', width:250, index:'Include', classes: "text-break", search:true, editable:true, searchoptions:{sopt:['cn','nc','eq']}},
         {
-            name:'added_on', index:'added_on', align:"center", width:140, frozen:false, sortable:true,
-            search:true,
-                    searchoptions: {
-                        sopt: ['eq','le','ge'],
-                        dataInit : function (elem) 
-                        {
-                            var self = this;
-                            $(elem).datepicker({
-                                dateFormat: 'yy-mm-dd',                                 
-                                changeYear: true,
-                                changeMonth: true,
-                                showOn: 'focus',
-                                autoclose:1
-                            });
-                        }
-                    },                   
-        },
-        {name:'user', align:"center", width:120, index:'user', classes: "text-break", search:true, searchoptions:{sopt:['cn','nc','eq']}},
-        {name:'action', align:"center", width:70, index:'action', search:true, searchoptions:{sopt:['cn','nc','eq']}},
-        {name:'description', width:520, index:'description', classes: "text-break", search:true, searchoptions:{sopt:['cn','nc','eq']}}
+            name:'Material_Description', align:"left", width:100, index:'Material_Description', search:true, sortable:true, editable:true,
+            // edittype:'custom', editoptions:
+            // {
+            //     custom_element: item_Material, custom_value:combobox_value
+            // },    
+            // stype:'custom', searchoptions:
+            // {
+            //     custom_element: item_Material, custom_value:combobox_value                   
+            // },
+        }
     ];
     
 
         // 準備資料           
         $("#" + table).jqGrid({
-        url:"SamplingRecord/showOperLog",
+        url:"InventoryInstock/MyFavorite",
         mtype : "GET",
         datatype: "json",        
         altrows:false,
@@ -1521,7 +1822,7 @@ $("#MyFavorite").click( function(){
         viewrecords: true,
         gridview: false,
         sortorder: "desc",
-        caption:"紀錄 Log",
+        caption:"我的最愛",
         shrinkToFit :false,
         loadonce: false,
         
@@ -1555,9 +1856,402 @@ $("#MyFavorite").click( function(){
         
         focus: function() { $(".ui-dialog").focus(); }, // Unfocus the default focus elem
         buttons : {
+            "修改" : function() {   
+                    var table = "viewLog" ;
+                    var s =  $('#' + table ).jqGrid('getGridParam','selrow');
+                    if (s)	{
+                        $('#' + table ).jqGrid('editRow', s);
+                    }
+                    else
+                        alert("Please select a row...");
+            }, 
+            "儲存" : function() {
+                    var table = "viewLog" ;   
+                    var result = [];
+                    var s =  $('#' + table ).jqGrid('getGridParam','selrow');               
+                    var ret = $('#' + table ).jqGrid('getRowData',s);
+                    var cellvalue='';
+                    saveparameters = 
+                        {
+                            "successfunc" : function( response ) {
+                                            $('#' + table ).trigger( 'reloadGrid' );
+                                        },
+                            "url" : '/InventoryInstock/MyFavoriteAddandUpdate/'+ s,
+                            "extraparam" : {                                   
+                                "id" : s,
+                                "table": table,                           
+                                },
+                            "aftersavefunc" :function( response ) {
+                                            
+                                        }, 
+                            "errorfunc": null,
+                            "afterrestorefunc" : null,
+                            "restoreAfterError" : true,
+                            "mtype" : "POST"
+                        }
+                        $('#' + table ).jqGrid('saveRow', s, saveparameters);  
+                
+            },    
             "確認" : function() {   
-                $(this).dialog("close");        
-            },       
+                $(this).dialog("close");
+                var table = "viewLog" ;   
+                var s =  $('#' + table ).jqGrid('getGridParam','selrow');               
+                var ret = $('#' + table ).jqGrid('getRowData',s);
+                sessionStorage.setItem('Se_RawMaterial', ret.Include);
+                var table = "dgInventoryInstock" ;
+                    $('#' + table ).jqGrid('setGridParam', { 
+                            postData: {"UserFilter":sessionStorage.getItem("Se_RawMaterial")},
+                            
+                    }).trigger('reloadGrid');
+                
+                //顯示圖表
+                document.getElementById("canvas_div").style.display=""; //顯示Chart
+                document.getElementById("tabs").style.display=""; //顯示Control Toolbar
+                
+                //清除原本的toolbar
+                var num_tabs = $("#tabs ul li").length;
+
+                if(num_tabs > 1)
+                {
+                    for(var p = num_tabs ; p >= 1 ; p--)
+                    {
+                        $('#tabs').tabs('remove', p);
+                    }
+                    $("#tabs").tabs("refresh");
+                }
+
+                //獲得共有多少組的group，分割
+                var groupFromMyfavorites = ret.Include.split(',');
+
+                //test 建立ToolBar
+                var _ChartTypeSource = ["Bar Chart"];
+                var _xAxisSource = ["品名"];
+                var _yAxisSource = ["可用量", "檢驗中"];
+                var _GroupSource = ["SAP位置", "料品狀態", "批號", "ALL"];
+
+                var item_Material = sessionStorage.getItem('Material_Description');
+                var item_Storage_Location = sessionStorage.getItem('Storage_Location');
+                var item_Descr_of_Storage_Loc = sessionStorage.getItem('Descr_of_Storage_Loc');
+                var item_Batch = sessionStorage.getItem('Batch');
+
+
+                var item_Name_of_sold_to_party = sessionStorage.getItem('Name_of_sold_to_party');
+                var item_Name_of_the_ship_to_party = sessionStorage.getItem('Name_of_the_ship_to_party');
+                var item_Description = sessionStorage.getItem('Description');
+                var item_Sold_to_party = sessionStorage.getItem('Sold_to_party');
+                var item_Ship_to_party = sessionStorage.getItem('Ship_to_party');
+                var item_Ship_Batch = sessionStorage.getItem('Ship_Batch');
+                var item_Ship_Material = sessionStorage.getItem('Ship_Material');
+                var item_Item_category = sessionStorage.getItem('Item_category');
+                var item_Ship_Storage_Location = sessionStorage.getItem('Ship_Storage_Location');
+
+                
+               
+                //add toolbar 
+                //var tabs =  $("#tabs").tabs();
+
+                var num_tabs = groupFromMyfavorites.length;
+
+                for(var num_tabs = 2; num_tabs <= groupFromMyfavorites.length; num_tabs++)
+                {
+                    $("#tabs ul").append(
+                    "<li><a href='#tab" + num_tabs + "'>Group " + num_tabs + "</a></li>"
+                    );
+
+                    $("#tabs").append("<div id='tab"+ num_tabs+ "' style='background-color:powderblue;'>"
+                        + "<span style='font-weight:bold; color:#2e6e9e; display:block; text-align:center'>《 Group " + num_tabs + " 》</span> <br />"       
+                        + "<div id='jqxInventoryToolBar" + num_tabs + "' style = 'margin:0px auto; text-align:justify' ></div>" 
+                        + "</div>");
+
+
+                    createInventoryInstockToolbar("InventoryInstock", num_tabs, _ChartTypeSource, _xAxisSource, _yAxisSource, _GroupSource, 
+                    item_Material, item_Storage_Location, item_Descr_of_Storage_Loc, item_Batch,
+                    item_Name_of_sold_to_party, item_Name_of_the_ship_to_party, item_Description, item_Sold_to_party, item_Ship_to_party,
+                    item_Ship_Batch, item_Ship_Material, item_Item_category, item_Ship_Storage_Location
+                    );
+                    // $("#jqxToolBar" + num_tabs).jqxToolBar('render');
+
+                    $("#tabs").tabs("refresh");
+                }
+
+                //紀錄目前toolbar的資訊
+                for(var p = 0; p < groupFromMyfavorites.length; p++)
+                {
+                    //獲得Toolbar的資料
+                    var _xdataTmp = [];
+                    var _ydataTmp = [];
+                    //var tools = $("#jqxInventoryToolBar" + (i)).jqxToolBar("getTools");
+                    
+                    var dataXaxis = groupFromMyfavorites[p];
+                    _xdataTmp.push(dataXaxis);
+                             
+                    var dataYaxis = ["可用量", "檢驗中"];
+                    for(var t = 0; t < dataYaxis.length; t++)
+                    {
+                        _ydataTmp.push(dataYaxis[t]);
+                    }
+                    
+                    
+                    var columnNameIndex = ["SAP位置"];
+                    var item = "";
+                    if (ret.Description == "非DOI相關-KAO生產")
+                    {
+                        item = "1017";
+                    }
+                    else
+                    {
+                        item = "6001";
+                    }
+                    
+
+                    // i為toolbar
+                    i = p+1;
+                    destoryToolbar("jqxInventoryToolBar" + i, 6);
+                    destoryToolbar("jqxInventoryToolBar" + i, 5);
+                    destoryToolbar("jqxInventoryToolBar" + i, 4);
+                    destoryToolbar("jqxInventoryToolBar" + i, 3);
+                    destoryToolbar("jqxInventoryToolBar" + i, 2);
+                    destoryToolbar("jqxInventoryToolBar" + i, 1);
+                    
+                    addToolbar("jqxInventoryToolBar" + i, "dropdownlist", "last", _xdataTmp, true);
+                    addToolbar("jqxInventoryToolBar" + i, "toggle", "last", "Y axis:", false);
+                    addToolbar("jqxInventoryToolBar" + i, "dropdownlist", "last", _ydataTmp, false);
+                    addToolbar("jqxInventoryToolBar" + i, "toggle", "last", "Column:", false);
+                    addToolbar("jqxInventoryToolBar" + i, "combobox", "last", _GroupSource, false);
+                    addToolbar("jqxInventoryToolBar" + i, "input", "last", "", false);
+                    
+                    //重新填入toolbar資訊
+                    var toolsNew = $("#jqxInventoryToolBar" + (i)).jqxToolBar("getTools");
+                    if(dataXaxis.length != 0)
+                    {
+                        for(var j = 0; j < _xdataTmp.length; j++)
+                        {
+                            $(toolsNew[1].tool[0]).jqxDropDownList('checkItem',_xdataTmp[j]);
+                        } 
+                    }
+                    if(dataYaxis.length != 0)
+                    {
+                        for(var j = 0; j < _ydataTmp.length; j++)
+                        {
+                            $(toolsNew[3].tool[0]).jqxDropDownList('checkItem',_ydataTmp[j]);
+                        }
+                    }
+                    
+                    $(toolsNew[5].tool[0]).jqxComboBox('selectedIndex', 0); //暫時
+                    $(toolsNew[6].tool[0]).jqxInput('val', item );     
+                }
+
+                //產生圖表
+                //分組的分組資料
+                var dataXaxisGroup = [];     //紀錄Group X軸資料 
+                var dataYaxisGroup = [];     //紀錄Group Y軸資料 
+                var columnNameGroup = [];    //紀錄Group 欄位名稱
+                var itemGroup = [];    //紀錄Group 欄位名稱
+                
+
+                for(var j = 1; j < num_tabs; j++)
+                {
+                    
+                    //獲得Toolbar的資料
+                    var tools = $("#jqxInventoryToolBar" + ( j )).jqxToolBar("getTools");
+                        
+                    var dataXaxis = tools[1].tool[0].textContent;        
+                    var dataYaxis = tools[3].tool[0].lastChild.value;
+                    var columnName = tools[5].tool[0].lastChild.value;
+                    var item = tools[6].tool[0].value;
+
+                    dataXaxisGroup.push(dataXaxis);
+                    dataYaxisGroup.push(dataYaxis);
+                    columnNameGroup.push(columnName);
+                    itemGroup.push(item);
+
+                }
+                
+                // //檢查選擇Control Chart時，Group 不能大於1組以上，UCL 或LCL需同時為空或有值避免Center Line計算錯誤
+                // //檢查選擇Scatter Chart時，Group 不能有值沒有選擇，避免無法產生圖表
+                // var _checkChartWithGroup = checkChartWithGroup(chartTypeGroup, UCLGroup, LCLGroup); 
+                // if (_checkChartWithGroup !==''){alert(_checkChartWithGroup); return;}
+
+                //獲得資料
+
+                var table = "dg" +  getColumnNameFromChineseToDatabase($("#Gridtabs .ui-tabs-active").text()); //呈現此table的title
+                
+                var o = $("#" + table);
+                
+                var columnNames = o.jqGrid('getGridParam', 'colNames');//從grid獲得colnames
+
+                var rowNumber = o.jqGrid('getGridParam', 'records');//獲得搜尋後的紀錄筆數
+                
+                var postData = o.jqGrid('getGridParam', 'postData');//獲得搜尋條件
+
+                var getData = o.jqGrid('getGridParam', 'data');//獲得所有jqgrid的資料
+                
+                var rowData = o.jqGrid('getRowData');//獲得目前顯示在表格上的資料
+
+                var caption = o.jqGrid("getGridParam", "caption");
+
+                $.ajax({
+                        async:false,
+                        url: "/InventoryInstock/export" ,//路徑
+                        type: "POST",           
+                        data:{
+                                "postData": postData,
+                                "table":table,
+                                "caption": caption,
+                                "UserFilter":sessionStorage.getItem("Se_RawMaterial"),
+                        },
+                        success: function (DownLoadValue){
+                            var dataLo = DownLoadValue.success;
+                            //產生要寫入excel的data
+                            //參數格式: original data -> toolbar data -> toolbar control data 
+                            DrowInventoryBarChart( caption, dataLo, 
+                                        dataXaxisGroup, dataYaxisGroup, 
+                                    columnNameGroup, itemGroup 
+                                );
+                            }                                  
+                        });    
+                         
+            },  
+            "列印" : function() {
+                    $(this).dialog("close");
+
+                    //獲得原始資料
+                    var table = "viewLog" ;   
+                    var s =  $('#' + table ).jqGrid('getGridParam','selrow');               
+                    var ret = $('#' + table ).jqGrid('getRowData',s);
+                    sessionStorage.setItem('Se_RawMaterial', ret.Include);
+                    var table = "dgInventoryInstock" ;
+                        $('#' + table ).jqGrid('setGridParam', { 
+                                postData: {"UserFilter":sessionStorage.getItem("Se_RawMaterial")},
+                                
+                        }).trigger('reloadGrid');
+                    
+
+                    //獲得共有多少組的group，分割
+                    var groupFromMyfavorites = ret.Include.split(',');
+
+                    //test 建立ToolBar
+                    var _ChartTypeSource = ["Bar Chart"];
+                    var _xAxisSource = ["品名"];
+                    var _yAxisSource = ["可用量", "檢驗中"];
+                    var _GroupSource = ["SAP位置", "料品狀態", "批號", "ALL"];
+
+                    var item_Material = sessionStorage.getItem('Material_Description');
+                    var item_Storage_Location = sessionStorage.getItem('Storage_Location');
+                    var item_Descr_of_Storage_Loc = sessionStorage.getItem('Descr_of_Storage_Loc');
+                    var item_Batch = sessionStorage.getItem('Batch');
+            
+
+                    
+                    // //檢查選擇Control Chart時，Group 不能大於1組以上，UCL 或LCL需同時為空或有值避免Center Line計算錯誤
+                    // //檢查選擇Scatter Chart時，Group 不能有值沒有選擇，避免無法產生圖表
+                    // var _checkChartWithGroup = checkChartWithGroup(chartTypeGroup, UCLGroup, LCLGroup); 
+                    // if (_checkChartWithGroup !==''){alert(_checkChartWithGroup); return;}
+
+                    //獲得資料
+
+                    var table = "dg" +  getColumnNameFromChineseToDatabase($("#Gridtabs .ui-tabs-active").text()); //呈現此table的title
+                    
+                    var o = $("#" + table);
+                    
+                    var columnNames = o.jqGrid('getGridParam', 'colNames');//從grid獲得colnames
+
+                    var rowNumber = o.jqGrid('getGridParam', 'records');//獲得搜尋後的紀錄筆數
+                    
+                    var postData = o.jqGrid('getGridParam', 'postData');//獲得搜尋條件
+
+                    var getData = o.jqGrid('getGridParam', 'data');//獲得所有jqgrid的資料
+                    
+                    var rowData = o.jqGrid('getRowData');//獲得目前顯示在表格上的資料
+
+                    var caption = o.jqGrid("getGridParam", "caption");
+
+                    $.ajax({
+                            async:false,
+                            url: "/InventoryInstock/export" ,//路徑
+                            type: "POST",           
+                            data:{
+                                    "postData": postData,
+                                    "table":table,
+                                    "caption": caption,
+                                    "UserFilter":sessionStorage.getItem("Se_RawMaterial"),
+                            },
+                            success: function (DownLoadValue){
+                                    var dataLo = DownLoadValue.success;
+                                    //產生要寫入excel的data
+                                    //參數格式: original data -> toolbar data -> toolbar control data 
+                                    // DrowBarChart( 'Container Balance', dataLo, 
+                                    //             dataXaxisGroup, dataYaxisGroup, 
+                                    //         columnNameGroup, itemGroup 
+                                    //     );
+                                    var table = "viewLog" ;   
+                                    var s =  $('#' + table ).jqGrid('getGridParam','selrow');               
+                                    var ret = $('#' + table ).jqGrid('getRowData',s);
+                                    var url = "/InventoryInstock/ExportWord";
+                                    var dataYaxis = [getColumnNameFromChineseToDatabase("可用量"), getColumnNameFromChineseToDatabase("檢驗中")];
+                                    var columnNameIndex = [getColumnNameFromChineseToDatabase("SAP位置")];
+                                    var item = ["6001"];
+
+                                    //分組資料
+
+                                    //計算可用量、檢驗中, 根據勾選的選擇加總
+                                    var _sumUnrestricted = [];
+                                    var _sumIn_Quality_Insp = [];
+                                    var _sumDataY = [];
+
+                                    var dataX = ret.Include.split(",");
+                                    var dataY = dataYaxis;
+                                    var columnName = columnNameIndex[0];
+                                    //var item = itemGroup[0];
+                                    
+                                    for(var i = 0 ; i < dataX.length ; i++)
+                                    {
+                                        _sumUnrestricted.push(0);
+                                        _sumIn_Quality_Insp.push(0);
+                                        _sumDataY.push(0);
+                                    }
+                                    //根據dataX(加總所有產品的值)
+                                    for(var j = 0; j < dataX.length; j++)
+                                    {
+                                        for( var key in dataLo)
+                                        {
+                                            for(var q = 0; q < item.length; q++)
+                                            {
+                                                if(dataLo[key][getColumnNameFromChineseToDatabase(columnName)] == item[q] 
+                                                && dataLo[key]["Material_Description"] == dataX[j])
+                                                {
+                                                    _sumUnrestricted[j] += parseFloat(dataLo[key]["Unrestricted"]);
+                                                    _sumIn_Quality_Insp[j] += parseFloat(dataLo[key]["In_Quality_Insp"]);
+                                                }
+                                            }     
+                                        } 
+
+                                        //將分組資料根據dataY值填入呈現的圖資料中
+                                        for(var k = 0 ; k < dataY.length; k++)
+                                        {
+                                            switch(dataY[k])
+                                            {
+                                                case 'Unrestricted':
+                                                    _sumDataY[j] += _sumUnrestricted[j];
+                                                    break;
+                                                case 'In_Quality_Insp':
+                                                    _sumDataY[j] += _sumIn_Quality_Insp[j];
+                                                    break;
+                                            }
+                                        }
+
+                                    }                 
+
+                                    mypost(url,{
+                                        Include:ret.Include,
+                                        Sum:_sumDataY             
+                                    });       
+
+
+                                }                                  
+                            });                     
+                
+            },    
         }
     });  
             
@@ -1929,4 +2623,28 @@ function viewChartData(){
 </script>
     {{-- Add to Confirm End --}}
 
+    {{-- Post Parameter Start--}}
+
+<script type="text/javascript">
+    function mypost(url, params) { 
+        // 創建form
+        var temp_form = document.createElement("form");
+        // 設置form
+        temp_form .action = url;      
+        temp_form .target = "_self";
+        temp_form .method = "post";      
+        temp_form .style.display = "none";
+        // 處理需要傳遞的參數 
+        for (var x in params) { 
+            var opt = document.createElement("textarea");      
+            opt.name = x;      
+            opt.value = params[x];      
+            temp_form .appendChild(opt);      
+        }      
+        document.body.appendChild(temp_form);
+        // 提交表單      
+        temp_form .submit();     
+    } 
+</script>
+    {{-- Post Parameter End --}}
 @endsection

@@ -19,6 +19,8 @@ class AddProductSpecAlexaTable extends Migration
             $table->string("ALEXA-447FN-400g_TSMC_CL", 50)->after('ALEXA-447FN-300g_TSMC_CL');
             $table->string("ALEXA-447FN-300g_UMC_Spec", 50)->after('ALEXA-447FN-400g_TSMC_CL');
             $table->string("ALEXA-447FN-600g_SMIC_Spec", 50)->after('ALEXA-447FN-300g_UMC_Spec');
+            $table->string("ALEXATW_TSMC_CL_ICP_OES", 50)->after('ALEXA-447FN-600g_SMIC_Spec');
+            $table->string("ALEXATW_TSMC_CL_ICP_MS", 50)->after('ALEXATW_TSMC_CL_ICP_OES');
         });
     }
 

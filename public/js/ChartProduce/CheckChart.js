@@ -574,7 +574,7 @@ function DrowChart( ChartTitle, dataLo, chartTypeGroup, dataXaxisGroup, dataYaxi
 
 
 /*產生圖表*/
-function DrowBarChart( ChartTitle, dataLo, dataXaxisGroup, dataYaxisGroup, columnNameGroup, itemGroup)
+function DrowInventoryBarChart( ChartTitle, dataLo, dataXaxisGroup, dataYaxisGroup, columnNameGroup, itemGroup)
 {   
     //產生新圖
     if (window.myBarChart !== undefined && window.myBarChart !== null) 
@@ -645,6 +645,34 @@ function DrowBarChart( ChartTitle, dataLo, dataXaxisGroup, dataYaxisGroup, colum
         
     }
 
+    var opt = {
+        events: false,
+        tooltips: {
+            enabled: false
+        },
+        hover: {
+            animationDuration: 0
+        },
+        animation: {
+            duration: 1,
+            onComplete: function () {
+                var chartInstance = this.chart,
+                    ctx = chartInstance.ctx;
+                ctx.font = Chart.helpers.fontString(Chart.defaults.global.defaultFontSize, Chart.defaults.global.defaultFontStyle, Chart.defaults.global.defaultFontFamily);
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'bottom';
+    
+                this.data.datasets.forEach(function (dataset, i) {
+                    var meta = chartInstance.controller.getDatasetMeta(i);
+                    meta.data.forEach(function (bar, index) {
+                        var data = dataset.data[index];                            
+                        ctx.fillText(data, bar._model.x, bar._model.y - 5);
+                    });
+                });
+            }
+        }
+    };
+
     var ctx = document.getElementById('canvas').getContext('2d');
     window.myBarChart = new Chart(ctx, {
         type: 'bar',
@@ -652,7 +680,7 @@ function DrowBarChart( ChartTitle, dataLo, dataXaxisGroup, dataYaxisGroup, colum
             labels:dataXaxisGroup,
             // labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
             datasets: [{
-                label: '庫存量',
+                label: ChartTitle,
                 // data: [12, 19, 3, 5, 2, 3],
                 data: _sumDataY,
                 backgroundColor:_ChartbackgroundColor,
@@ -683,6 +711,175 @@ function DrowBarChart( ChartTitle, dataLo, dataXaxisGroup, dataYaxisGroup, colum
                         beginAtZero: true
                     }
                 }]
+            },
+            events: false,
+            tooltips: {
+                enabled: false
+            },
+            hover: {
+                animationDuration: 0
+            },
+            animation: {
+                duration: 1,
+                onComplete: function () {
+                    var chartInstance = this.chart,
+                        ctx = chartInstance.ctx;
+                    ctx.font = Chart.helpers.fontString(Chart.defaults.global.defaultFontSize, Chart.defaults.global.defaultFontStyle, Chart.defaults.global.defaultFontFamily);
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'bottom';
+
+                    this.data.datasets.forEach(function (dataset, i) {
+                        var meta = chartInstance.controller.getDatasetMeta(i);
+                        meta.data.forEach(function (bar, index) {
+                            var data = dataset.data[index];                            
+                            ctx.fillText(data, bar._model.x, bar._model.y - 5);
+                        });
+                    });
+                }
+            }
+        }
+    });
+}
+
+/*產生圖表*/
+function DrowShipmentBarChart( ChartTitle, dataLo, dataXaxisGroup, dataYaxisGroup, columnNameGroup, itemGroup)
+{   
+    //產生新圖
+    if (window.myBarChart !== undefined && window.myBarChart !== null) 
+    {
+        window.myBarChart.destroy();
+    }
+
+    //計算可用量、檢驗中, 根據勾選的選擇加總
+    var _sumDataY = [];
+
+    //Chart顏色
+    var _ChartbackgroundColor = [];
+    var _ChartborderColor = [];
+
+    
+    for(var i = 0 ; i < dataXaxisGroup.length ; i++)
+    {
+        _sumDataY.push(0);
+        _ChartbackgroundColor.push('rgba(75, 192, 192, 0.2)');
+        _ChartborderColor.push('rgb(75, 192, 192)');
+    }
+
+   
+
+    
+    //根據選擇的Y值計算
+    for(var i = 0 ; i < dataXaxisGroup.length ; i++)
+    {   
+        //分組資料
+        var dataX = dataXaxisGroup[i];
+        var dataY = dataYaxisGroup[i];
+        var columnName = columnNameGroup[i];
+        var item = itemGroup[i]; 
+        for( var key in dataLo)
+        {
+                
+            if(dataLo[key][columnName] == dataX)
+            {
+                _sumDataY[i] += parseFloat(dataLo[key][dataY]);
+            
+            }
+                     
+        }
+        
+    }
+
+    var opt = {
+        events: false,
+        tooltips: {
+            enabled: false
+        },
+        hover: {
+            animationDuration: 0
+        },
+        animation: {
+            duration: 1,
+            onComplete: function () {
+                var chartInstance = this.chart,
+                    ctx = chartInstance.ctx;
+                ctx.font = Chart.helpers.fontString(Chart.defaults.global.defaultFontSize, Chart.defaults.global.defaultFontStyle, Chart.defaults.global.defaultFontFamily);
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'bottom';
+    
+                this.data.datasets.forEach(function (dataset, i) {
+                    var meta = chartInstance.controller.getDatasetMeta(i);
+                    meta.data.forEach(function (bar, index) {
+                        var data = dataset.data[index];                            
+                        ctx.fillText(data, bar._model.x, bar._model.y - 5);
+                    });
+                });
+            }
+        }
+    };
+
+    var ctx = document.getElementById('canvas').getContext('2d');
+    window.myBarChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels:dataXaxisGroup,
+            // labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+            datasets: [{
+                label: ChartTitle,
+                // data: [12, 19, 3, 5, 2, 3],
+                data: _sumDataY,
+                backgroundColor:_ChartbackgroundColor,
+                // backgroundColor: [
+                //     'rgba(255, 99, 132, 0.2)',
+                //     'rgba(54, 162, 235, 0.2)',
+                //     'rgba(255, 206, 86, 0.2)',
+                //     'rgba(75, 192, 192, 0.2)',
+                //     'rgba(153, 102, 255, 0.2)',
+                //     'rgba(255, 159, 64, 0.2)'
+                // ],
+                borderColor:_ChartborderColor,
+                // borderColor: [
+                //     'rgba(255, 99, 132, 1)',
+                //     'rgba(54, 162, 235, 1)'
+                //     'rgba(255, 206, 86, 1)',
+                //     'rgba(75, 192, 192, 1)',
+                //     'rgba(153, 102, 255, 1)',
+                //     'rgba(255, 159, 64, 1)'
+                // ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }]
+            },
+            events: false,
+            tooltips: {
+                enabled: false
+            },
+            hover: {
+                animationDuration: 0
+            },
+            animation: {
+                duration: 1,
+                onComplete: function () {
+                    var chartInstance = this.chart,
+                        ctx = chartInstance.ctx;
+                    ctx.font = Chart.helpers.fontString(Chart.defaults.global.defaultFontSize, Chart.defaults.global.defaultFontStyle, Chart.defaults.global.defaultFontFamily);
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'bottom';
+
+                    this.data.datasets.forEach(function (dataset, i) {
+                        var meta = chartInstance.controller.getDatasetMeta(i);
+                        meta.data.forEach(function (bar, index) {
+                            var data = dataset.data[index];                            
+                            ctx.fillText(data, bar._model.x, bar._model.y - 5);
+                        });
+                    });
+                }
             }
         }
     });

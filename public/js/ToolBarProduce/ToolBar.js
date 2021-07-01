@@ -269,36 +269,166 @@ function destoryToolbar( toolbarName, index)
 //*產生Bar Chart toolbar
 //*Using in Inventory
 
-function PrepareToInventoryToolbar(_ChartTypeSource, _xAxisSource, _yAxisSource, _GroupSource, item_Material, item_Storage_Location, item_Descr_of_Storage_Loc, item_Batch) 
+function PrepareToInventoryToolbar(_todoP, _ChartTypeSource, _xAxisSource, _yAxisSource, _GroupSource, 
+        item_Material, item_Storage_Location, item_Descr_of_Storage_Loc, item_Batch,
+        item_Name_of_sold_to_party, item_Name_of_the_ship_to_party, item_Description, item_Sold_to_party, item_Ship_to_party,
+        item_Ship_Batch, item_Ship_Material, item_Item_category, item_Ship_Storage_Location
+    ) 
 {
     $("#tabs").tabs();
-    createInventoryToolbar(1, _ChartTypeSource, _xAxisSource, _yAxisSource, _GroupSource, item_Material, item_Storage_Location, item_Descr_of_Storage_Loc, item_Batch);
+    createInventoryInstockToolbar(_todoP, 1, _ChartTypeSource, _xAxisSource, _yAxisSource, _GroupSource, 
+            item_Material, item_Storage_Location, item_Descr_of_Storage_Loc, item_Batch,
+            item_Name_of_sold_to_party, item_Name_of_the_ship_to_party, item_Description, item_Sold_to_party, item_Ship_to_party,
+            item_Ship_Batch, item_Ship_Material, item_Item_category, item_Ship_Storage_Location
+        );
+    createInventoryShipmentToolbar(_todoP, 1, _ChartTypeSource, _xAxisSource, _yAxisSource, _GroupSource, 
+            item_Material, item_Storage_Location, item_Descr_of_Storage_Loc, item_Batch,
+            item_Name_of_sold_to_party, item_Name_of_the_ship_to_party, item_Description, item_Sold_to_party, item_Ship_to_party,
+            item_Ship_Batch, item_Ship_Material, item_Item_category, item_Ship_Storage_Location
+        );
     $("button#add-tab").click(
         function() 
         {
+            if( getColumnNameFromChineseToDatabase($("#Gridtabs .ui-tabs-active").text()) == "InventoryInstock" && _todoP == "InventoryInstock")
+            {    
+                var item_Material = sessionStorage.getItem('Material_Description');
+                var item_Storage_Location = sessionStorage.getItem('Storage_Location');
+                var item_Descr_of_Storage_Loc = sessionStorage.getItem('Descr_of_Storage_Loc');
+                var item_Batch = sessionStorage.getItem('Batch');
+                var _tmpxAxis = sessionStorage.getItem('_xAxis');
+                var _xAxis = _tmpxAxis.split(",");
+                var tabs =  $("#tabs").tabs();
+                var num_tabs = $("#tabs ul li").length + 1;
+                $("#tabs ul").append(
+                    "<li><a href='#tab" + num_tabs + "'>Group " + num_tabs + "</a></li>"
+                );
+
+                $("#tabs").append("<div id='tab"+ num_tabs+ "' style='background-color:powderblue;'>"
+                    + "<span style='font-weight:bold; color:#2e6e9e; display:block; text-align:center'>《 Group " + num_tabs + " 》</span> <br />"       
+                    + "<div id='jqxInventoryToolBar" + num_tabs + "' style = 'margin:0px auto; text-align:justify' ></div>" 
+                    + "</div>");
+
+
+                createInventoryInstockToolbar(_todoP, num_tabs, _ChartTypeSource, _xAxis, _yAxisSource, _GroupSource, 
+                    item_Material, item_Storage_Location, item_Descr_of_Storage_Loc, item_Batch, 
+                    item_Name_of_sold_to_party, item_Name_of_the_ship_to_party, item_Description, item_Sold_to_party, item_Ship_to_party,
+                    item_Ship_Batch, item_Ship_Material, item_Item_category, item_Ship_Storage_Location
+                    );
+            }
+           
+            if( getColumnNameFromChineseToDatabase($("#Gridtabs .ui-tabs-active").text()) == "InventoryShipment" && _todoP == "InventoryShipment")
+            {
+
+                combobox_items = getComboboxItem();
+
+                var item_Name_of_sold_to_party = [];
+                var item_Name_of_the_ship_to_party = [];
+                var item_Description = [];
+                var item_Sold_to_party = [];
+                var item_Ship_to_party = [];
+                var item_Ship_Batch = [];
+                var item_Ship_Material = [];
+                var item_Item_category = [];
+                var item_Ship_Storage_Location = [];
+                
+                for (var i in combobox_items)
+                {
+                    if(i == "Name_of_sold_to_party")
+                    {
+                        for(var j in combobox_items[i])
+                        {
+                            item_Name_of_sold_to_party.push(combobox_items[i][j][i]);
+                        }
+                    }
+                    if(i == "Name_of_the_ship_to_party")
+                    {
+                        for(var j in combobox_items[i])
+                        {
+                            item_Name_of_the_ship_to_party.push(combobox_items[i][j][i]);
+                        }
+                    }
+                    if(i == "Description")
+                    {
+                        for(var j in combobox_items[i])
+                        {
+                            item_Description.push(combobox_items[i][j][i]);
+                        }
+                    }
+                    if(i == "Sold_to_party")
+                    {
+                        for(var j in combobox_items[i])
+                        {
+                            item_Sold_to_party.push(combobox_items[i][j][i]);
+                        }
+                    }
+                    if(i == "Ship_to_party")
+                    {
+                        for(var j in combobox_items[i])
+                        {
+                            item_Ship_to_party.push(combobox_items[i][j][i]);
+                        }
+                    }
+                    if(i == "Ship_Batch")
+                    {
+                        for(var j in combobox_items[i])
+                        {
+                            item_Ship_Batch.push(combobox_items[i][j][i]);
+                        }
+                    }
+                    if(i == "Ship_Material")
+                    {
+                        for(var j in combobox_items[i])
+                        {
+                            item_Ship_Material.push(combobox_items[i][j][i]);
+                        }
+                    }
+                    if(i == "Item_category")
+                    {
+                        for(var j in combobox_items[i])
+                        {
+                            item_Item_category.push(combobox_items[i][j][i]);
+                        }
+                    }
+                    if(i == "Ship_Storage_Location")
+                    {
+                        for(var j in combobox_items[i])
+                        {
+                            item_Ship_Storage_Location.push(combobox_items[i][j][i]);
+                        }
+                    }
+                    
+                }
+                // var item_Name_of_sold_to_party = sessionStorage.getItem('Name_of_sold_to_party').split(",");
+                // var item_Name_of_the_ship_to_party = sessionStorage.getItem('Name_of_the_ship_to_party').split(",");
+                // var item_Description = sessionStorage.getItem('Description').split(",");
+                // var item_Sold_to_party = sessionStorage.getItem('Sold_to_party').split(",");
+                // var item_Ship_to_party = sessionStorage.getItem('Ship_to_party').split(",");
+                // var item_Ship_Batch = sessionStorage.getItem('Ship_Batch').split(",");
+                // var item_Ship_Material = sessionStorage.getItem('Ship_Material').split(",");
+                // var item_Item_category = sessionStorage.getItem('Item_category').split(",");
+                // var item_Ship_Storage_Location = sessionStorage.getItem('Ship_Storage_Location').split(",");
+
+
+
+                var tabs =  $("#tabs").tabs();
+                var num_tabs = $("#tabs ul li").length + 1;
+                $("#tabs ul").append(
+                    "<li><a href='#tab" + num_tabs + "'>Group " + num_tabs + "</a></li>"
+                );
+
+                $("#tabs").append("<div id='tab"+ num_tabs+ "' style='background-color:powderblue;'>"
+                    + "<span style='font-weight:bold; color:#2e6e9e; display:block; text-align:center'>《 Group " + num_tabs + " 》</span> <br />"       
+                    + "<div id='jqxShipmentToolBar" + num_tabs + "' style = 'margin:0px auto; text-align:justify' ></div>" 
+                    + "</div>");
+
+
+                createInventoryShipmentToolbar(_todoP, num_tabs, _ChartTypeSource, _xAxis, _yAxisSource, _GroupSource, 
+                    item_Material, item_Storage_Location, item_Descr_of_Storage_Loc, item_Batch, 
+                    item_Name_of_sold_to_party, item_Name_of_the_ship_to_party, item_Description, item_Sold_to_party, item_Ship_to_party,
+                    item_Ship_Batch, item_Ship_Material, item_Item_category, item_Ship_Storage_Location
+                    );
+            }
             
-            var item_Material = sessionStorage.getItem('Material_Description');
-            var item_Storage_Location = sessionStorage.getItem('Storage_Location');
-            var item_Descr_of_Storage_Loc = sessionStorage.getItem('Descr_of_Storage_Loc');
-            var item_Batch = sessionStorage.getItem('Batch');
-            var _tmpxAxis = sessionStorage.getItem('_xAxis');
-            var _xAxis = _tmpxAxis.split(","); 
-
-            var tabs =  $("#tabs").tabs();
-            var num_tabs = $("#tabs ul li").length + 1;
-            $("#tabs ul").append(
-                "<li><a href='#tab" + num_tabs + "'>Group " + num_tabs + "</a></li>"
-            );
-
-            $("#tabs").append("<div id='tab"+ num_tabs+ "' style='background-color:powderblue;'>"
-                + "<span style='font-weight:bold; color:#2e6e9e; display:block; text-align:center'>《 Group " + num_tabs + " 》</span> <br />"       
-                + "<div id='jqxInventoryToolBar" + num_tabs + "' style = 'margin:0px auto; text-align:justify' ></div>" 
-                + "</div>");
-
-
-                createInventoryToolbar(num_tabs, _ChartTypeSource, _xAxis, _yAxisSource, _GroupSource, item_Material, item_Storage_Location, item_Descr_of_Storage_Loc, item_Batch);
-            // $("#jqxToolBar" + num_tabs).jqxToolBar('render');
-
             $("#tabs").tabs("refresh");
         }
     );
@@ -306,19 +436,37 @@ function PrepareToInventoryToolbar(_ChartTypeSource, _xAxisSource, _yAxisSource,
     $("button#remove-tab").click(
         function() 
         {
-            var tabs =  $("#tabs").tabs();
-            var num_tabs = $("#tabs ul li").length;
-
-            $('#tabs').tabs('remove', num_tabs - 1);
-
-            $("#tabs").tabs("refresh");
+            if( getColumnNameFromChineseToDatabase($("#Gridtabs .ui-tabs-active").text()) == "InventoryInstock" && _todoP == "InventoryInstock")
+            {
+                var tabs =  $("#tabs").tabs();
+                var num_tabs = $("#tabs ul li").length;
+    
+                $('#tabs').tabs('remove', num_tabs - 1);
+    
+                $("#tabs").tabs("refresh");
+            }
+            if( getColumnNameFromChineseToDatabase($("#Gridtabs .ui-tabs-active").text()) == "InventoryShipment" && _todoP == "InventoryShipment")
+            {
+                var tabs =  $("#tabs").tabs();
+                var num_tabs = $("#tabs ul li").length;
+    
+                $('#tabs').tabs('remove', num_tabs - 1);
+    
+                $("#tabs").tabs("refresh");
+            }
+           
         }
     );               
 }
 
 
-function createInventoryToolbar(num_tabs, _ChartTypeSource, _xAxisSource, _yAxisSource, _GroupSource, item_Material, item_Storage_Location, item_Descr_of_Storage_Loc, item_Batch)
+function createInventoryInstockToolbar(_todoP, num_tabs, _ChartTypeSource, _xAxisSource, _yAxisSource, _GroupSource, 
+    item_Material, item_Storage_Location, item_Descr_of_Storage_Loc, item_Batch,
+    item_Name_of_sold_to_party, item_Name_of_the_ship_to_party, item_Description, item_Sold_to_party, item_Ship_to_party,
+    item_Ship_Batch, item_Ship_Material, item_Item_category, item_Ship_Storage_Location
+    )
 { 
+    if (_todoP == "InventoryShipment"){return;}
     var _dataSource = [];  //用來保存
     // var itemCount = 7; // The item count of Toolbar.
     // 產生Material值、儲存位置、儲位名稱、批號
@@ -326,12 +474,12 @@ function createInventoryToolbar(num_tabs, _ChartTypeSource, _xAxisSource, _yAxis
     $("#jqxInventoryToolBar" + num_tabs).jqxToolBar({ 
         width: "1000", height: '35', 
         tools: "toggleButton dropdownlist | toggleButton dropdownlist | toggleButton dropdownlist input  ",
-       
+        
         initTools: function (type, index, tool, menuToolIninitialization) 
         {
             switch (index) 
             {
-              
+                
                 case 0:
                     tool.jqxToggleButton({ width: 80, toggled: true });
                     tool.text("X axis:");
@@ -342,7 +490,7 @@ function createInventoryToolbar(num_tabs, _ChartTypeSource, _xAxisSource, _yAxis
                     //tool.jqxComboBox({ width: width, source: source, selectedIndex: -1, searchMode: 'containsignorecase', autoComplete: true});
                 
                     break;  
-                   
+                    
                 case 2:
                     tool.jqxToggleButton({ width: 80, toggled: true });
                     tool.text("Y axis:");
@@ -369,5 +517,109 @@ function createInventoryToolbar(num_tabs, _ChartTypeSource, _xAxisSource, _yAxis
             }
         }
     });
+     
 }
+
+function createInventoryShipmentToolbar(_todoP, num_tabs, _ChartTypeSource, _xAxisSource, _yAxisSource, _GroupSource, 
+    item_Material, item_Storage_Location, item_Descr_of_Storage_Loc, item_Batch,
+    item_Name_of_sold_to_party, item_Name_of_the_ship_to_party, item_Description, item_Sold_to_party, item_Ship_to_party,
+    item_Ship_Batch, item_Ship_Material, item_Item_category, item_Ship_Storage_Location
+    )
+{ 
+    if (_todoP == "InventoryInstock"){return;}
+    var _dataSource = [];  //用來保存
+    // var itemCount = 7; // The item count of Toolbar.
+    // 產生Material值、儲存位置、儲位名稱、批號
+
+    $("#jqxShipmentToolBar" + num_tabs).jqxToolBar({ 
+        width: "1000", height: '35', 
+        tools: "toggleButton dropdownlist combobox | toggleButton dropdownlist  ",
+        
+        initTools: function (type, index, tool, menuToolIninitialization) 
+        {
+            switch (index) 
+            {
+                
+                case 0:
+                    tool.jqxToggleButton({ width: 80, toggled: true });
+                    tool.text("X axis:");
+                    break;
+                    
+                case 1:
+                    var _source = ["Name_of_sold_to_party", "Name_of_the_ship_to_party", "Description", "Sold_to_party",
+                        "Ship_to_party", "Ship_Batch", "Ship_Material", "Item_category"
+                    ]
+                    tool.jqxDropDownList({ width: 200, source: _source, selectedIndex: -1, searchMode: 'containsignorecase',checkboxes:false });
+                    //tool.jqxComboBox({ width: width, source: source, selectedIndex: -1, searchMode: 'containsignorecase', autoComplete: true});
+                    tool.on('change', function (event) {
+                            var args = event.args;
+                            if (args) {
+                                // index represents the item's index.                          
+                                var item = args.item;
+                                
+                                // get item's label and value.
+                                var label = item.label;
+                                var dynamicSource = [];
+                                switch(label){
+                                    case "Name_of_sold_to_party":
+                                        dynamicSource = item_Name_of_sold_to_party;
+                                        break;
+                                    case "Name_of_the_ship_to_party":
+                                        dynamicSource = item_Name_of_the_ship_to_party;
+                                        break;
+                                    case "Description":
+                                        dynamicSource = item_Description;
+                                        break;
+                                    case "Sold_to_party":
+                                        dynamicSource = item_Sold_to_party;
+                                        break;
+                                    case "Ship_to_party":
+                                        dynamicSource = item_Ship_to_party;
+                                        break;
+                                    case "Ship_Batch":
+                                        dynamicSource = item_Ship_Batch;
+                                        break;
+                                    case "Ship_Material":
+                                        dynamicSource = item_Ship_Material;
+                                        break;
+                                    case "Item_category":
+                                        dynamicSource = item_Item_category;
+                                        break;    
+                                }
+                                
+                                
+                                var _tmpToolbar = $("#jqxShipmentToolBar" + num_tabs).jqxToolBar("getTools");
+                                $(_tmpToolbar[2].tool[0]).jqxComboBox(
+                                    {
+                                        source:dynamicSource
+                                    }
+                                )
+                            }
+                        }
+                    )
+                    break;  
+                case 2:
+                    tool.jqxComboBox({ width: 250, source: item_Name_of_sold_to_party, selectedIndex: -1, searchMode: 'containsignorecase',autoComplete: true });
+                    //tool.jqxComboBox({ width: width, source: source, selectedIndex: -1, searchMode: 'containsignorecase', autoComplete: true});
+                
+                    break;  
+                    
+                case 3:
+                    tool.jqxToggleButton({ width: 80, toggled: true });
+                    tool.text("Y axis:");
+                    break;                 
+                case 4:
+                    tool.jqxDropDownList({ width: 150, source: _yAxisSource, selectedIndex:  -1, searchMode: 'containsignorecase', checkboxes:true});
+                    // tool.jqxComboBox({ 
+                    //     width: 120, source: _yAxisSource, selectedIndex: -1, 
+                    //     searchMode: 'containsignorecase', autoComplete: true,
+                    // });
+                    break;    
+            }
+        }
+    });
+     
+    
+}
+
 

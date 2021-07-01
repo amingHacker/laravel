@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use DB;
 use Illuminate\Http\Request;
 use Validator;
+use PhpOffice\PhpWord\TemplateProcessor; // PhpWord
 
 class InventoryInstockController extends Controller
 {
@@ -12,9 +13,11 @@ class InventoryInstockController extends Controller
     public function index( Request $request )
     {      
         $todosInventoryInstock = DB::connection('mysqlinventory')->table('inventory_instock')->orderBy('Material','desc')->first();
+        $todosInventoryShipment = DB::connection('mysqlinventory')->table('inventory_shipment')->orderBy('Delivery','desc')->first();
     
         return view('Inventory.InventoryInstock',[
             'todosInventoryInstock' => $todosInventoryInstock,
+            'todosInventoryShipment' => $todosInventoryShipment,
         ]);
     }
 
@@ -35,6 +38,9 @@ class InventoryInstockController extends Controller
         {
             case "/InventoryInstock/show/InventoryInstock":
                 $table = 'inventory_instock';
+                break;
+            case "/InventoryInstock/show/InventoryShipment":
+                $table = 'inventory_shipment';
                 break;
         }
         // var_dump($_SERVER["REDIRECT_URL"]);
@@ -325,6 +331,9 @@ class InventoryInstockController extends Controller
             case 'dgInventoryInstock':
                 $table = 'inventory_instock';
                 break;
+            case 'dgInventoryShipment':
+                $table = 'inventory_shipment';
+                break;
         }
 
         $queryTemp = DB::connection('mysqlinventory')->table($table);
@@ -387,6 +396,9 @@ class InventoryInstockController extends Controller
             case 'dgInventoryInstock':
                 $table = 'inventory_instock';
                 break;
+            case 'dgInventoryShipment':
+                $table = 'inventory_shipment';
+                break;
         }
 
         $uploadData["UploadData"]["created_at"] = date('Y-m-d H:i:s');
@@ -420,6 +432,9 @@ class InventoryInstockController extends Controller
             case 'dgInventoryInstock':
                 $table = 'inventory_instock';
                 break;
+            case 'dgInventoryShipment':
+                $table = 'inventory_shipment';
+                break;
         }
       
         $deleteData = DB::connection('mysqlinventory')->table($table)->delete($Parameter["Material"]);
@@ -440,6 +455,9 @@ class InventoryInstockController extends Controller
         switch ($AddParameter["table"]){
             case 'dgInventoryInstock':
                 $table = 'inventory_instock';
+                break;
+            case 'dgInventoryShipment':
+                $table = 'inventory_shipment';
                 break;
         }
         
@@ -480,6 +498,10 @@ class InventoryInstockController extends Controller
             case "/InventoryInstock/GetTable/InventoryInstock":
                 $table = 'inventory_instock';
                 break;
+            case "/InventoryInstock/GetTable/InventoryShipment":
+                $table = 'inventory_shipment';
+                break;
+            
         }
         
         $product_SPEC= DB::connection('mysqlinventory')->table($table)->get();
@@ -518,12 +540,33 @@ class InventoryInstockController extends Controller
         $Storage_Location = DB::connection('mysqlinventory')->table('inventory_instock')->select('Storage_Location')->distinct()->get();
         $Descr_of_Storage_Loc = DB::connection('mysqlinventory')->table('inventory_instock')->select('Descr_of_Storage_Loc')->distinct()->get();
         $Batch = DB::connection('mysqlinventory')->table('inventory_instock')->select('Batch')->distinct()->get();
-        
+    
+        $Name_of_sold_to_party = DB::connection('mysqlinventory')->table('inventory_shipment')->select('Name_of_sold_to_party')->distinct()->get();
+        $Name_of_the_ship_to_party = DB::connection('mysqlinventory')->table('inventory_shipment')->select('Name_of_the_ship_to_party')->distinct()->get();
+        $Description = DB::connection('mysqlinventory')->table('inventory_shipment')->select('Description')->distinct()->get();
+        $Sold_to_party = DB::connection('mysqlinventory')->table('inventory_shipment')->select('Sold_to_party')->distinct()->get();
+        $Ship_to_party = DB::connection('mysqlinventory')->table('inventory_shipment')->select('Ship_to_party')->distinct()->get();
+        $Ship_Batch = DB::connection('mysqlinventory')->table('inventory_shipment')->select('Ship_Batch')->distinct()->get();
+        $Ship_Material = DB::connection('mysqlinventory')->table('inventory_shipment')->select('Ship_Material')->distinct()->get();
+        $Item_category = DB::connection('mysqlinventory')->table('inventory_shipment')->select('Item_category')->distinct()->get();
+        $Ship_Storage_Location = DB::connection('mysqlinventory')->table('inventory_shipment')->select('Ship_Storage_Location')->distinct()->get();
+
         return response()->json([
             'Material_Description' => $Material_Description,
             'Storage_Location' => $Storage_Location,
             'Descr_of_Storage_Loc' => $Descr_of_Storage_Loc,
-            'Batch' => $Batch
+            'Batch' => $Batch,
+            'Name_of_sold_to_party' => $Name_of_sold_to_party,
+            'Name_of_the_ship_to_party' => $Name_of_the_ship_to_party,
+            'Description' => $Description,
+            'Sold_to_party' => $Sold_to_party,
+            'Ship_to_party' => $Ship_to_party,
+            'Ship_Batch' => $Ship_Batch,
+            'Ship_Material' => $Ship_Material,
+            'Item_category' => $Item_category,
+            'Ship_Storage_Location' => $Ship_Storage_Location,
+            
+
         ]);     
     }
 
@@ -535,6 +578,9 @@ class InventoryInstockController extends Controller
         {
             case "/InventoryInstock/GetDataFromID/InventoryInstock":
                 $table = 'inventory_instock';
+                break;
+            case "/InventoryInstock/GetDataFromID/InventoryShipment":
+                $table = 'inventory_shipment';
                 break;
         }
         
@@ -602,5 +648,186 @@ class InventoryInstockController extends Controller
         return response()->json([
             'success' => $DownLoadValue,        
         ]);     
+    }
+
+    //從我的最愛表格取出資料
+    //This is the controller show
+    public function MyFavorite( Request $request )
+    {    
+        
+        $pageInf = $request->all();
+        $pageNum = $pageInf["pageNum"];
+        $limit = $pageInf["limit"];
+        $sidx = ($pageInf["sidx"] == '')? 'id': $pageInf["sidx"];
+        $order = ($pageInf["order"] == '')? 'desc': $pageInf["order"];
+        
+        $table = '';
+        $searchGroupOp = ''; $filed = ''; $op = ''; $SearchData = '';
+        $Record = '';
+        
+        switch ($_SERVER["REDIRECT_URL"])
+        {
+            case "/InventoryInstock/MyFavorite":
+                $table = 'inventory_myfavorite';
+                break;
+        }
+        // var_dump($_SERVER["REDIRECT_URL"]);
+
+        $query = DB::connection('mysqlinventory')->table($table);
+
+        if ($pageInf["_search"] == 'true')
+        {
+            $tmp = get_object_vars(json_decode($pageInf["filters"])); //先把字串轉成obj,再轉成array形式運用
+            //var_dump($tmp);
+            foreach ($tmp["rules"] as $i)
+            {
+                $rules = get_object_vars($i);      
+                $searchGroupOp = $tmp["groupOp"];
+                $field = $rules["field"];
+                $op = $rules["op"];
+                $SearchData = $rules["data"];
+                
+                switch ($op){
+                    case "eq":
+                        $query = $query->where($field, $SearchData); 
+                        break;
+                    case "ne":
+                        $query = $query->where($field, '!=' ,$SearchData); 
+                        break;
+                    case "bw":
+                        $query = $query->where($field, 'like', '%'.$SearchData.'%'); 
+                        break;
+                    case "bn":
+                        $query = $query->where($field, 'not like', '%'.$SearchData.'%'); 
+                        break;
+                    case "ew":
+                        $query = $query->where($field, 'like', '%'.$SearchData.'%'); 
+                        break;
+                    case "en":
+                        $query = $query->where($field, 'not like', '%'.$SearchData.'%');
+                        break;
+                    case "cn":
+                        $query = $query->where($field, 'like', '%'.$SearchData.'%'); 
+                        break;
+                    case "nc":
+                        $query = $query->where($field, 'not like', '%'.$SearchData.'%');
+                        break;
+                    case "nu":
+                        $query = $query->whereNull($field);
+                        break;
+                    case "nn":
+                        $query = $query->whereNotNull($field);
+                        break;
+                    case "in":
+                        $query = $query->whereIn($field, $SearchData);
+                        break;
+                    case "ni":
+                        $query = $query->whereNotIn($field, $SearchData);
+                        break;
+                    case "lt":
+                        $query = $query->where($field,'<', $SearchData); 
+                        break;
+                    case "le":
+                        $query = $query->where($field,'<=', $SearchData); 
+                        break;
+                    case "gt":
+                        $query = $query->where($field,'>', $SearchData); 
+                        break;
+                    case "ge":
+                        $query = $query->where($field,'>=', $SearchData); 
+                        break;
+                }
+            }
+        }
+        
+        $Record = $query->count();
+        $todos = $query->get();
+        $todos = $query->skip(($pageNum - 1) * $limit )->take($limit)->orderBy( $sidx, $order)->get();  
+        //$todos = $query->offset(($pageNum - 1) * $limit )->limit($limit)->orderBy( $sidx, $order)->get();            
+        $totalPage = ceil($Record / $limit) ;         
+        
+        return response()->json([
+                'dataList'=> $todos,
+                'currPage'=> $pageNum,  
+                'totalCount'=> $Record,
+                'totalPages'=> $totalPage,        
+            ]);
+    }
+
+    //在我的最愛表格新增和修改
+    public function MyFavoriteAddandUpdate(Request $request)
+    {      
+        $AddParameter = $request->all();
+    
+        $table = '';
+        switch ($AddParameter["table"]){
+            case 'viewLog':
+                $table = 'inventory_myfavorite';
+                break;
+        }
+        
+        $AddParameter["created_at"] = date('Y-m-d H:i:s');
+        $AddParameter["updated_at"] = date('Y-m-d H:i:s');
+        //dd($AddParameter["urgent"]);      
+        if ($request->oper =='add')
+        {   
+            unset($AddParameter["oper"]);
+            unset($AddParameter["table"]);
+            $this->CreateRowData($AddParameter, $table);             
+            return response()->json([
+                'success' => 'Record add successfully!'
+            ]);
+        }
+        else
+        {
+            unset($AddParameter["oper"]);
+            unset($AddParameter["table"]);
+            unset($AddParameter["created_at"]);
+            $updateData = DB::connection('mysqlinventory')->table($table)->where('id', $request->id);
+            $updateData->update($AddParameter);
+            return response()->json([
+                'success' => 'Record update successfully!'
+            ]);
+    
+        }
+    }
+
+    //列印Word格式
+    public function ExportWord(Request $request)
+    {   
+        $Data = $request->all();
+        $Include = explode(",",$Data["Include"]);
+        $Sum = explode(",",$Data["Sum"]);
+        
+        
+        //php 產生word檔
+        $phpWord = new \PhpOffice\PhpWord\PhpWord();
+
+        // Adding an empty Section to the document...
+        $section = $phpWord->addSection();
+
+        $section->addText("日報表");
+
+        $table = $section->addTable(array('borderColor' => '000000', 'borderSize' => 6, 'cellMargin' => 50));
+        $table->addRow();
+        $table->addCell(2000)->addText("");
+        $table->addCell(2000)->addText("庫存");
+        
+        for ( $i = 0 ; $i < count($Include) ; $i++ ) 
+        {
+            $table->addRow();
+            $table->addCell(2000)->addText($Include[$i]);
+            $table->addCell(2000)->addText($Sum[$i]);
+        }
+
+        // Saving the document as OOXML file...
+        $objWriter = \PhpOffice\PhpWord\IOFactory::createWriter($phpWord, 'Word2007');
+
+        header("Content-Disposition: attachment; filename=日報表.docx");
+        $objWriter->save("php://output");
+        
+        // 一定要有 exit()
+        exit();
+        
     }
 }

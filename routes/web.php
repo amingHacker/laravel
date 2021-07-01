@@ -335,6 +335,15 @@ Route::post('/InventoryInstock/Get_Condition', 'InventoryInstockController@Get_C
 //根據篩選的條件找出相對應的資料
 Route::post('/InventoryInstock/FilterSearch', 'InventoryInstockController@FilterSearch');
 
+//獲得我的最愛表單
+Route::get('/InventoryInstock/MyFavorite', 'InventoryInstockController@MyFavorite');
+//新增修改我的最愛表單
+Route::any('/InventoryInstock/MyFavoriteAddandUpdate/{todo}', 'InventoryInstockController@MyFavoriteAddandUpdate');
+
+//phpWord產生
+//Test phpWord
+Route::post('/InventoryInstock/ExportWord/', 'InventoryInstockController@ExportWord');
+
 /********* ContainerInput ***********/
 //資料呈現
 Route::get('/ContainerInput', 'ContainerInputController@index');

@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateProductSpecTmalTmalumTable extends Migration
+class CreateInventoryMyfavoriteTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,11 @@ class CreateProductSpecTmalTmalumTable extends Migration
      */
     public function up()
     {
-        Schema::create('product_spec_tmal_tmalum', function (Blueprint $table) {
+        Schema::connection('mysqlinventory')->create('inventory_myfavorite', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('ELEMENT',100);
-            $table->string('UMC_OES',100);
-            $table->string('UMC_MS',100);
+            $table->string('Description',100);
+            $table->string('Include',10000);
+            $table->string('Material_Description',100);
             $table->timestamps();
         });
     }
@@ -29,6 +29,6 @@ class CreateProductSpecTmalTmalumTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('product_spec_tmal_tmalum');
+        Schema::dropIfExists('inventory_myfavorite');
     }
 }

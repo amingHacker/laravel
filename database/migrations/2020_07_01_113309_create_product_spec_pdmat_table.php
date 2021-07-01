@@ -17,7 +17,7 @@ class CreateProductSpecPdmatTable extends Migration
             $table->increments('id');
             $table->string('ELEMENT',100);
             $table->string('PDMAT_TSMC_CL_EG_TSMC_tight',100);
-            $table->string('PDMAPG_TSMC_CL_PG',100);
+            $table->string('PDMAPG_SEC',100);
             $table->timestamps();
         });
     }
